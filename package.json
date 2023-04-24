@@ -1,0 +1,21 @@
+{
+  "name": "timeklisii",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/index.js",
+  "scripts": {
+    "launch":"node ./build/index.js",
+    "dev": "npx nodemon",
+    "build":"npx tsc --build --clean && npx tsc --build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "nodemonConfig": {
+    "watch": [
+      "source"
+    ],
+    "ext": "js, ts, json",
+    "exec":"npm run build && npm run launch"
+  }
+}
