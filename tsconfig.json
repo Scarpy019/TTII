@@ -2,7 +2,11 @@
     "compilerOptions": {
         "module": "commonjs",
         "rootDir":"./source",
-        "outDir":"./build"
+        "outDir":"./build",
+        "resolveJsonModule": true,
+        "target": "es6", // or a more recent ecmascript version
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
     },
     "exclude": [
         "node_modules"
