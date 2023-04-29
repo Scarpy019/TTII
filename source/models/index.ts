@@ -1,5 +1,5 @@
-export { User, UserModel } from './User';
-export { UserLog, Log, UserLogModel} from './UserLog';
-export { Section, SectionModel } from './Section';
-export { Subsection, SubsectionModel } from './Subsection';
-export { Listing, ListingModel } from './Listing'
+export { User } from './User';
+export { UserLog, Log} from './UserLog';
+export { Section } from './Section';
+export { Subsection } from './Subsection';
+export { Listing } from './Listing'

@@ -3,15 +3,21 @@ import { Section } from './Section';
 import { Listing } from './Listing';
 import { Optional } from 'sequelize';
 
-export interface SubsectionModel extends Optional<any,string>{
+export interface SubsectionAttributes{
     id:number;
     name:string;
+    sectionId:number;
 };
+interface SubsectionInput extends Optional<SubsectionAttributes, 'id'>{};
+export interface SubsectionOutput extends Required<SubsectionAttributes>{};
+
 
 @Table({
-    tableName:'subsections'
+    tableName:'subsections',
+    timestamps:true,
+    paranoid:true
 })
-export class Subsection extends Model {
+export class Subsection extends Model<SubsectionAttributes, SubsectionInput> {
     @PrimaryKey
     @AutoIncrement
     @Column
@@ -32,10 +38,15 @@ export class Subsection extends Model {
 
     @CreatedAt
     @Column
-    createdAt!: Date;
+    readonly createdAt!: Date;
+
+    @DeletedAt
+    @Column
+    readonly deletedAt!: Date;
 
     @UpdatedAt
     @Column
-    updatedAt!: Date;
+    readonly updatedAt!: Date;
+
 
 };

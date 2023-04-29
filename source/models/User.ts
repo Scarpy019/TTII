@@ -3,18 +3,28 @@ import { UserLog } from './UserLog';
 import { Listing } from './Listing';
 import { Optional } from 'sequelize';
 
-export interface UserModel extends Optional<any,string>{
+/**
+ * Helper interface for Users
+ */
+interface UserAttributes{
     id:string;
     username:string;
     email:string;
-    access?:string;
-    reputation?:number;
+    access:string;
+    reputation:number;
 };
+interface UserInput extends Optional
+    <UserAttributes, 
+    'id' | 'reputation'> {};
+export interface UserOutput extends Required<UserAttributes> {};
+
 
 @Table({
-    tableName:'users'
+    tableName:'users',
+    timestamps:true,
+    paranoid:true
 })
-export class User extends Model {
+export class User extends Model<UserAttributes, UserInput> {
     @PrimaryKey
     @IsUUID(4)
     @Column(DataType.UUID)
@@ -27,7 +37,6 @@ export class User extends Model {
     @Column
     email!: string;
 
-    @Default("Client")
     @Column
     access!: string;
     
@@ -43,10 +52,14 @@ export class User extends Model {
 
     @CreatedAt
     @Column
-    createdAt!: Date;
+    readonly createdAt!: Date;
+
+    @DeletedAt
+    @Column
+    readonly deletedAt!: Date;
 
     @UpdatedAt
     @Column
-    updatedAt!: Date;
+    readonly updatedAt!: Date;
 
 };

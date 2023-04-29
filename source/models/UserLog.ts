@@ -8,18 +8,23 @@ export interface Log{
 };
 
 
-export interface UserLogModel extends Optional<any,string>{
+interface UserLogAttributes{
     id:string;
     log:Log;
-
+    userId:string;
 };
+
+interface UserLogInput extends Optional<UserLogAttributes,'id'>{};
+export interface UserLogOutput extends Required<UserLogAttributes>{};
 
 
 
 @Table({
-    tableName:'userLogs'
+    tableName:'userLogs',
+    timestamps:true,
+    paranoid:true
 })
-export class UserLog extends Model {
+export class UserLog extends Model<UserLogAttributes, UserLogInput> {
     @PrimaryKey
     @IsUUID(4)
     @Column
@@ -31,17 +36,22 @@ export class UserLog extends Model {
     @ForeignKey(()=>User)
     @IsUUID(4)
     @Column(DataType.UUID)
-    userId!:string;
+    userId:string;
 
     @BelongsTo(()=>User, 'userId')
-    user!:User;
+    user:User;
 
     @CreatedAt
     @Column
-    createdAt!: Date;
+    readonly createdAt!: Date;
+
+    @DeletedAt
+    @Column
+    readonly deletedAt!: Date;
 
     @UpdatedAt
     @Column
-    updatedAt!: Date;
+    readonly updatedAt!: Date;
+
 
 };

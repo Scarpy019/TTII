@@ -1,5 +1,5 @@
 import { CreateOptions, Optional } from "sequelize";
-import { Listing, ListingModel, Log, Section, Subsection, User, UserLog } from "./models";
+import { Listing, Log, Section, Subsection, User, UserLog } from "./models";
 import { sys } from "typescript";
 import { sequelize } from "./sequel";
 import {v4 as uuidv4} from 'uuid';
@@ -43,7 +43,7 @@ export async function seedAll(){
     // ----------------------------------
     let depo:Section = await Section.create({
         name:"Depo and things"
-    });
+    },{include:Subsection});
     await depo.$create('subsection',{
         name:"motorzagi"
     });
@@ -53,38 +53,44 @@ export async function seedAll(){
     await depo.$create('subsection',{
         name:"motormotori"
     });
+    console.log(depo.toJSON());
     await depo.save();
     //await sequelize.sync();
 
     // ----------Listings---------------
     // ---------------------------------
+
+    //(await depo.$get('subsections',{where:{name:"motorzagi"}}))[0];
     let motorzagi:Subsection = (await depo.$get('subsections',{where:{name:"motorzagi"}}))[0];
-    let chainsaw:Listing = await Listing.build(<ListingModel>{
+    await Listing.create({
         title:"Big chonky chainsaw",
         body: "Selling big chonky chainsaw :)) Get it for cheap!!!! Brand old",
-        start_price: 2000
+        start_price: 2000,
+        status:"open",
+        subsectionId:motorzagi.id,
+        userId:user_2.id
     });
-    await chainsaw.$set('subsection',motorzagi);
-    await chainsaw.$set('user',user_2);
-    await chainsaw.save();
 
     let motorlaivas:Subsection = (await depo.$get('subsections',{where:{name:"motorlaivas"}}))[0];
-    let motorb:Listing = await Listing.build(<ListingModel>{
+    await Listing.create({
         title:"Big chonky boat motor",
         body: "Selling big chonky motor :(( Get it for cheap (not)!!!! Brand.",
-        start_price: 3126
+        start_price: 3126,
+        status:"available",
+        subsectionId:motorlaivas.id,
+        userId:user_boi.id
     });
-    await motorb.$set('subsection',motorlaivas);
-    await motorb.$set('user',user_boi);
-    await motorb.save();
 
     await sequelize.sync();
 }
 
 
 if(sys.args.includes('--seed')){
+    //clear all tables
     sequelize.sync({force:true}).then(()=>
+        //seed
         seedAll().then(()=>
+            //sync in case it isn't synced
             sequelize.sync().then(()=>console.log("Done"))
         )
     );

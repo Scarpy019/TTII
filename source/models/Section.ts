@@ -2,15 +2,21 @@ import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, De
 import { Subsection } from './Subsection';
 import { Optional } from 'sequelize';
 
-export interface SectionModel extends Optional<any,string>{
+export interface SectionAttributes{
     id:number;
     name:string;
+    subsections:Subsection[];
 };
+interface SectionInput extends Optional<SectionAttributes,'id'|'subsections'>{};
+export interface SectionOutput extends Required<SectionAttributes>{};
+    
 
 @Table({
-    tableName:'sections'
+    tableName:'sections',
+    timestamps:true,
+    paranoid:true
 })
-export class Section extends Model {
+export class Section extends Model<SectionAttributes, SectionInput> {
     @PrimaryKey
     @AutoIncrement
     @Column
@@ -24,10 +30,14 @@ export class Section extends Model {
 
     @CreatedAt
     @Column
-    createdAt!: Date;
+    readonly createdAt!: Date;
+
+    @DeletedAt
+    @Column
+    readonly deletedAt!: Date;
 
     @UpdatedAt
     @Column
-    updatedAt!: Date;
+    readonly updatedAt!: Date;
 
 };
