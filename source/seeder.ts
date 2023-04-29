@@ -1,7 +1,7 @@
 import { CreateOptions, Optional } from "sequelize";
 import { Listing, Log, Section, Subsection, User, UserLog } from "./models";
 import { sys } from "typescript";
-import { sequelize } from "./sequel";
+import { sequelize } from "./sequelizeSetup";
 import {v4 as uuidv4} from 'uuid';
 
 export async function seedAll(){
