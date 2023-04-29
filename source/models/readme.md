@@ -127,3 +127,14 @@ Describes that it is a foreign key referencing a row on the `Section` Model
 section:Section;
 ```
 Marks that this model belongs to a single `Section` via `sectionId` foreign key.
+
+When using eager loading, `section` will have the section this instance belongs to
+
+### `@HasMany`
+
+```ts
+@HasMany(()=>Listing, 'subsectionId')
+listings:Listing[];
+```
+
+Marks that this model has many listings. When `Listing` is eager loaded, `listings` is filled with this model instance's listings. `subsectionId` is the foreign key of the `Listing` model that references this model.
