@@ -2,12 +2,13 @@ import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey
 import { UserLog } from './UserLog';
 import { Listing } from './Listing';
 import { Optional } from 'sequelize';
+import { UUID } from '../sequelizeSetup';
 
 /**
  * Helper interface for Users
  */
 interface UserAttributes{
-    id:string;
+    id:UUID;
     username:string;
     email:string;
     access:string;
@@ -15,7 +16,7 @@ interface UserAttributes{
 };
 interface UserInput extends Optional
     <UserAttributes, 
-    'id' | 'reputation'> {};
+    'reputation'> {};
 export interface UserOutput extends Required<UserAttributes> {};
 
 
@@ -28,7 +29,7 @@ export class User extends Model<UserAttributes, UserInput> {
     @PrimaryKey
     @IsUUID(4)
     @Column(DataType.UUID)
-    id!:string;
+    id!:UUID;
 
     @Unique
     @Column

@@ -1,9 +1,10 @@
 import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, AutoIncrement } from 'sequelize-typescript';
 import { Subsection } from './Subsection';
 import { Optional } from 'sequelize';
+import { AutoId } from '../sequelizeSetup';
 
 export interface SectionAttributes{
-    id:number;
+    id:AutoId;
     name:string;
     subsections:Subsection[];
 };
@@ -20,7 +21,7 @@ export class Section extends Model<SectionAttributes, SectionInput> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    id!:number;
+    id!:AutoId;
 
     @Column
     name!: string;

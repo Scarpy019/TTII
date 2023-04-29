@@ -1,6 +1,7 @@
 import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, BelongsTo, UpdatedAt, IsUUID, DataType, ForeignKey } from 'sequelize-typescript';
 import { User } from './User';
 import { Optional } from 'sequelize';
+import { UUID } from '../sequelizeSetup';
 
 export interface Log{
     // TODO: keys for db logs
@@ -9,7 +10,7 @@ export interface Log{
 
 
 interface UserLogAttributes{
-    id:string;
+    id:UUID;
     log:Log;
     userId:string;
 };
@@ -27,8 +28,8 @@ export interface UserLogOutput extends Required<UserLogAttributes>{};
 export class UserLog extends Model<UserLogAttributes, UserLogInput> {
     @PrimaryKey
     @IsUUID(4)
-    @Column
-    id:string;
+    @Column(DataType.UUID)
+    id:UUID;
 
     @Column(DataType.JSON)
     log:Log;

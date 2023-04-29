@@ -2,23 +2,24 @@ import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, De
 import { Subsection } from './Subsection';
 import { User } from './User';
 import { Optional } from 'sequelize';
+import { AutoId, UUID } from '../sequelizeSetup';
 
 /**
  * Helper interface for creating new Listings
  */
 interface ListingAttributes{
-    id:number;
+    id:UUID;
     title:string;
     body:string;
     status:string;
     start_price:number;
     is_auction:boolean;
     auction_end:Date;
-    userId:string;
-    subsectionId:number;
+    userId:UUID;
+    subsectionId:AutoId;
 };
 export interface ListingInput extends Optional<ListingAttributes, 
-    'id' | 'is_auction'|'auction_end'> {};
+    'is_auction'|'auction_end'> {};
 export interface ListingOuput extends Required<ListingAttributes> {};
 
 @Table({
@@ -27,10 +28,11 @@ export interface ListingOuput extends Required<ListingAttributes> {};
     paranoid:true
 })
 export class Listing extends Model<ListingAttributes, ListingInput> {
-    @AutoIncrement
+    
     @PrimaryKey
-    @Column
-    id!:number;
+    @IsUUID(4)
+    @Column(DataType.UUID)
+    id!:UUID;
 
     @Column
     title!: string;
@@ -56,7 +58,7 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
     @IsUUID(4)
     @AllowNull(false)
     @Column(DataType.UUID)
-    userId!:string;
+    userId!:UUID;
 
     @BelongsTo(()=>User, 'userId')
     user:User;
@@ -64,7 +66,7 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
     @ForeignKey(()=>Subsection)
     @AllowNull(false)
     @Column
-    subsectionId!:number;
+    subsectionId!:AutoId;
 
     @BelongsTo(()=>Subsection, 'subsectionId')
     subsection:Subsection;

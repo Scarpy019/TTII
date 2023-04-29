@@ -2,11 +2,12 @@ import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, De
 import { Section } from './Section';
 import { Listing } from './Listing';
 import { Optional } from 'sequelize';
+import { AutoId } from '../sequelizeSetup';
 
 export interface SubsectionAttributes{
-    id:number;
+    id: AutoId;
     name:string;
-    sectionId:number;
+    sectionId:AutoId;
 };
 interface SubsectionInput extends Optional<SubsectionAttributes, 'id'>{};
 export interface SubsectionOutput extends Required<SubsectionAttributes>{};
@@ -21,7 +22,7 @@ export class Subsection extends Model<SubsectionAttributes, SubsectionInput> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    id!:number;
+    id!:AutoId;
 
     @Column
     name!: string;

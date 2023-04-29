@@ -1,8 +1,9 @@
 import { CreateOptions, Optional } from "sequelize";
-import { Listing, Log, Section, Subsection, User, UserLog } from "./models";
+import { Bid, Listing, Log, Section, Subsection, User, UserLog } from "./models";
 import { sys } from "typescript";
 import { sequelize } from "./sequelizeSetup";
 import {v4 as uuidv4} from 'uuid';
+import { BidInput } from "./models/Bid";
 
 export async function seedAll(){
     // -------User and UserLog-------
@@ -62,7 +63,8 @@ export async function seedAll(){
 
     //(await depo.$get('subsections',{where:{name:"motorzagi"}}))[0];
     let motorzagi:Subsection = (await depo.$get('subsections',{where:{name:"motorzagi"}}))[0];
-    await Listing.create({
+    let chainsaw = await Listing.create({
+        id:uuidv4(),
         title:"Big chonky chainsaw",
         body: "Selling big chonky chainsaw :)) Get it for cheap!!!! Brand old",
         start_price: 2000,
@@ -73,6 +75,7 @@ export async function seedAll(){
 
     let motorlaivas:Subsection = (await depo.$get('subsections',{where:{name:"motorlaivas"}}))[0];
     await Listing.create({
+        id:uuidv4(),
         title:"Big chonky boat motor",
         body: "Selling big chonky motor :(( Get it for cheap (not)!!!! Brand.",
         start_price: 3126,
@@ -80,6 +83,18 @@ export async function seedAll(){
         subsectionId:motorlaivas.id,
         userId:user_boi.id
     });
+
+    // ---------Bids--------------
+    // ---------------------------
+
+    let user = (await User.findOne({where:{username:"xXx_boi_xXx"}}));
+    await Bid.create({
+        bid_amount:420,
+        listingId:chainsaw.id,
+        userId: user.id
+    });
+    
+    
 
     await sequelize.sync();
 }
