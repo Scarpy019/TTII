@@ -40,7 +40,7 @@ export class UserLog extends Model<UserLogAttributes, UserLogInput> {
     userId:string;
 
     @BelongsTo(()=>User, 'userId')
-    user:User;
+    user:User|undefined;
 
     @CreatedAt
     @Column

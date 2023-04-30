@@ -3,6 +3,7 @@ import { Subsection } from './Subsection';
 import { User } from './User';
 import { Optional } from 'sequelize';
 import { AutoId, UUID } from '../sequelizeSetup';
+import { Bid } from './Bid';
 
 /**
  * Helper interface for creating new Listings
@@ -60,17 +61,22 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
     @Column(DataType.UUID)
     userId!:UUID;
 
-    @BelongsTo(()=>User, 'userId')
-    user:User;
-
     @ForeignKey(()=>Subsection)
     @AllowNull(false)
     @Column
     subsectionId!:AutoId;
 
-    @BelongsTo(()=>Subsection, 'subsectionId')
-    subsection:Subsection;
+    //relations
+    @BelongsTo(()=>User, 'userId')
+    user:User|undefined;
 
+    @BelongsTo(()=>Subsection, 'subsectionId')
+    subsection:Subsection|undefined;
+
+    @HasMany(()=>Bid, 'listingId')
+    bids:Bid[]|undefined;
+
+    //timestamps
     @CreatedAt
     @Column
     readonly createdAt!: Date;

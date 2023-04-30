@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, AutoIncrement, ForeignKey, BelongsTo, AllowNull } from 'sequelize-typescript';
 import { Section } from './Section';
 import { Listing } from './Listing';
 import { Optional } from 'sequelize';
@@ -28,14 +28,16 @@ export class Subsection extends Model<SubsectionAttributes, SubsectionInput> {
     name!: string;
 
     @ForeignKey(()=>Section)
+    @AllowNull(false)
     @Column
     sectionId!:number;
 
     @BelongsTo(()=>Section, 'sectionId')
-    section!:Section;
+    section!:Section|undefined;
 
     @HasMany(()=>Listing, 'subsectionId')
-    listings:Listing[];
+    listings:Listing[]|undefined;
+
 
     @CreatedAt
     @Column

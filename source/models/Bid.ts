@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 import { AutoId, UUID } from "../sequelizeSetup";
-import { AllowNull, Column, CreatedAt, DataType, DeletedAt, ForeignKey, Model, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, CreatedAt, DataType, DeletedAt, ForeignKey, Model, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
 import { User } from "./User";
 import { Listing } from "./Listing";
 
@@ -32,6 +32,14 @@ export class Bid extends Model<BidAttributes, BidInput>{
     @Column
     bid_amount:number;
 
+    // associations
+    @BelongsTo(()=>User)
+    user:User|undefined;
+
+    @BelongsTo(()=>Listing)
+    listing:Listing|undefined;
+
+    //timestamps
     @CreatedAt
     @Column
     readonly createdAt!: Date;

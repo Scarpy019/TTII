@@ -3,6 +3,8 @@ import { UserLog } from './UserLog';
 import { Listing } from './Listing';
 import { Optional } from 'sequelize';
 import { UUID } from '../sequelizeSetup';
+import { AuthToken } from './AuthToken';
+import { Bid } from './Bid';
 
 /**
  * Helper interface for Users
@@ -53,12 +55,21 @@ export class User extends Model<UserAttributes, UserInput> {
     @Column
     reputation!: number;
 
+    // associations
     @HasMany(()=>UserLog, 'userId')
-    logs:UserLog[];
+    logs:UserLog[]|undefined;
 
     @HasMany(()=>Listing, 'userId')
-    listings:Listing[];
+    listings:Listing[]|undefined;
 
+    @HasMany(()=>AuthToken, 'userId')
+    authTokens:AuthToken[]|undefined;
+
+    @HasMany(()=>Bid, 'userId')
+    bids:Bid[]|undefined;
+
+
+    //timestamps
     @CreatedAt
     @Column
     readonly createdAt!: Date;

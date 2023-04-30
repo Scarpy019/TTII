@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, AutoIncrement } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, AutoIncrement, AllowNull } from 'sequelize-typescript';
 import { Subsection } from './Subsection';
 import { Optional } from 'sequelize';
 import { AutoId } from '../sequelizeSetup';
@@ -23,11 +23,12 @@ export class Section extends Model<SectionAttributes, SectionInput> {
     @Column
     id!:AutoId;
 
+    @AllowNull(false)
     @Column
     name!: string;
 
     @HasMany(()=>Subsection, 'sectionId')
-    subsections:Subsection[];
+    subsections:Subsection[]|undefined;
 
     @CreatedAt
     @Column

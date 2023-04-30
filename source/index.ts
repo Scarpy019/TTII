@@ -1,21 +1,28 @@
 
 import bodyParser = require('body-parser');
 import express = require('express');// Create a new express app instance
+import cookieParser = require('cookie-parser');
 import { sequelize } from './sequelizeSetup';
-import { router as userRouter } from './routes/UserController'
+import { AuthorizationRequest, authenticator, router as userRouter } from './routes/UserController'
+
+
 const app: express.Application = express();
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-
+app.use(cookieParser());
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
+app.get('/', authenticator, function (req:AuthorizationRequest, res) {
+    if(req.user){
+        res.send("Hello "+ req.user.username + "!");
+    }else{
+        res.send('Hello World!');
+    }
 });
 
 

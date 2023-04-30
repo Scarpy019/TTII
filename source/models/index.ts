@@ -4,3 +4,4 @@ export { Section } from './Section';
 export { Subsection } from './Subsection';
 export { Listing } from './Listing'
 export { Bid } from './Bid'
+export { AuthToken } from './AuthToken'

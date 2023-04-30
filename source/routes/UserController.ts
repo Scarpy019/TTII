@@ -1,8 +1,9 @@
-import { NextFunction, Router, Response } from "express";
-import { User } from "../models";
+import { NextFunction, Router, Response, Request } from "express";
+import { AuthToken, User } from "../models";
 
 import {v4 as uuidv4} from 'uuid';
 import { Op } from "sequelize";
+import { randomBytes } from "crypto";
 
 export let router = Router();
 
@@ -95,7 +96,12 @@ router.post('/login', async(req, res)=>{
                 }
             });
             if(user!=null){
-                // TODO: send auth token
+                let token = randomBytes(32).toString('hex');
+                await AuthToken.create({
+                    authToken:token,
+                    userId:user.id
+                });
+                res.cookie('authToken', token, {maxAge:900000, sameSite:"strict", secure:true});
                 res.send("Logged in successfuly");
             }else{
                 res.send("User not found");
@@ -111,10 +117,29 @@ router.post('/login', async(req, res)=>{
 /**
  * Middleware for verifying the auth token
  */
-export function authenticator(req:Request, res:Response, next:NextFunction){
-    if(0/* Has token */){
+export interface AuthorizationRequest extends Request{
+    user?:User|null;
+};
+export async function authenticator(req:AuthorizationRequest, res:Response, next:NextFunction){
+    try{
+        console.log(req.cookies);
+        let cooks = req.cookies;
+        if("authToken" in cooks){
+            let authenticatedUser:User = (await AuthToken.findByPk(
+                cooks.authToken,
+                {
+                    include:[User]
+                }
+            )).user;
+            if(authenticatedUser){
+                req.user = authenticatedUser;
+            }
+        }
+    }catch(error){
+        req.user=null;
+        console.log(error);
+    }finally{
         next();
-    }else{
-        res.sendStatus(401);
     }
+    
 };
