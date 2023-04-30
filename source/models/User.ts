@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, Unique, AutoIncrement, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, Unique, AutoIncrement, DataType, Validate } from 'sequelize-typescript';
 import { UserLog } from './UserLog';
 import { Listing } from './Listing';
 import { Optional } from 'sequelize';
@@ -11,6 +11,7 @@ interface UserAttributes{
     id:UUID;
     username:string;
     email:string;
+    password:string;
     access:string;
     reputation:number;
 };
@@ -35,8 +36,15 @@ export class User extends Model<UserAttributes, UserInput> {
     @Column
     username!: string;
 
+    @Validate({
+        is:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    })
+    @Unique
     @Column
     email!: string;
+
+    @Column
+    password!: string;
 
     @Column
     access!: string;

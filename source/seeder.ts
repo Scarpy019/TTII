@@ -12,12 +12,14 @@ export async function seedAll(){
         id: uuidv4(),
         username:"xXx_boi_xXx",
         email:"boi@boi.boi",
+        password:"boiboi",
         access:"boi"
     });
     let user_2 = await User.create({
         id: uuidv4(),
         username:"gurl",
         email:"gurl@boi.boi",
+        password:"gurlgurl",
         access:"client"
     });
     await user_boi.$create("log",{
