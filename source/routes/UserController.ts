@@ -16,13 +16,13 @@ function isUserSignupForm(obj:any): obj is UserSignupForm{
     let valid=
         ("username" in  obj) && 
         typeof obj.username ==="string" &&
-        /[\w\d_]{4,}/.test(obj.username) &&
+        /[\w_]{4,}/.test(obj.username) &&
         ("email" in obj) &&
         typeof obj.username ==="string" &&
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(obj.email) &&
         ("password" in  obj) && 
         typeof obj.password ==="string" &&
-        /[\w\d_!@#$%^&*]{6,}/.test(obj.password);
+        /[\w_!@#$%^&*]{6,}/.test(obj.password);
     
     return valid;
 };
@@ -66,12 +66,12 @@ function isUserSigninForm(obj:any): obj is UserSigninForm{
         ("user" in  obj) && 
         typeof obj.user ==="string" &&
         (
-            /[\w\d_]{4,}/.test(obj.user) || 
+            /[\w_]{4,}/.test(obj.user) || 
             /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(obj.user)
         ) &&
         ("password" in  obj) && 
         typeof obj.password ==="string" &&
-        /[\w\d_!@#$%^&*]{6,}/.test(obj.password);
+        /[\w_!@#$%^&*]{6,}/.test(obj.password);
     
     return valid;
 };
