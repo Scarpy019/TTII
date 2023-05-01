@@ -1,6 +1,6 @@
 import { NextFunction, Router, Response, Request } from "express";
 import { AuthToken, User } from "../models";
-
+import {authorization as config} from '../config'
 import {v4 as uuidv4} from 'uuid';
 import { Op } from "sequelize";
 import { randomBytes } from "crypto";
@@ -101,7 +101,7 @@ router.post('/login', async(req, res)=>{
                     authToken:token,
                     userId:user.id
                 });
-                res.cookie('authToken', token, {maxAge:900000, sameSite:"strict", secure:true});
+                res.cookie('authToken', token, {maxAge:config.tokenLifeBrowser, sameSite:"strict", secure:true});
                 res.send("Logged in successfuly");
             }else{
                 res.send("User not found");
