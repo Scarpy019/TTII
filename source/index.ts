@@ -3,7 +3,7 @@ import bodyParser = require('body-parser');
 import express = require('express');// Create a new express app instance
 import cookieParser = require('cookie-parser');
 import { sequelize } from './sequelizeSetup';
-import { AuthorizationRequest, authenticator, router as userRouter } from './routes/UserController'
+import { AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController'
 
 
 const app: express.Application = express();
@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-app.get('/', authenticator, function (req:AuthorizationRequest, res) {
+app.get('/', authenticator, function (req:AuthenticatedRequest, res) {
     if(req.user){
         res.send("Hello "+ req.user.username + "!");
     }else{

@@ -114,19 +114,18 @@ router.post('/login', async(req, res)=>{
     }
 });
 
+export interface AuthenticatedRequest extends Request{
+    user?:User|null;
+};
 /**
  * Middleware for verifying the auth token
  */
-export interface AuthorizationRequest extends Request{
-    user?:User|null;
-};
-export async function authenticator(req:AuthorizationRequest, res:Response, next:NextFunction){
+export async function authenticator(req:AuthenticatedRequest, res:Response, next:NextFunction){
     try{
         console.log(req.cookies);
-        let cooks = req.cookies;
-        if("authToken" in cooks){
+        if("authToken" in req.cookies){
             let authenticatedUser:User = (await AuthToken.findByPk(
-                cooks.authToken,
+                req.cookies.authToken,
                 {
                     include:[User]
                 }
