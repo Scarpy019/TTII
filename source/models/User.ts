@@ -1,7 +1,7 @@
-import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, Unique, AutoIncrement, DataType, Validate } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, Unique, DataType, Validate } from 'sequelize-typescript';
 import { UserLog } from './UserLog';
 import { Listing } from './Listing';
-import { Optional } from 'sequelize';
+import { type Optional } from 'sequelize';
 import { UUID } from '../sequelizeSetup';
 import { AuthToken } from './AuthToken';
 import { Bid } from './Bid';
@@ -9,77 +9,72 @@ import { Bid } from './Bid';
 /**
  * Helper interface for Users
  */
-interface UserAttributes{
-    id:UUID;
-    username:string;
-    email:string;
-    password:string;
-    access:string;
-    reputation:number;
+interface UserAttributes {
+	id: UUID;
+	username: string;
+	email: string;
+	password: string;
+	access: string;
+	reputation: number;
 };
-interface UserInput extends Optional
-    <UserAttributes, 
-    'reputation'> {};
-export interface UserOutput extends Required<UserAttributes> {};
-
+type UserInput = Optional<UserAttributes, 'reputation'>;
+export type UserOutput = Required<UserAttributes>;
 
 @Table({
-    tableName:'users',
-    timestamps:true,
-    paranoid:true
+	tableName: 'users',
+	timestamps: true,
+	paranoid: true
 })
 export class User extends Model<UserAttributes, UserInput> {
-    @PrimaryKey
-    @IsUUID(4)
-    @Column(DataType.UUID)
-    id!:UUID;
+	@PrimaryKey
+	@IsUUID(4)
+	@Column(DataType.UUID)
+    id!: UUID;
 
-    @Unique
-    @Column
+	@Unique
+	@Column
     username!: string;
 
-    @Validate({
-        is:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    })
-    @Unique
-    @Column
+	@Validate({
+		is: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/
+	})
+	@Unique
+	@Column
     email!: string;
 
-    @Column
+	@Column
     password!: string;
 
-    @Column
+	@Column
     access!: string;
-    
-    @Default(0)
-    @Column
+
+	@Default(0)
+	@Column
     reputation!: number;
 
-    // associations
-    @HasMany(()=>UserLog, 'userId')
-    logs:UserLog[]|undefined;
+	// associations
+	@HasMany(() => UserLog, 'userId')
+    logs: UserLog[] | undefined;
 
-    @HasMany(()=>Listing, 'userId')
-    listings:Listing[]|undefined;
+	@HasMany(() => Listing, 'userId')
+    listings: Listing[] | undefined;
 
-    @HasMany(()=>AuthToken, 'userId')
-    authTokens:AuthToken[]|undefined;
+	@HasMany(() => AuthToken, 'userId')
+    authTokens: AuthToken[] | undefined;
 
-    @HasMany(()=>Bid, 'userId')
-    bids:Bid[]|undefined;
+	@HasMany(() => Bid, 'userId')
+    bids: Bid[] | undefined;
 
+	// timestamps
+	@CreatedAt
+	@Column
+	readonly createdAt!: Date;
 
-    //timestamps
-    @CreatedAt
-    @Column
-    readonly createdAt!: Date;
+	@DeletedAt
+	@Column
+	readonly deletedAt!: Date;
 
-    @DeletedAt
-    @Column
-    readonly deletedAt!: Date;
-
-    @UpdatedAt
-    @Column
-    readonly updatedAt!: Date;
-
+	@UpdatedAt
+	@Column
+	readonly updatedAt!: Date;
 };

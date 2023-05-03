@@ -2,22 +2,26 @@
 import bodyParser = require('body-parser');
 import express = require('express');// Create a new express app instance
 import cookieParser = require('cookie-parser');
+import multer = require('multer');
 import { sequelize } from './sequelizeSetup';
-import { AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController'
+import { AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 
 const app: express.Application = express();
 
+var upload = multer({dest:'./files'});
+
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-app.use(cookieParser());
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-})); 
+app.use(express.static('./files'));
+app.use(cookieParser()); // to parse cookies properly
+app.use(bodyParser.json()); // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
+	extended: true
+}));
 
-app.get('/', authenticator, function (req:AuthenticatedRequest, res) {
+app.get('/', authenticator, function (req: AuthenticatedRequest, res) {
     if(req.user){
         res.send("Hello "+ req.user.username + "!");
     }else{

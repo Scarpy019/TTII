@@ -1,93 +1,89 @@
-import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Is, Default, UpdatedAt, AutoIncrement, ForeignKey, BelongsTo, IsUUID, DataType, AllowNull } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, ForeignKey, BelongsTo, IsUUID, DataType, AllowNull } from 'sequelize-typescript';
 import { Subsection } from './Subsection';
 import { User } from './User';
-import { Optional } from 'sequelize';
+import { type Optional } from 'sequelize';
 import { AutoId, UUID } from '../sequelizeSetup';
 import { Bid } from './Bid';
 
 /**
  * Helper interface for creating new Listings
  */
-interface ListingAttributes{
-    id:UUID;
-    title:string;
-    body:string;
-    status:string;
-    start_price:number;
-    is_auction:boolean;
-    auction_end:Date;
-    userId:UUID;
-    subsectionId:AutoId;
+interface ListingAttributes {
+	id: UUID;
+	title: string;
+	body: string;
+	status: string;
+	start_price: number;
+	is_auction: boolean;
+	auction_end: Date;
+	userId: UUID;
+	subsectionId: AutoId;
 };
-export interface ListingInput extends Optional<ListingAttributes, 
-    'is_auction'|'auction_end'> {};
-export interface ListingOuput extends Required<ListingAttributes> {};
+export type ListingInput = Optional<ListingAttributes, 'is_auction' | 'auction_end'>;
+export type ListingOuput = Required<ListingAttributes>;
 
 @Table({
-    tableName:'listings',
-    timestamps:true,
-    paranoid:true
+	tableName: 'listings',
+	timestamps: true,
+	paranoid: true
 })
 export class Listing extends Model<ListingAttributes, ListingInput> {
-    
-    @PrimaryKey
-    @IsUUID(4)
-    @Column(DataType.UUID)
-    id!:UUID;
+	@PrimaryKey
+	@IsUUID(4)
+	@Column(DataType.UUID)
+    id!: UUID;
 
-    @Column
+	@Column
     title!: string;
 
-    @Column
+	@Column
     body!: string;
 
-    @Column
-    status:string;
+	@Column
+    status: string;
 
-    @Column
-    start_price:number;
+	@Column
+    start_price: number;
 
-    @Default(false)
-    @Column
-    is_auction:boolean;
+	@Default(false)
+	@Column
+    is_auction: boolean;
 
-    @Default(null)
-    @Column
-    auction_end:Date;
+	@Default(null)
+	@Column
+    auction_end: Date;
 
-    @ForeignKey(()=>User)
-    @IsUUID(4)
-    @AllowNull(false)
-    @Column(DataType.UUID)
-    userId!:UUID;
+	@ForeignKey(() => User)
+	@IsUUID(4)
+	@AllowNull(false)
+	@Column(DataType.UUID)
+    userId!: UUID;
 
-    @ForeignKey(()=>Subsection)
-    @AllowNull(false)
-    @Column
-    subsectionId!:AutoId;
+	@ForeignKey(() => Subsection)
+	@AllowNull(false)
+	@Column
+    subsectionId!: AutoId;
 
-    //relations
-    @BelongsTo(()=>User, 'userId')
-    user:User|undefined;
+	// relations
+	@BelongsTo(() => User, 'userId')
+    user: User | undefined;
 
-    @BelongsTo(()=>Subsection, 'subsectionId')
-    subsection:Subsection|undefined;
+	@BelongsTo(() => Subsection, 'subsectionId')
+    subsection: Subsection | undefined;
 
-    @HasMany(()=>Bid, 'listingId')
-    bids:Bid[]|undefined;
+	@HasMany(() => Bid, 'listingId')
+    bids: Bid[] | undefined;
 
-    //timestamps
-    @CreatedAt
-    @Column
-    readonly createdAt!: Date;
+	// timestamps
+	@CreatedAt
+	@Column
+	readonly createdAt!: Date;
 
-    @DeletedAt
-    @Column
-    readonly deletedAt!: Date;
+	@DeletedAt
+	@Column
+	readonly deletedAt!: Date;
 
-    @UpdatedAt
-    @Column
-    readonly updatedAt!: Date;
-
-
+	@UpdatedAt
+	@Column
+	readonly updatedAt!: Date;
 };

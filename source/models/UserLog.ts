@@ -1,58 +1,53 @@
-import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, BelongsTo, UpdatedAt, IsUUID, DataType, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, CreatedAt, DeletedAt, PrimaryKey, BelongsTo, UpdatedAt, IsUUID, DataType, ForeignKey } from 'sequelize-typescript';
 import { User } from './User';
-import { Optional } from 'sequelize';
+import { type Optional } from 'sequelize';
 import { UUID } from '../sequelizeSetup';
 
-export interface Log{
-    // TODO: keys for db logs
-    action?:'GET'|'PUT'|'DELETE'|'POST';
+export interface Log {
+	// TODO: keys for db logs
+	action?: 'GET' | 'PUT' | 'DELETE' | 'POST';
 };
 
-
-interface UserLogAttributes{
-    id:UUID;
-    log:Log;
-    userId:string;
+interface UserLogAttributes {
+	id: UUID;
+	log: Log;
+	userId: string;
 };
 
-interface UserLogInput extends Optional<UserLogAttributes,'id'>{};
-export interface UserLogOutput extends Required<UserLogAttributes>{};
-
-
+type UserLogInput = Optional<UserLogAttributes, 'id'>;
+export type UserLogOutput = Required<UserLogAttributes>;
 
 @Table({
-    tableName:'userLogs',
-    timestamps:true,
-    paranoid:true
+	tableName: 'userLogs',
+	timestamps: true,
+	paranoid: true
 })
 export class UserLog extends Model<UserLogAttributes, UserLogInput> {
-    @PrimaryKey
-    @IsUUID(4)
-    @Column(DataType.UUID)
-    id:UUID;
+	@PrimaryKey
+	@IsUUID(4)
+	@Column(DataType.UUID)
+    id: UUID;
 
-    @Column(DataType.JSON)
-    log:Log;
+	@Column(DataType.JSON)
+    log: Log;
 
-    @ForeignKey(()=>User)
-    @IsUUID(4)
-    @Column(DataType.UUID)
-    userId:string;
+	@ForeignKey(() => User)
+	@IsUUID(4)
+	@Column(DataType.UUID)
+    userId: string;
 
-    @BelongsTo(()=>User, 'userId')
-    user:User|undefined;
+	@BelongsTo(() => User, 'userId')
+    user: User | undefined;
 
-    @CreatedAt
-    @Column
-    readonly createdAt!: Date;
+	@CreatedAt
+	@Column
+	readonly createdAt!: Date;
 
-    @DeletedAt
-    @Column
-    readonly deletedAt!: Date;
+	@DeletedAt
+	@Column
+	readonly deletedAt!: Date;
 
-    @UpdatedAt
-    @Column
-    readonly updatedAt!: Date;
-
-
+	@UpdatedAt
+	@Column
+	readonly updatedAt!: Date;
 };

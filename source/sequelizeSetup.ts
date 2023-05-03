@@ -1,21 +1,19 @@
 import { Sequelize } from 'sequelize-typescript';
-import {db as config} from './config';
-import { sys } from 'typescript';
-import { AuthToken, Bid, Listing, Section, Subsection, User, UserLog } from './models';
+import { db as config } from './config';
+import { AuthToken, Bid, Listing, ListingLink, Media, Section, Subsection, User, UserLog } from './models';
 
 export const sequelize = new Sequelize({
-  database: config.db,
-  dialect: 'mysql',
-  username: config.user,
-  password: config.pass,
-  host: config.host,
-  models: [User, UserLog, Section, Subsection, Listing, Bid, AuthToken],
-  define:{
-    freezeTableName:true,
-  },
+	database: config.db,
+	dialect: 'mysql',
+	username: config.user,
+	password: config.pass,
+	host: config.host,
+	models: [User, UserLog, Section, Subsection, Listing, Bid, AuthToken, Media, ListingLink],
+	define: {
+		freezeTableName: true
+	}
 });
 
-// aliases for easier id type seperation 
+// aliases for easier id type seperation
 export type UUID = string;
 export type AutoId = number;
-
