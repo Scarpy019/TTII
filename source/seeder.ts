@@ -60,8 +60,6 @@ export async function seedAll (): Promise<void> {
 
 	// ----------Listings---------------
 	// ---------------------------------
-
-	// (await depo.$get('subsections',{where:{name:"motorzagi"}}))[0];
 	const motorzagi: Subsection = (await depo.$get('subsections', { where: { name: 'motorzagi' } }))[0];
 	const chainsaw = await Listing.create({
 		id: uuidv4(),

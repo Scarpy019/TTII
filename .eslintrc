@@ -41,6 +41,21 @@
 			{
 			  "allowSingleExtends": false
 			}
+		],
+		"@typescript-eslint/no-misused-promises": [
+			"error",
+			{
+			  "checksVoidReturn": {
+				"arguments": false
+			  }
+			}
+		],
+		"no-warning-comments": [
+			"warn",
+			{
+			  "terms": ["todo", "fixme"],
+			  "location": "start"
+			}
 		]
 	}
 }
