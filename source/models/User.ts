@@ -54,16 +54,16 @@ export class User extends Model<UserAttributes, UserInput> {
 
 	// associations
 	@HasMany(() => UserLog, 'userId')
-    logs: UserLog[] | undefined;
+    logs?: UserLog[];
 
 	@HasMany(() => Listing, 'userId')
-    listings: Listing[] | undefined;
+    listings?: Listing[];
 
 	@HasMany(() => AuthToken, 'userId')
-    authTokens: AuthToken[] | undefined;
+    authTokens?: AuthToken[];
 
 	@HasMany(() => Bid, 'userId')
-    bids: Bid[] | undefined;
+    bids?: Bid[];
 
 	// timestamps
 	@CreatedAt

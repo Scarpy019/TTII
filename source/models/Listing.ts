@@ -40,18 +40,18 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
     body!: string;
 
 	@Column
-    status: string;
+    status?: string;
 
 	@Column
-    start_price: number;
+    start_price?: number;
 
 	@Default(false)
 	@Column
-    is_auction: boolean;
+    is_auction?: boolean;
 
 	@Default(null)
 	@Column
-    auction_end: Date;
+    auction_end?: Date;
 
 	@ForeignKey(() => User)
 	@IsUUID(4)
@@ -66,13 +66,13 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
 
 	// relations
 	@BelongsTo(() => User, 'userId')
-    user: User | undefined;
+    user?: User;
 
 	@BelongsTo(() => Subsection, 'subsectionId')
-    subsection: Subsection | undefined;
+    subsection?: Subsection;
 
 	@HasMany(() => Bid, 'listingId')
-    bids: Bid[] | undefined;
+    bids?: Bid[];
 
 	// timestamps
 	@CreatedAt

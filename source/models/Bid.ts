@@ -19,23 +19,23 @@ export class Bid extends Model<BidAttributes, BidInput> {
 	@PrimaryKey
 	@ForeignKey(() => User)
 	@Column(DataType.UUID)
-		userId: UUID;
+	userId!: UUID;
 
 	@PrimaryKey
 	@ForeignKey(() => Listing)
 	@Column(DataType.UUID)
-		listingId: UUID;
+	listingId!: UUID;
 
 	@AllowNull(false)
 	@Column
-		bid_amount: number;
+	bid_amount!: number;
 
 	// associations
 	@BelongsTo(() => User)
-		user: User | undefined;
+	user?: User;
 
 	@BelongsTo(() => Listing)
-		listing: Listing | undefined;
+	listing?: Listing;
 
 	// timestamps
 	@CreatedAt

@@ -20,22 +20,22 @@ export class ListingLink extends Model<ListingLinkAttributes, ListingLinkInput> 
 	@PrimaryKey
 	@ForeignKey(() => Listing)
 	@Column(DataType.UUID)
-    listingId: UUID;
+	listingId!: UUID;
 
 	@PrimaryKey
 	@Column
-    image_number: number;
+	image_number!: number;
 
 	@BelongsTo(() => Listing, 'listingId')
-    listing: Listing | undefined;
+    listing?: Listing;
 
 	@AllowNull(false)
 	@ForeignKey(() => Media)
 	@Column(DataType.UUID)
-    mediaUUID: UUID;
+	mediaUUID!: UUID;
 
 	@BelongsTo(() => Media, 'mediaUUID')
-    media: Media | undefined;
+	media?: Media;
 
 	@CreatedAt
 	@Column

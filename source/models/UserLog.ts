@@ -26,18 +26,18 @@ export class UserLog extends Model<UserLogAttributes, UserLogInput> {
 	@PrimaryKey
 	@IsUUID(4)
 	@Column(DataType.UUID)
-    id: UUID;
+	declare id: UUID;
 
 	@Column(DataType.JSON)
-    log: Log;
+	declare log: Log;
 
 	@ForeignKey(() => User)
 	@IsUUID(4)
 	@Column(DataType.UUID)
-    userId: string;
+	declare userId: string;
 
 	@BelongsTo(() => User, 'userId')
-    user: User | undefined;
+	declare user: User | undefined;
 
 	@CreatedAt
 	@Column

@@ -27,7 +27,7 @@ export class Section extends Model<SectionAttributes, SectionInput> {
     name!: string;
 
 	@HasMany(() => Subsection, 'sectionId')
-    subsections: Subsection[] | undefined;
+    subsections?: Subsection[];
 
 	@CreatedAt
 	@Column

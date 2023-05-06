@@ -7,7 +7,8 @@
         "target": "es6", // or a more recent ecmascript version
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"strict": true
     },
     "exclude": [
         "node_modules"

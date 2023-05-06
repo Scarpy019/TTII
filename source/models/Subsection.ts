@@ -32,10 +32,10 @@ export class Subsection extends Model<SubsectionAttributes, SubsectionInput> {
     sectionId!: number;
 
 	@BelongsTo(() => Section, 'sectionId')
-    section!: Section | undefined;
+    section?: Section;
 
 	@HasMany(() => Listing, 'subsectionId')
-    listings: Listing[] | undefined;
+    listings?: Listing[];
 
 	@CreatedAt
 	@Column

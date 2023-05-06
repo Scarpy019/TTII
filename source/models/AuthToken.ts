@@ -17,15 +17,15 @@ export type AuthTokenOutput = Required<AuthTokenAttributes>;
 export class AuthToken extends Model<AuthTokenAttributes, AuthTokenInput> {
 	@PrimaryKey
 	@Column(DataType.CHAR(64))
-	authToken: string;
+	authToken!: string;
 
 	@ForeignKey(() => User)
 	@AllowNull(false)
 	@Column(DataType.UUID)
-	userId: UUID;
+	userId!: UUID;
 
 	@BelongsTo(() => User, 'userId')
-	user: User | undefined;
+	user?: User;
 
 	@CreatedAt
 	@Column

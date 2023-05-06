@@ -19,14 +19,14 @@ export type MediaOutput = Required<MediaAttributes>;
 export class Media extends Model<MediaAttributes, MediaInput> {
 	@PrimaryKey
 	@Column(DataType.UUID)
-    uuid: string;
+    uuid!: string;
 
 	@AllowNull(false)
 	@Column
-    extension: string;
+    extension!: string;
 
 	@HasOne(() => ListingLink, 'mediaUUID')
-    listingLink: ListingLink | null | undefined;
+    listingLink?: ListingLink | null;
 
 	@CreatedAt
 	@Column
