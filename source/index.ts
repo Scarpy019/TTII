@@ -4,6 +4,8 @@ import express = require('express');// Create a new express app instance
 import cookieParser = require('cookie-parser');
 import multer = require('multer');
 import { sequelize } from './sequelizeSetup';
+import { controllerRouter } from './controllers/BaseController';
+import './controllers';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -20,6 +22,9 @@ app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
+
+app.use('/', controllerRouter());
+
 /*
 app.get('/', authenticator, function (req: AuthenticatedRequest, res) {
 	if (req.user != null) {
