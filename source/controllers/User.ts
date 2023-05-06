@@ -3,6 +3,7 @@ import { AuthToken, User } from '../models';
 import { Controller } from './BaseController';
 import { randomBytes } from 'crypto';
 import { authorization as config } from '../config';
+import { v4 as uuidv4 } from 'uuid';
 
 interface UserSigninForm {
 	user: string;
@@ -23,13 +24,13 @@ function isUserSigninForm (obj: any): obj is UserSigninForm {
 
 const user = new Controller('user');
 
-user._read = (req, res) => {
+user.read = (req, res) => {
 	res.send('User main page');
 };
 
 const login = user.subcontroller('login');
 
-login._read = (req, res) => {
+login.read = (req, res) => {
 	res.render('pages/user/login');
 };
 
@@ -71,38 +72,47 @@ login.create = login.handler(
 		res.sendStatus(400);
 	}
 );
-/*
-login.create = async (req, res): Promise<void> => {
-	if (isUserSigninForm(req.body)) {
+
+interface UserSignupForm {
+	username: string;
+	email: string;
+	password: string;
+};
+function isUserSignupForm (obj: any): obj is UserSignupForm {
+	const valid =
+        ('username' in obj) &&
+        typeof obj.username === 'string' &&
+        /[\w_]{4,}/.test(obj.username) &&
+        ('email' in obj) &&
+        typeof obj.username === 'string' &&
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(obj.email) &&
+        ('password' in obj) &&
+        typeof obj.password === 'string' &&
+        /[\w_!@#$%^&*]{6,}/.test(obj.password);
+
+	return valid;
+};
+
+const signup = user.subcontroller('signup');
+
+signup.read = (req, res): void => {
+	res.render('pages/user/signup');
+};
+
+signup.create = signup.handler(
+	isUserSignupForm,
+	async (req, res): Promise<void> => {
 		try {
-			const user = await User.findOne({
-				where: {
-					[Op.or]: [
-						{ username: req.body.user },
-						{ email: req.body.user }
-					],
-					password: req.body.password
-				}
+			await User.create({
+				id: uuidv4(),
+				access: 'Client',
+				email: req.body.email,
+				username: req.body.username,
+				password: req.body.password
 			});
-			if (user != null) {
-				const token = randomBytes(32).toString('hex');
-				void AuthToken.create({
-					authToken: token,
-					userId: user.id
-				}).then((_) => {
-					res.cookie('authToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
-					res.send('Logged in successfuly');
-				}).catch((error) => {
-					res.send(error);
-				});
-			} else {
-				res.send('User not found');
-			}
+			res.redirect('../');
 		} catch (error) {
 			res.send(error);
-		}
-	} else {
-		res.sendStatus(400);
+		};
 	}
-};
-*/
+);

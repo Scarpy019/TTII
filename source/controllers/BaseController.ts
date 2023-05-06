@@ -46,7 +46,6 @@ export class Controller<const params extends readonly string[] = [],
 	subcontrollers: initializable[] = [];
 	constructor (name: string, params?: params, optionals?: optionals, _autoInit: boolean = true) {
 		this.name = '/' + name;
-		console.log('Controller at path %s initialized', this.name);
 		let prefix: string = '';
 		if (params !== undefined) params.forEach((param) => { prefix += '/:' + param; });
 		if (optionals !== undefined) optionals.forEach((optional) => { prefix += '/:' + optional + '?'; });
@@ -63,15 +62,15 @@ export class Controller<const params extends readonly string[] = [],
 		return controller;
 	}
 
-	_before: _method | controlPathHandler<any, _ParamDict> | null = null;
+	before: _method | controlPathHandler<any, _ParamDict> | null = null;
 
 	create: _method | controlPathHandler<any, _ParamDict> | null = null;
 
-	_read: _method | controlPathHandler<any, _ParamDict> | null = null;
+	read: _method | controlPathHandler<any, _ParamDict> | null = null;
 
-	_update: _method | controlPathHandler<any, _ParamDict> | null = null;
+	update: _method | controlPathHandler<any, _ParamDict> | null = null;
 
-	_delete: _method | controlPathHandler<any, _ParamDict> | null = null;
+	delete: _method | controlPathHandler<any, _ParamDict> | null = null;
 
 	handler<body>(
 		bodyvalidator: controlPathHandler<body, _ParamDict>['bodyvalidator'],
@@ -123,11 +122,12 @@ export class Controller<const params extends readonly string[] = [],
 		this.subcontrollers.forEach((subc) => { subc._init(); });
 
 		let route = router.route(this.name + this.prefix);
-		route = this.setroute(this._before, route, 'all');
+		route = this.setroute(this.before, route, 'all');
 		route = this.setroute(this.create, route, 'post');
-		route = this.setroute(this._read, route, 'get');
-		route = this.setroute(this._update, route, 'put');
-		this.setroute(this._delete, route, 'delete');
+		route = this.setroute(this.read, route, 'get');
+		route = this.setroute(this.update, route, 'put');
+		this.setroute(this.delete, route, 'delete');
+		console.log('Controller at path %s initialized', this.name);
 		/* TODO delete
 		if (this.before !== null) {
 			if (Array.isArray(this.before)) {

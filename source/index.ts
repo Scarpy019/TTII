@@ -4,8 +4,7 @@ import express = require('express');// Create a new express app instance
 import cookieParser = require('cookie-parser');
 import multer = require('multer');
 import { sequelize } from './sequelizeSetup';
-import { controllerRouter } from './controllers/BaseController';
-import './controllers';
+import { controllerRouter } from './controllers';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
