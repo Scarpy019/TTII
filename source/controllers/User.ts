@@ -1,8 +1,8 @@
 import { Op } from 'sequelize';
-import { AuthToken, User } from '../models';
-import { Controller } from './BaseController';
+import { AuthToken, User } from '../models/index.js';
+import { Controller } from './BaseController.js';
 import { randomBytes } from 'crypto';
-import { authorization as config } from '../config';
+import { authorization as config } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
 
 interface UserSigninForm {

@@ -1,6 +1,6 @@
-import { Bid, Listing, type Log, Section, Subsection, User, Media, ListingLink } from './models';
+import { Bid, Listing, type Log, Section, Subsection, User, Media, ListingLink } from './models/index.js';
 import { sys } from 'typescript';
-import { sequelize } from './sequelizeSetup';
+import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function seedAll (): Promise<void> {

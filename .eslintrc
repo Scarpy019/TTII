@@ -10,7 +10,7 @@
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module",
-        "project":"./tsconfig.json"
+        "project":["./tsconfig.json", "./client/tsconfig.json"]
 	},
     "rules": {
         "indent": "off",
@@ -57,6 +57,8 @@
 			  "terms": ["todo", "fixme"],
 			  "location": "start"
 			}
-		]
+		],
+		"@typescript-eslint/consistent-type-imports": "error",
+		"import/extensions":["error", "ignorePackages"]
 	}
 }

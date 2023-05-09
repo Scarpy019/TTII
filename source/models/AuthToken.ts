@@ -1,7 +1,7 @@
 import { type Optional } from 'sequelize';
-import { UUID } from '../sequelizeSetup';
+import { UUID } from '../sequelizeSetup.js';
 import { AllowNull, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { User } from './User';
+import { User } from './User.js';
 
 export interface AuthTokenAttributes {
 	authToken: string;
@@ -25,7 +25,7 @@ export class AuthToken extends Model<AuthTokenAttributes, AuthTokenInput> {
 	userId!: UUID;
 
 	@BelongsTo(() => User, 'userId')
-	user?: User;
+	user?: ReturnType<() => User>;
 
 	@CreatedAt
 	@Column

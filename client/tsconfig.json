@@ -1,23 +1,13 @@
 {
     "compilerOptions": {
         "module": "ES6",
-        "rootDir":"./source",
-        "outDir":"./build",
-		"moduleResolution": "bundler",
+        "rootDir":"./",
+        "outDir":"../static/js",
         "target": "es6", // or a more recent ecmascript version
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
 		"strictNullChecks": true,
 		"strict": true,
 		"declaration": true
-    },
-    "exclude": [
-        "node_modules",
-		".vscode",
-		"build",
-		"static"
-    ],
-    "include": [
-        "./source/**/*.ts"
-    ]
+    }
 }

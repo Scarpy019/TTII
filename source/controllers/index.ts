@@ -1,3 +1,3 @@
-import './BaseController';
-import './User';
-export { controllerRouter } from './BaseController';
+import './BaseController.js';
+import './User.js';
+export { controllerRouter } from './BaseController.js';

@@ -1,9 +1,9 @@
 import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, ForeignKey, BelongsTo, IsUUID, DataType, AllowNull } from 'sequelize-typescript';
-import { Subsection } from './Subsection';
-import { User } from './User';
+import { Subsection } from './Subsection.js';
+import { User } from './User.js';
 import { type Optional } from 'sequelize';
-import { AutoId, UUID } from '../sequelizeSetup';
-import { Bid } from './Bid';
+import { AutoId, UUID } from '../sequelizeSetup.js';
+import { Bid } from './Bid.js';
 
 /**
  * Helper interface for creating new Listings
@@ -66,10 +66,10 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
 
 	// relations
 	@BelongsTo(() => User, 'userId')
-    user?: User;
+    user?: ReturnType<() => User>;
 
 	@BelongsTo(() => Subsection, 'subsectionId')
-    subsection?: Subsection;
+    subsection?: ReturnType<() => Subsection>;
 
 	@HasMany(() => Bid, 'listingId')
     bids?: Bid[];

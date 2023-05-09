@@ -1,8 +1,8 @@
 import { type Optional } from 'sequelize';
-import { UUID } from '../sequelizeSetup';
+import { UUID } from '../sequelizeSetup.js';
 import { AllowNull, BelongsTo, Column, CreatedAt, DataType, DeletedAt, ForeignKey, Model, PrimaryKey, Table, UpdatedAt } from 'sequelize-typescript';
-import { User } from './User';
-import { Listing } from './Listing';
+import { User } from './User.js';
+import { Listing } from './Listing.js';
 
 export interface BidAttributes {
 	userId: UUID;
@@ -31,11 +31,11 @@ export class Bid extends Model<BidAttributes, BidInput> {
 	bid_amount!: number;
 
 	// associations
-	@BelongsTo(() => User)
-	user?: User;
+	@BelongsTo(() => User, 'userId')
+	user?: ReturnType<() => User>;
 
-	@BelongsTo(() => Listing)
-	listing?: Listing;
+	@BelongsTo(() => Listing, 'listingId')
+	listing?: ReturnType<() => Listing>;
 
 	// timestamps
 	@CreatedAt

@@ -1,10 +1,10 @@
 
-import bodyParser = require('body-parser');
-import express = require('express');// Create a new express app instance
-import cookieParser = require('cookie-parser');
-import multer = require('multer');
-import { sequelize } from './sequelizeSetup';
-import { controllerRouter } from './controllers';
+import BodyParser from 'body-parser';
+import express from 'express';// Create a new express app instance
+import cookieParser from 'cookie-parser';
+import multer from 'multer';
+import { sequelize } from './sequelizeSetup.js';
+import { controllerRouter } from './controllers/index.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -17,8 +17,8 @@ app.set('view engine', 'ejs');
 
 app.use(express.static('./files'));
 app.use(cookieParser()); // to parse cookies properly
-app.use(bodyParser.json()); // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
+app.use(BodyParser.json()); // to support JSON-encoded bodies
+app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
 

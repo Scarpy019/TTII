@@ -1,7 +1,7 @@
 import { Table, Column, Model, CreatedAt, DeletedAt, PrimaryKey, BelongsTo, UpdatedAt, IsUUID, DataType, ForeignKey } from 'sequelize-typescript';
-import { User } from './User';
+import { User } from './User.js';
 import { type Optional } from 'sequelize';
-import { UUID } from '../sequelizeSetup';
+import { UUID } from '../sequelizeSetup.js';
 
 export interface Log {
 	// TODO: keys for db logs
@@ -37,7 +37,7 @@ export class UserLog extends Model<UserLogAttributes, UserLogInput> {
 	declare userId: string;
 
 	@BelongsTo(() => User, 'userId')
-	declare user: User | undefined;
+	declare user: ReturnType<() => User>;
 
 	@CreatedAt
 	@Column

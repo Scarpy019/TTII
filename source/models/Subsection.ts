@@ -1,8 +1,8 @@
 import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, UpdatedAt, AutoIncrement, ForeignKey, BelongsTo, AllowNull } from 'sequelize-typescript';
-import { Section } from './Section';
-import { Listing } from './Listing';
+import { Section } from './Section.js';
+import { Listing } from './Listing.js';
 import { type Optional } from 'sequelize';
-import { AutoId } from '../sequelizeSetup';
+import { AutoId } from '../sequelizeSetup.js';
 
 export interface SubsectionAttributes {
 	id: AutoId;
@@ -32,7 +32,7 @@ export class Subsection extends Model<SubsectionAttributes, SubsectionInput> {
     sectionId!: number;
 
 	@BelongsTo(() => Section, 'sectionId')
-    section?: Section;
+    section?: ReturnType<() => Section>;
 
 	@HasMany(() => Listing, 'subsectionId')
     listings?: Listing[];

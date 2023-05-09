@@ -1,10 +1,10 @@
 import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, Unique, DataType, Validate } from 'sequelize-typescript';
-import { UserLog } from './UserLog';
-import { Listing } from './Listing';
+import { UserLog } from './UserLog.js';
+import { Listing } from './Listing.js';
 import { type Optional } from 'sequelize';
-import { UUID } from '../sequelizeSetup';
-import { AuthToken } from './AuthToken';
-import { Bid } from './Bid';
+import { UUID } from '../sequelizeSetup.js';
+import { AuthToken } from './AuthToken.js';
+import { Bid } from './Bid.js';
 
 /**
  * Helper interface for Users

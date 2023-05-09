@@ -1,7 +1,7 @@
 import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, UpdatedAt, AutoIncrement, AllowNull } from 'sequelize-typescript';
-import { Subsection } from './Subsection';
+import { Subsection } from './Subsection.js';
 import { type Optional } from 'sequelize';
-import { AutoId } from '../sequelizeSetup';
+import { AutoId } from '../sequelizeSetup.js';
 
 export interface SectionAttributes {
 	id: AutoId;

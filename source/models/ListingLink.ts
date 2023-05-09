@@ -1,8 +1,8 @@
 import { type Optional } from 'sequelize';
-import { UUID } from '../sequelizeSetup';
+import { UUID } from '../sequelizeSetup.js';
 import { AllowNull, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { Media } from './Media';
-import { Listing } from './Listing';
+import { Media } from './Media.js';
+import { Listing } from './Listing.js';
 
 interface ListingLinkAttributes {
 	listingId: UUID;
@@ -27,7 +27,7 @@ export class ListingLink extends Model<ListingLinkAttributes, ListingLinkInput> 
 	image_number!: number;
 
 	@BelongsTo(() => Listing, 'listingId')
-    listing?: Listing;
+    listing?: ReturnType<() => Listing>;
 
 	@AllowNull(false)
 	@ForeignKey(() => Media)
@@ -35,7 +35,7 @@ export class ListingLink extends Model<ListingLinkAttributes, ListingLinkInput> 
 	mediaUUID!: UUID;
 
 	@BelongsTo(() => Media, 'mediaUUID')
-	media?: Media;
+	media?: ReturnType<() => Media>;
 
 	@CreatedAt
 	@Column

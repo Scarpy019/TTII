@@ -1,7 +1,7 @@
 import { type Optional } from 'sequelize';
-import { type UUID } from '../sequelizeSetup';
+import { type UUID } from '../sequelizeSetup.js';
 import { AllowNull, Column, CreatedAt, DataType, HasOne, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { ListingLink } from './ListingLink';
+import { ListingLink } from './ListingLink.js';
 
 interface MediaAttributes {
 	/** UUID must be the same as the saved file name */
