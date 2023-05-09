@@ -1,5 +1,19 @@
 import typescript from "@rollup/plugin-typescript";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import commonJS from "@rollup/plugin-commonjs";
+import terser from "@rollup/plugin-terser";
 
+const plugins=[
+	
+	typescript({ tsconfig: "./client/tsconfig.json" }),
+	commonJS({
+
+	}),
+	nodeResolve({
+		browser:true
+	}),
+	terser()
+]
 
 export default [
 	{
@@ -8,7 +22,7 @@ export default [
 			file: './static/js/a.js',
 			format: 'es'
 		},
-		plugins: [typescript({ tsconfig: "./client/tsconfig.json" })]
+		plugins: plugins
 	},
 	{
 		input: './client/b.ts',
@@ -18,6 +32,6 @@ export default [
 				format: 'es'
 			}
 		],
-		plugins: [typescript({ tsconfig: "./client/tsconfig.json" })]
+		plugins: plugins
 	}
 ];

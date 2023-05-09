@@ -15,7 +15,8 @@ const upload = multer({ dest: './files' }); // TODO: add upload use
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-app.use(express.static('./files'));
+app.use('/files', express.static('./files'));
+app.use(express.static('./static'));
 app.use(cookieParser()); // to parse cookies properly
 app.use(BodyParser.json()); // to support JSON-encoded bodies
 app.use(BodyParser.urlencoded({ // to support URL-encoded bodies

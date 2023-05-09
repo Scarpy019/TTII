@@ -8,6 +8,10 @@
         "emitDecoratorMetadata": true,
 		"strictNullChecks": true,
 		"strict": true,
-		"declaration": true
-    }
+		"declaration": true,
+		"allowSyntheticDefaultImports":true,
+		"paths": {
+			"jquery": ["../node_modules/@types/jquery/dist/"]
+		}
+    },
 }
