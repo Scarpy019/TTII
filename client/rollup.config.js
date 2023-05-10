@@ -2,9 +2,8 @@ import typescript from "@rollup/plugin-typescript";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import commonJS from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
-
+import scss from 'rollup-plugin-scss';
 const plugins=[
-	
 	typescript({ tsconfig: "./client/tsconfig.json" }),
 	commonJS({
 
@@ -17,12 +16,12 @@ const plugins=[
 
 export default [
 	{
-		input: './client/a.ts',
+		input: './client/a/a.ts',
 		output: {
-			file: './static/js/a.js',
+			file: './static/exampleA/a.js',
 			format: 'es'
 		},
-		plugins: plugins
+		plugins: [scss({output:'./static/exampleA/style.css'})].concat(plugins)
 	},
 	{
 		input: './client/b.ts',
