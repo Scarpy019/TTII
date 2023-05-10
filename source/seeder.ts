@@ -1,8 +1,8 @@
 import { Bid, Listing, type Log, Section, Subsection, User, Media, ListingLink } from './models/index.js';
-import { sys } from 'typescript';
+import ts from 'typescript';
 import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
-
+const sys = ts.sys;
 export async function seedAll (): Promise<void> {
 	// -------User and UserLog-------
 	// ------------------------------
