@@ -45,6 +45,9 @@ export class BaseController<const params extends readonly string[] = [],
 	readonly name: string;
 	readonly prefix: string;
 	subcontrollers: initializable[] = [];
+	/**
+	 * Overriden by Controller's constructor
+	 */
 	constructor (name: string, params?: params, optionals?: optionals, _autoInit: boolean = true) {
 		this.name = '/' + name;
 		let prefix: string = '';
@@ -54,6 +57,13 @@ export class BaseController<const params extends readonly string[] = [],
 		if (_autoInit) controllers.push(this);
 	}
 
+	/**
+	 * Generates a subcontroller appending itself to the end of this controllers name.
+	 * !! Does not use the original controller's parameters !!
+	 * @param name The base name of the controller
+	 * @param params mandatory parameters
+	 * @param optionals the optional parameters
+	 */
 	subcontroller<const n_params extends readonly string[] = [],
 		const n_optionals extends readonly string[] = []>
 	(name: string, params?: n_params, optionals?: n_optionals): BaseController<n_params, n_optionals> {
