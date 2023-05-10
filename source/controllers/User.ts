@@ -26,7 +26,8 @@ function isUserSigninForm (obj: any): obj is UserSigninForm {
 const user = new Controller('user');
 
 user.read = (req, res) => {
-	res.send('User main page');
+	const user = res.locals.user;
+	res.send(`User main page. Hello, ${user?.username ?? 'unknown'}!`);
 };
 
 const login = user.subcontroller('login');
@@ -55,7 +56,7 @@ login.create = login.handler(
 					authToken: token,
 					userId: user.id
 				}).then((_) => {
-					res.cookie('authToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
+					res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
 					res.send('Logged in successfuly');
 				}).catch((error) => {
 					res.send(error);

@@ -11,9 +11,14 @@ export const db = {
 };
 export const authorization = {
 	/**  lifetime of the token in the browser in ms */
-	tokenLifeBrowser: 100_000,
+	tokenLifeBrowser: 172_800_000,
 
 	/** lifetime of the token in the database in ms
     (should be shorter than browser to inform user that session has ended) */
-	tokenLifeDatabase: 90_000
+	tokenLifeDatabase: 100_000_000,
+
+	/** maximum age of the token in the database in days
+	this should span several days for the user's convenience
+	*/
+	tokenAgeDatabase: 7
 };
