@@ -2,7 +2,6 @@ import type { Request, Response, NextFunction, Application } from 'express';
 import { AuthToken, User } from '../models/index.js';
 
 async function validateAuthToken (req: Request, res: Response, next: NextFunction): Promise<void> {
-	console.log('Outside my balls!');
 	if (req.cookies.AuthToken !== undefined) {
 		const token = req.cookies.AuthToken;
 		const tokenEntry = await AuthToken.findOne({
@@ -11,11 +10,6 @@ async function validateAuthToken (req: Request, res: Response, next: NextFunctio
 			},
 			include: [User]
 		});
-		console.log('Inside my balls!');
-		console.log(tokenEntry);
-		console.log(tokenEntry !== null);
-		console.log(tokenEntry !== null && Date.now() < tokenEntry.maxLife.getTime());
-		console.log(tokenEntry !== null && Date.now() - tokenEntry.lastSeen.getTime() < tokenEntry.lifetime);
 
 		if (tokenEntry !== null && // If the token even exists and...
 			Date.now() < tokenEntry.maxLife.getTime() && // ...if the token has not exceeded its absolute maximum age and...
