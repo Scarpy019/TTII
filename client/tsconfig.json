@@ -13,6 +13,5 @@
 		"paths": {
 			"jquery": ["../node_modules/@types/jquery/dist/"]
 		}
-    },
-    "exclude": ["./rollup.config.js"]
+    }
 }
