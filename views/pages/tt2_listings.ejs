@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <div class="topbar">
+        <div class="nav_buttons"></div>
+        <h1 id="page_title"></h1>
+        <div class="user_status"></div>
+    </div>
+    <div class="main_container">
+
+        <div class="listings">
+            <h1 id="subcategory_name"><%- subsection.name %></h1>
+            <ul id="subcategory_list">
+				<% subsection.listings.forEach(listings => { %>
+					<a href='/<%=subsecId%>/<%=listings.id%>'><%- listings.title %></a>;
+				<% }) %>
+			</ul>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,33 +10,22 @@
 <body>
     <div class="topbar">
         <div class="nav_buttons">
+			
             <a href="<%=sectionName%>" id="home_button">Home</a>
             <a href="/search" id="search_button">bbb</a>
             <a href="/publish" id="publish_button">ccc</a>
         </div>
         <h1 id="page_title"></h1>
-        <div class="user_status">
-            <a href='/<%%=userstatus_page%>'>"<%%-userstatus_name%>"</a>
-
-        </div>
     </div>
     <div class="main_container">
-        <div class="categories">
-            <ul id="category_list">
-                <% sections.forEach(element => { %>
-                    <a href='/subsection/<%= element.id %>'><%- element.name %></a>
-                <% }) %>
-            
-            </ul>
-        </div>
-
-        <div class="recent_post">
-            <ul id="recent_post_list"></ul>
-        </div>
-            
-        <div class="featured_post">
-            <ul id="featured_post_list"></ul>
-        </div>
+		<form id="loginform">
+			<label for="username">Username</label><br>
+			<input type="text" id="username" name="username"><br>
+			<label for="password">Username</label><br>
+			<input type="text" id="password" name="password"><br>
+			<a href=<%-loginAttempt%>><label for="login_attempt">Login</label></a>
+			<a href=<%-signUpRedirect%>><label for="sign_up">Sign up</label></a><br>
+		</form>
             
     </div>
 </body>
