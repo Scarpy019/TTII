@@ -3,4 +3,5 @@ node_modules
 source/config.ts
 public/**
 files
-static/js/**
+static/**
+.vs

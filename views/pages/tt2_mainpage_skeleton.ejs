@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <div class="topbar">
+        <div class="nav_buttons">
+            <button id="home_button"></button>
+            <button id="search_button"></button>
+            <button id="publish_button"></button>
+        </div>
+        <h1 id="page_title"></h1>
+        <div class="user_status"></div>
+    </div>
+    <div class="main_container">
+        <div class="categories">
+            <ul id="category_list">
+                <% sections.forEach(element => { %>
+                    <a href='/subsection/<%= element.id %>'><%- element.name %></a>
+                <% }) %>
+            
+            </ul>
+        </div>
+
+        <div class="recent_post">
+            <ul id="recent_post_list"></ul>
+        </div>
+            
+        <div class="featured_post">
+            <ul id="featured_post_list"></ul>
+        </div>
+            
+    </div>
+</body>
+</html>
