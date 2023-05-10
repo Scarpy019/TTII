@@ -10,14 +10,14 @@ export async function seedAll (): Promise<void> {
 		id: uuidv4(),
 		username: 'xXx_boi_xXx',
 		email: 'boi@boi.boi',
-		password: 'boiboi',
+		password: '$2a$12$hx0aijYV9uWUbSP6gsHIW.906SYZ2DQ4UsDrEgFkF7GHCmRJXehju', // boiboi
 		access: 'boi'
 	});
 	const user2 = await User.create({
 		id: uuidv4(),
 		username: 'gurl',
 		email: 'gurl@boi.boi',
-		password: 'gurlgurl',
+		password: '$2a$12$ylJk6AxD5jCBQtvTsF5FCOItHngj3vlgW/u.DnsqAQHA3XZ5uQxwG', // gurlgurl
 		access: 'client'
 	});
 	await userBoi.$create('log', {

@@ -4,6 +4,7 @@ import { Controller } from './BaseController.js';
 import { randomBytes } from 'crypto';
 import { authorization as config } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
 
 interface UserSigninForm {
 	user: string;
@@ -45,11 +46,10 @@ login.create = login.handler(
 					[Op.or]: [
 						{ username: req.body.user },
 						{ email: req.body.user }
-					],
-					password: req.body.password
+					]
 				}
 			});
-			if (user != null) {
+			if (user != null && await bcrypt.compare(req.body.password, user.password)) {
 				const token = randomBytes(32).toString('hex');
 				void AuthToken.create({
 					authToken: token,
@@ -103,12 +103,13 @@ signup.create = signup.handler(
 	isUserSignupForm,
 	async (req, res): Promise<void> => {
 		try {
+			const hash = await bcrypt.hash(req.body.password, 12);
 			await User.create({
 				id: uuidv4(),
 				access: 'Client',
 				email: req.body.email,
 				username: req.body.username,
-				password: req.body.password
+				password: hash
 			});
 			res.redirect('../');
 		} catch (error) {
