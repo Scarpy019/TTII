@@ -24,6 +24,14 @@ export default [
 		plugins: [scss({output:'./static/exampleA/style.css'})].concat(plugins)
 	},
 	{
+		input: './client/buttonStyling/entry.ts',
+		output: {
+			file: './static/lapa/lapina.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/lapina.css'})].concat(plugins)
+	},
+	{
 		input: './client/b.ts',
 		output: [
 			{
