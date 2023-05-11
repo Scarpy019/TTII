@@ -8,7 +8,8 @@ interface initializable {
 const controllers: initializable[] = [];
 
 export function controllerRouter (): Router {
-	controllers.forEach((controller) => { controller._init(); });
+	console.log('Routing...');
+	controllers.forEach((controller) => { console.log('Initializing...'); controller._init(); });
 	return router;
 };
 
@@ -38,13 +39,17 @@ export interface BaseControlPathHandler<
 	rejecter?: CustomFinalHandler<ParamDict>;
 };
 
+type ControllerHandler<params extends Record<string, string>> = CustomMethod<CustomHandler<Request<params>>>;
+type ControllerSmartHandler<params extends Record<string, string>> = BaseControlPathHandler<any, params>;
+
 export class BaseController<const params extends readonly string[] = [],
 	const optionals extends readonly string[] = [],
-	_paramDict extends Record<string, string> = ParameterDict<params, optionals>,
-	_method extends CustomMethod<CustomHandler<Request<_paramDict>>> = CustomMethod<CustomHandler<Request<_paramDict>>>> {
+	parameterDictionary extends Record<string, string> = ParameterDict<params, optionals>,
+	handler extends ControllerHandler<parameterDictionary> = ControllerHandler<parameterDictionary>> {
 	readonly name: string;
 	readonly prefix: string;
-	subcontrollers: initializable[] = [];
+	private readonly subcontrollers: initializable[] = [];
+	private readonly interfaces: Array<{ name: string; method: handler | BaseControlPathHandler<any, parameterDictionary> }> = [];
 	/**
 	 * Overriden by Controller's constructor
 	 */
@@ -72,20 +77,47 @@ export class BaseController<const params extends readonly string[] = [],
 		return controller;
 	}
 
-	before: _method | BaseControlPathHandler<any, _paramDict> | null = null;
+	/**
+	 * Called before all other methods( excluding interfaces )
+	 */
+	before: handler | ControllerSmartHandler<parameterDictionary> | null = null;
 
-	create: _method | BaseControlPathHandler<any, _paramDict> | null = null;
+	/**
+	 * Called on POST request
+	 *
+	 * This can be a function, a list of functions, similar to how express operates,
+	 * or an object with added properties foor body type guarding.
+	 */
+	create: handler | ControllerSmartHandler<parameterDictionary> | null = null;
 
-	read: _method | BaseControlPathHandler<any, _paramDict> | null = null;
+	/**
+	 * Called on GET request
+	 *
+	 * This can be a function, a list of functions, similar to how express operates,
+	 * or an object with added properties foor body type guarding.
+	 */
+	read: handler | ControllerSmartHandler<parameterDictionary> | null = null;
 
-	update: _method | BaseControlPathHandler<any, _paramDict> | null = null;
+	/**
+	 * Called on PUT request
+	 *
+	 * This can be a function, a list of functions, similar to how express operates,
+	 * or an object with added properties foor body type guarding.
+	 */
+	update: handler | ControllerSmartHandler<parameterDictionary> | null = null;
 
-	delete: _method | BaseControlPathHandler<any, _paramDict> | null = null;
+	/**
+	 * Called on DELETE request
+	 *
+	 * This can be a function, a list of functions, similar to how express operates,
+	 * or an object with added properties foor body type guarding.
+	 */
+	delete: handler | ControllerSmartHandler<parameterDictionary> | null = null;
 
 	handler<body>(
-		bodyvalidator: BaseControlPathHandler<body, _paramDict>['bodyvalidator'],
-		handler: BaseControlPathHandler<body, _paramDict>['handler'],
-		rejecter?: BaseControlPathHandler<body, _paramDict>['rejecter']): BaseControlPathHandler<body, _paramDict> {
+		bodyvalidator: BaseControlPathHandler<body, parameterDictionary>['bodyvalidator'],
+		handler: BaseControlPathHandler<body, parameterDictionary>['handler'],
+		rejecter?: BaseControlPathHandler<body, parameterDictionary>['rejecter']): BaseControlPathHandler<body, parameterDictionary> {
 		return {
 			bodyvalidator,
 			handler,
@@ -93,8 +125,18 @@ export class BaseController<const params extends readonly string[] = [],
 		};
 	}
 
+	/**
+	 * Constructs an interface and makes it available through `/Controller.name/name/...parameters`
+	 * It is prioritized over parameterized CRUD methods, but not prioritized over subcontrollers
+	 * @param name The url suffix to append the name to for running this interface
+	 * @param handler The handler that is responsible for serving this interface
+	 */
+	interface (name: string, handler: handler | ControllerSmartHandler<parameterDictionary>): void {
+		this.interfaces.push({ name, method: handler });
+	}
+
 	private setroute (
-		method: _method | BaseControlPathHandler<any, _paramDict> | null,
+		method: handler | ControllerSmartHandler<parameterDictionary> | null,
 		route: IRoute,
 		routeMethod: 'all' | 'get' | 'put' | 'delete' | 'post'): IRoute {
 		if (method !== null) {
@@ -106,7 +148,7 @@ export class BaseController<const params extends readonly string[] = [],
 				// route = route.all(this.before);
 			} else if (typeof method === 'object') {
 				// small middleware that checks if the body is valid
-				const validCheck = async (req: Request<_paramDict>, res: Response, next: NextFunction): Promise<void> => {
+				const validCheck = async (req: Request<parameterDictionary>, res: Response, next: NextFunction): Promise<void> => {
 					if (method.bodyvalidator(req.body)) {
 						next();
 					} else {
@@ -128,8 +170,17 @@ export class BaseController<const params extends readonly string[] = [],
 	}
 
 	public _init (): void {
-		// init subcontrollers to parse them before the main controller
+		// init subcontrollers to parse them before the main controller to prevent parameters from being priority
 		this.subcontrollers.forEach((subc) => { subc._init(); });
+
+		// init controller interfaces
+		this.interfaces.forEach(Iface => {
+			// handle the case where name is written with the slash
+			if (Iface.name[0] !== '/') Iface.name = '/' + Iface.name;
+			const routeURL = this.name + Iface.name + this.prefix;
+			this.setroute(Iface.method, router.route(routeURL), 'get');
+			console.log('Controller interface at %s initialized', this.name + Iface.name);
+		});
 
 		let route = router.route(this.name + this.prefix);
 		route = this.setroute(this.before, route, 'all');
