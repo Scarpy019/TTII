@@ -8,7 +8,8 @@ interface initializable {
 const controllers: initializable[] = [];
 
 export function controllerRouter (): Router {
-	controllers.forEach((controller) => { controller._init(); });
+	console.log('Routing...');
+	controllers.forEach((controller) => { console.log('Initializing...'); controller._init(); });
 	return router;
 };
 
@@ -44,7 +45,8 @@ export class BaseController<const params extends readonly string[] = [],
 	_method extends CustomMethod<CustomHandler<Request<_paramDict>>> = CustomMethod<CustomHandler<Request<_paramDict>>>> {
 	readonly name: string;
 	readonly prefix: string;
-	subcontrollers: initializable[] = [];
+	private readonly subcontrollers: initializable[] = [];
+	private readonly interfaces: Array<{ name: string; method: _method | BaseControlPathHandler<any, _paramDict> }> = [];
 	/**
 	 * Overriden by Controller's constructor
 	 */
@@ -93,6 +95,16 @@ export class BaseController<const params extends readonly string[] = [],
 		};
 	}
 
+	/**
+	 * Constructs an interface and makes it available through `/Controller.name/name/...parameters`
+	 * It is prioritized over parameterized CRUD methods, but not prioritized over subcontrollers
+	 * @param name The url suffix to append the name to for running this interface
+	 * @param handler The handler that is responsible for serving this interface
+	 */
+	interface (name: string, handler: _method | BaseControlPathHandler<any, _paramDict>): void {
+		this.interfaces.push({ name, method: handler });
+	}
+
 	private setroute (
 		method: _method | BaseControlPathHandler<any, _paramDict> | null,
 		route: IRoute,
@@ -128,8 +140,17 @@ export class BaseController<const params extends readonly string[] = [],
 	}
 
 	public _init (): void {
-		// init subcontrollers to parse them before the main controller
+		// init subcontrollers to parse them before the main controller to prevent parameters from being priority
 		this.subcontrollers.forEach((subc) => { subc._init(); });
+
+		// init controller interfaces
+		this.interfaces.forEach(Iface => {
+			// handle the case where name is written with the slash
+			if (Iface.name[0] !== '/') Iface.name = '/' + Iface.name;
+			const routeURL = this.name + Iface.name + this.prefix;
+			this.setroute(Iface.method, router.route(routeURL), 'get');
+			console.log('Controller interface at %s initialized', this.name + Iface.name);
+		});
 
 		let route = router.route(this.name + this.prefix);
 		route = this.setroute(this.before, route, 'all');
