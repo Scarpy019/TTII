@@ -20,5 +20,8 @@ export const authorization = {
 	/** maximum age of the token in the database in days
 	this should span several days for the user's convenience
 	*/
-	tokenAgeDatabase: 7
+	tokenAgeDatabase: 7,
+
+	/** secret used to sign JWTs and HMACs */
+	secret: 'Please change me :)'
 };

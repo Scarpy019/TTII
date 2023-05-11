@@ -1,10 +1,10 @@
 import { Op } from 'sequelize';
-import { AuthToken, User } from '../models/index.js';
+import { User } from '../models/index.js';
 import { Controller } from './BaseController.js';
-import { randomBytes } from 'crypto';
 import { authorization as config } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 interface UserSigninForm {
 	user: string;
@@ -50,17 +50,20 @@ login.create = login.handler(
 					]
 				}
 			});
+			console.log('hi');
 			if (user != null && await bcrypt.compare(req.body.password, user.password)) {
-				const token = randomBytes(32).toString('hex');
-				void AuthToken.create({
-					authToken: token,
-					userId: user.id
-				}).then((_) => {
-					res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
-					res.send('Logged in successfuly');
-				}).catch((error) => {
-					res.send(error);
-				});
+				console.log('hi2');
+				const payload: object = {
+					sub: user.id
+				};
+				console.log('hi36');
+				console.log(jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser }));
+				const token = jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser });
+				console.log('hi5');
+				res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
+				console.log('hi3');
+				res.send('Logged in successfully');
+				console.log('hi4');
 			} else {
 				res.send('User not found');
 			}

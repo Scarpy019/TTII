@@ -1,28 +1,22 @@
 import type { Request, Response, NextFunction, Application } from 'express';
-import { AuthToken, User } from '../models/index.js';
+import { User } from '../models/index.js';
+import jwt from 'jsonwebtoken';
+import { authorization as config } from '../config.js';
 
 async function validateAuthToken (req: Request, res: Response, next: NextFunction): Promise<void> {
+	res.locals.user = null;
 	if (req.cookies.AuthToken !== undefined) {
 		const token = req.cookies.AuthToken;
-		const tokenEntry = await AuthToken.findOne({
-			where: {
-				authToken: token
-			},
-			include: [User]
-		});
-
-		if (tokenEntry !== null && // If the token even exists and...
-			Date.now() < tokenEntry.maxLife.getTime() && // ...if the token has not exceeded its absolute maximum age and...
-			Date.now() - tokenEntry.lastSeen.getTime() < tokenEntry.lifetime) { // ...if the token has not gone unseen for longer than its lifetime...
-			// ...then the token is valid! :)
-			if (tokenEntry.user === undefined) res.locals.user = null; // uh oh panic!!
-			else res.locals.user = tokenEntry.user;
-		} else {
-			if (tokenEntry !== null) {
-				// If the token is invalid, then delete it since we don't need it anymore.
-				await tokenEntry.destroy();
+		const decoded = jwt.verify(token, config.secret, { clockTimestamp: Date.now() / 1000 }); // jsonwebtoken automatically verifies the specified time as well
+		if (typeof decoded !== 'string') {
+			if (decoded.sub !== null) {
+				const user = await User.findOne({
+					where: {
+						id: decoded.sub
+					}
+				});
+				res.locals.user = user;
 			}
-			res.locals.user = null; // Set the user local to undefined to inform further endpoints that the request is unauthenticated.
 		}
 	}
 	next();
