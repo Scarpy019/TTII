@@ -50,20 +50,13 @@ login.create = login.handler(
 					]
 				}
 			});
-			console.log('hi');
 			if (user != null && await bcrypt.compare(req.body.password, user.password)) {
-				console.log('hi2');
 				const payload: object = {
 					sub: user.id
 				};
-				console.log('hi36');
-				console.log(jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser }));
 				const token = jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser });
-				console.log('hi5');
 				res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
-				console.log('hi3');
 				res.send('Logged in successfully');
-				console.log('hi4');
 			} else {
 				res.send('User not found');
 			}
