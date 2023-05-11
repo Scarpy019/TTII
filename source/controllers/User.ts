@@ -55,7 +55,7 @@ login.create = login.handler(
 					sub: user.id
 				};
 				const token = jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser });
-				res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
+				res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser * 1000, sameSite: 'strict', secure: true });
 				res.send('Logged in successfully');
 			} else {
 				res.send('User not found');
