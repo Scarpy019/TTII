@@ -4,21 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/lapa/lapina.css">
     <title></title>
 </head>
 <body>
-    <div class="topbar">
-        <div class="nav_buttons">
-            <a href="<%=sectionName%>" id="home_button">Home</a>
-            <a href="/search" id="search_button">bbb</a>
-            <a href="/publish" id="publish_button">ccc</a>
-        </div>
-        <h1 id="page_title"></h1>
-        <div class="user_status">
-            <a href='/<%%=userstatus_page%>'>"<%%-userstatus_name%>"</a>
-
-        </div>
+    <div class="header">
+        <%- include('./misc/header.ejs') %>
     </div>
     <div class="main_container">
         <div class="categories">

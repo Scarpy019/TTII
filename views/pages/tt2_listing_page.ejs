@@ -13,13 +13,12 @@
     </div>
     <div class="main_container">
 
-        <div class="listings">
-            <h1 id="subcategory_name"><%- subsection.name %></h1>
-            <ul id="subcategory_list">
-				<% subsection.listings.forEach(listings => { %>
-					<a href='/subcategory/<%=subsecId%>/<%=listings.id%>'><%- listings.title %></a>;
-				<% }) %>
-			</ul>
+        <div class="listing">
+            <h1 id="listing_name"><%- listing.title %></h1>
+            <div class="description">
+
+			</div>
+			<div class="listing_data"></div>
         </div>
 
     </div>
