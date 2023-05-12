@@ -1,9 +1,10 @@
 import { Op } from 'sequelize';
-import { AuthToken, User } from '../models/index.js';
+import { User } from '../models/index.js';
 import { Controller } from './BaseController.js';
-import { randomBytes } from 'crypto';
 import { authorization as config } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 interface UserSigninForm {
 	user: string;
@@ -25,7 +26,8 @@ function isUserSigninForm (obj: any): obj is UserSigninForm {
 const user = new Controller('user');
 
 user.read = (req, res) => {
-	res.send('User main page');
+	const user = res.locals.user;
+	res.send(`User main page. Hello, ${user?.username ?? 'unknown'}!`);
 };
 
 const login = user.subcontroller('login');
@@ -45,21 +47,16 @@ login.create = login.handler(
 					[Op.or]: [
 						{ username: req.body.user },
 						{ email: req.body.user }
-					],
-					password: req.body.password
+					]
 				}
 			});
-			if (user != null) {
-				const token = randomBytes(32).toString('hex');
-				void AuthToken.create({
-					authToken: token,
-					userId: user.id
-				}).then((_) => {
-					res.cookie('authToken', token, { maxAge: config.tokenLifeBrowser, sameSite: 'strict', secure: true });
-					res.send('Logged in successfuly');
-				}).catch((error) => {
-					res.send(error);
-				});
+			if (user != null && await bcrypt.compare(req.body.password, user.password)) {
+				const payload: object = {
+					sub: user.id
+				};
+				const token = jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser });
+				res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser * 1000, sameSite: 'strict', secure: true });
+				res.send('Logged in successfully');
 			} else {
 				res.send('User not found');
 			}
@@ -103,12 +100,13 @@ signup.create = signup.handler(
 	isUserSignupForm,
 	async (req, res): Promise<void> => {
 		try {
+			const hash = await bcrypt.hash(req.body.password, 12);
 			await User.create({
 				id: uuidv4(),
 				access: 'Client',
 				email: req.body.email,
 				username: req.body.username,
-				password: req.body.password
+				password: hash
 			});
 			res.redirect('../');
 		} catch (error) {
