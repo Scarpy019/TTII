@@ -3,7 +3,7 @@ import './User.js';
 import './SectionController.js';
 import './SubscetionController.js';
 import './LoginButtonController.js';
-import './ListingsController.js';
+import './ListingController.js';
 import './HeaderController.js';
 import './SingularListingController.js';
 export { controllerRouter } from './BaseController.js';
