@@ -9,6 +9,10 @@ import jwt from 'jsonwebtoken';
 interface UserSigninForm {
 	user: string;
 	password: string;
+	/**
+	 * Base64 encoded URL
+	 */
+	redirect: string;
 };
 
 function isUserSigninForm (obj: any): obj is UserSigninForm {
@@ -19,7 +23,9 @@ function isUserSigninForm (obj: any): obj is UserSigninForm {
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(obj.user)) &&
         ('password' in obj) &&
         typeof obj.password === 'string' &&
-        /[\w_!@#$%^&*]{6,}/.test(obj.password);
+        /[\w_!@#$%^&*]{6,}/.test(obj.password) &&
+		('redirect' in obj) &&
+        typeof obj.redirect === 'string';
 	return valid;
 };
 
@@ -33,9 +39,14 @@ user.read = (req, res) => {
 const login = user.subcontroller('login');
 
 login.read = (req, res) => {
-	res.render('pages/user/login');
+	let redirect = '';
+	if (typeof req.query.redirect === 'string') {
+		redirect = req.query.redirect;
+	}
+	res.render('pages/user/login', { redirect: Buffer.from(redirect, 'base64').toString('ascii') });
 };
 
+// generates an auth token
 login.create = login.handler(
 	// body validator
 	isUserSigninForm,
@@ -50,15 +61,25 @@ login.create = login.handler(
 					]
 				}
 			});
-			if (user != null && await bcrypt.compare(req.body.password, user.password)) {
+			if (user == null) {
+				res.send('User not found');
+			} else if (await bcrypt.compare(req.body.password, user.password)) {
+				// successful login
 				const payload: object = {
 					sub: user.id
 				};
 				const token = jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser });
 				res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser * 1000, sameSite: 'strict', secure: true });
-				res.send('Logged in successfully');
+
+				let redirectURL = '/';
+				if (req.body.redirect !== undefined) {
+					redirectURL = req.body.redirect;
+				}
+				console.log(redirectURL);
+				res.redirect(redirectURL);
+				// res.send('Logged in successfully');
 			} else {
-				res.send('User not found');
+				res.send('Password does not match username');
 			}
 		} catch (error) {
 			res.send(error);
