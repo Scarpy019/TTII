@@ -4,8 +4,8 @@
   "main": "./build/index.js",
   "scripts": {
     "launch": "node ./build/index.js",
-    "dev": "npx nodemon",
-    "build": "npx tsc --build && npx rollup --config ./client/rollup.config.js",
+    "dev": "concurrently --kill-others \"npx nodemon\" \"npx rollup --config ./client/rollup.config.js --watch\"",
+    "build": "npx tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "npm run build && node ./build/seeder.js --seed"
   },
