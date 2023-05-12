@@ -24,7 +24,7 @@ type ParameterDict<params extends readonly string[],
 type CustomRequest<dict extends Record<string, string>> =
 	Request<dict>;
 
-type CustomHandler<customRequest extends Request> = (req: customRequest, res: Response, next: NextFunction) => void;
+type CustomHandler<customRequest extends CustomRequest<any>> = (req: customRequest, res: Response, next: NextFunction) => void;
 
 type CustomMethod<handler extends CustomHandler<any>> = ThisOrArr<ThisOrAsync<handler>>;
 
@@ -33,7 +33,7 @@ type CustomFinalHandler<dict extends Record<string, string>> = (req: Request<dic
 export interface BaseControlPathHandler<
 	body=any,
 	ParamDict extends Record<string, string> = Record<string, string>,
-	_request extends Request = CustomRequest<ParamDict>> {
+	_request extends Request = Request<ParamDict, any, body>> {
 	bodyvalidator: (body: any) => body is body;
 	handler: CustomMethod<CustomHandler<_request>>;
 	rejecter?: CustomFinalHandler<ParamDict>;
