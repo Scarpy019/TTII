@@ -2,7 +2,7 @@ import { Listing } from '../models/Listing.js';
 import { Subsection } from '../models/Subsection.js';
 import { Controller } from './BaseController.js';
 
-const listing = new Controller('listings', ['subsectionId']);
+const listing = new Controller('listing', ['subsectionId']);
 
 listing.read = async (req, res) => {
 	const subsecId = Number(req.params.subsectionId);
