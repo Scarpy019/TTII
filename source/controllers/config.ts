@@ -30,7 +30,13 @@ export const hrefs: Record<string, string> = {
  * Some template constants for headers
  */
 export const headerConstants = {
-	Home: 'Home',
-	searchbutton_name: 'Search',
-	publishbutton_name: 'Publish'
+	home_button: 'Home',
+	search_button: 'Search',
+	publish_button: 'Create Listing',
+	pagetitle: 'Generic page title',
+	section: '/section',
+	search: '/search',
+	publish: '/listing/create',
+	subsection: '/subsection',
+	user: '/user'
 };

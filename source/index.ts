@@ -6,6 +6,7 @@ import multer from 'multer';
 import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';
 import { validateAuthToken } from './middleware/AuthTokenMiddleware.js';
+import { headerConstants } from './controllers/config.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -39,7 +40,11 @@ app.get('*', function (req, res) {
 
 	// respond with html page
 	if (req.accepts('html') !== undefined) {
-		res.render('pages/misc/404', { url: req.url });
+		if (res.locals.user !== null && res.locals.user !== undefined) {
+			res.render('pages/misc/404', { url: req.url, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
+		} else {
+			res.render('pages/misc/404', { url: req.url, constants: headerConstants, userstatus_name: 'Login', userstatus_page: '/user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
+		}
 		return;
 	}
 

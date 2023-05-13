@@ -5,6 +5,7 @@ import { authorization as config } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { headerConstants } from './config.js';
 
 interface UserSigninForm {
 	user: string;
@@ -39,11 +40,15 @@ user.read = (req, res) => {
 const login = user.subcontroller('login');
 
 login.read = (req, res) => {
-	let redirect = '';
-	if (typeof req.query.redirect === 'string') {
-		redirect = req.query.redirect;
+	if (res.locals.user !== null && res.locals.user !== undefined) {
+		res.redirect('/section');
+	} else {
+		let redirect = '';
+		if (typeof req.query.redirect === 'string') {
+			redirect = req.query.redirect;
+		}
+		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'base64').toString('ascii'), constants: headerConstants });
 	}
-	res.render('pages/user/login', { redirect: Buffer.from(redirect, 'base64').toString('ascii') });
 };
 
 // generates an auth token
@@ -91,11 +96,24 @@ login.create = login.handler(
 	}
 );
 
+const signout = user.subcontroller('signout');
+
+signout.read = async (req, res) => {
+	if (res.locals.user !== null && res.locals.user !== undefined) {
+		res.clearCookie('AuthToken');
+		res.redirect('/section');
+	} else {
+		res.send('Not Logged in');
+		res.redirect('/section');
+	}
+};
+
 interface UserSignupForm {
 	username: string;
 	email: string;
 	password: string;
 };
+
 function isUserSignupForm (obj: any): obj is UserSignupForm {
 	const valid =
         ('username' in obj) &&
@@ -114,7 +132,11 @@ function isUserSignupForm (obj: any): obj is UserSignupForm {
 const signup = user.subcontroller('signup');
 
 signup.read = (req, res): void => {
-	res.render('pages/user/signup');
+	if (res.locals.user !== null && res.locals.user !== undefined) {
+		res.redirect('/section');
+	} else {
+		res.render('pages/user/signup', { constants: headerConstants });
+	}
 };
 
 signup.create = signup.handler(

@@ -7,6 +7,13 @@
     <title>Login</title>
 </head>
 <body>
+    <link rel="stylesheet" href="/lapa/lapina.css">
+	<div class="nav_buttons">
+		<a href="<%=constants.section%>" id="home_button"><%=constants.home_button%></a>
+		<a href='<%=constants.search%>' id="search_button"><%=constants.search_button%></a>
+		<a href="<%=constants.publish%>" id="publish_button"><%=constants.publish_button%></a>
+	</div>
+	<h1 id="page_title"><%-constants.pagetitle%></h1>
     <form action="" method="post">
         <label for="user">Username or email</label>
         <input type="text" name="user" id="">
@@ -14,6 +21,9 @@
         <input type="password" name="password" id="">
         <input type="submit" value="Log in">
 		<input type="hidden" name="redirect" value="<%= redirect %>">
+    </form>
+    <form action="/user/signup">
+        <input type="submit" value="Sign Up">
     </form>
 </body>
 </html>
