@@ -98,7 +98,7 @@ login.create = login.handler(
 
 const signout = user.subcontroller('signout');
 
-signout.read = async (req, res) => {
+signout.read = async (req, res) => { // TODO make this proper using signout.delete
 	if (res.locals.user !== null && res.locals.user !== undefined) {
 		res.clearCookie('AuthToken');
 		res.redirect('/section');

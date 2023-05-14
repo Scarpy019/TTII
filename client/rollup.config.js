@@ -26,10 +26,10 @@ export default [
 	{
 		input: './client/buttonStyling/entry.ts',
 		output: {
-			file: './static/lapa/lapina.js',
+			file: './static/lapa/headerstyle.js',
 			format: 'es'
 		},
-		plugins: [scss({output:'./static/lapa/lapina.css'})].concat(plugins)
+		plugins: [scss({output:'./static/lapa/headerstyle.css'})].concat(plugins)
 	},
 	{
 		input: './client/b.ts',
