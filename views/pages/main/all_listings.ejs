@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="header">
-        <%- include('./misc/header') %>
+        <%- include('../misc/header') %>
         
     </div>
     <div class="main_container">
@@ -17,7 +17,7 @@
             <h1 id="subcategory_name"><%- subsection.name %></h1>
             <ul id="subcategory_list">
 				<% subsection.listings.forEach(listings => { %>
-					<a href='/subcategory/<%=subsecId%>/<%=listings.id%>'><%- listings.title %></a>;
+					<a href='/listing/item?listingId=<%=listings.id%>'><%- listings.title %></a>;
 				<% }) %>
 			</ul>
         </div>

@@ -12,11 +12,11 @@ listing.read = async (req, res) => {
 	if (!isNaN(subsecId)) {
 		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
 		if (subsection !== null) {
-			if (res.locals.user !== null && res.locals.user !== undefined) {
-				res.render('pages/tt2_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
+			if (res.locals.user !== null && res.locals.user !== undefined) { // for header Login&sign up or username& sign out
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
 				return;
 			} else {
-				res.render('pages/tt2_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: 'Login', userstatus_page: '/user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: 'Login', userstatus_page: '/user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
 				return;
 			}
 		}
@@ -63,17 +63,15 @@ listing.create = listing.handler(
 	}
 );
 
-const listingItem = new Controller('subcategory', ['subsectionId'], ['listingId']);
-
-listingItem.read = async (req, res) => {
-	const listId = (req.params.listingId);
-	if ((listId) !== null) {
+listing.interface('item', async (req, res) => {
+	const listId = (req.query.listingId) as unknown;
+	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId, { include: [Subsection] });
 		if (listing !== null) {
 			if (res.locals.user !== null && res.locals.user !== undefined) {
-				res.render('pages/tt2_listing_page.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
+				res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
 			} else {
-				res.render('pages/tt2_listing_page.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants, userstatus_name: 'Login', userstatus_page: 'user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
+				res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants, userstatus_name: 'Login', userstatus_page: 'user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
 			}
 		} else {
 			res.sendStatus(404);
@@ -81,7 +79,7 @@ listingItem.read = async (req, res) => {
 	} else {
 		res.sendStatus(404);
 	}
-};
+});
 
 listing.interface('create', (req, res) => {
 	if (res.locals.user instanceof User) {

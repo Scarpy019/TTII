@@ -1,5 +1,5 @@
 import './BaseController.js';
-import './User.js';
+import './UserController.js';
 import './SectionController.js';
 import './SubscetionController.js';
 import './ListingController.js';
