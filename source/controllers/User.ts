@@ -73,6 +73,18 @@ login.create = login.handler(
 	}
 );
 
+login.delete = async (req, res) => {
+	if (res.locals.user !== null && res.locals.user !== undefined) {
+		res.clearCookie('AuthToken');
+		res.redirect('/section');
+	} else {
+		res.send('Not Logged in');
+		res.redirect('/section');
+	}
+};
+
+login.override('delete', '/signout');
+
 interface UserSignupForm {
 	username: string;
 	email: string;
