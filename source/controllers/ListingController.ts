@@ -30,9 +30,7 @@ interface ListingCreationForm {
 	listing_description: string;
 	startprice: number;
 	openstatus: string;
-	catid: number;
 	subcatid: number;
-	id: string;
 };
 
 function ValidListingCreationForm (obj: any): obj is ListingCreationForm {
