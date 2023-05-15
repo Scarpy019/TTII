@@ -7,18 +7,15 @@
     <title></title>
 </head>
 <body>
-    <div class="topbar">
-        <div class="nav_buttons"></div>
-        <h1 id="page_title"></h1>
-        <div class="user_status"></div>
+    <div class="header">
+        <%- include('../misc/header') %>
     </div>
     <div class="main_container">
-
         <div class="subcategories">
             <h1 id="category_name"><%- section.name %></h1>
             <ul id="subcategory_list">
 				<% section.subsections.forEach(subsection => { %>
-					<a href='/listings/<%=subsection.id%>'><%- subsection.name %></a>;
+					<a href='/listing/<%=subsection.id%>'><%- subsection.name %></a>;
 				<% }) %>
 			</ul>
         </div>

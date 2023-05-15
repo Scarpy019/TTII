@@ -2,6 +2,7 @@ import { Bid, Listing, type Log, Section, Subsection, User, Media, ListingLink }
 import ts from 'typescript';
 import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
 const sys = ts.sys;
 export async function seedAll (): Promise<void> {
 	// -------User and UserLog-------
@@ -10,14 +11,14 @@ export async function seedAll (): Promise<void> {
 		id: uuidv4(),
 		username: 'xXx_boi_xXx',
 		email: 'boi@boi.boi',
-		password: 'boiboi',
+		password: await bcrypt.hash('boiboi', 12),
 		access: 'boi'
 	});
 	const user2 = await User.create({
 		id: uuidv4(),
 		username: 'gurl',
 		email: 'gurl@boi.boi',
-		password: 'gurlgurl',
+		password: await bcrypt.hash('gurlgrul', 12),
 		access: 'client'
 	});
 	await userBoi.$create('log', {

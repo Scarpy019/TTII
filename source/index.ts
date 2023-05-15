@@ -6,6 +6,9 @@ import multer from 'multer';
 import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';
 import { applyLogging } from './middlewares/LoggingMiddleware.js';
+import { validateAuthToken } from './middleware/AuthTokenMiddleware.js';
+import { headerConstants } from './controllers/config.js';
+import { identifySession, obfuscateServerInfo, validateCSRF } from './middleware/HardeningMiddleware.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -23,22 +26,20 @@ app.use(BodyParser.json()); // to support JSON-encoded bodies
 app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
+app.use(validateAuthToken); // To parse authentification tokens
+app.use(identifySession); // To fingerprint the session
+app.use(validateCSRF); // To validate the CSRF token for non-GET requests
+app.use(obfuscateServerInfo); // To hide server-identifying headers
 
 applyLogging(app);
 
 app.use('/', controllerRouter());
 
-/*
-app.get('/', authenticator, function (req: AuthenticatedRequest, res) {
-	if (req.user != null) {
-		res.send('Hello ' + req.user.username + '!');
-	} else {
-		res.send('Hello World!');
-	}
+// Redirect to sections, possibly implement a full
+app.get('/', (req, res) => {
+	res.redirect('/section');
 });
 
-app.use('/user', userRouter);
-*/
 // 404 route that accepts all remaining routes
 app.get('*', function (req, res) {
 	// set status
@@ -46,7 +47,11 @@ app.get('*', function (req, res) {
 
 	// respond with html page
 	if (req.accepts('html') !== undefined) {
-		res.render('pages/misc/404', { url: req.url });
+		if (res.locals.user !== null && res.locals.user !== undefined) {
+			res.render('pages/misc/404', { url: req.url, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
+		} else {
+			res.render('pages/misc/404', { url: req.url, constants: headerConstants, userstatus_name: 'Login', userstatus_page: '/user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
+		}
 		return;
 	}
 

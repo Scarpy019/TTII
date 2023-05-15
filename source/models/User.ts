@@ -3,7 +3,6 @@ import { UserLog } from './UserLog.js';
 import { Listing } from './Listing.js';
 import { type Optional } from 'sequelize';
 import { UUID } from '../sequelizeSetup.js';
-import { AuthToken } from './AuthToken.js';
 import { Bid } from './Bid.js';
 
 /**
@@ -58,9 +57,6 @@ export class User extends Model<UserAttributes, UserInput> {
 
 	@HasMany(() => Listing, 'userId')
     listings?: Listing[];
-
-	@HasMany(() => AuthToken, 'userId')
-    authTokens?: AuthToken[];
 
 	@HasMany(() => Bid, 'userId')
     bids?: Bid[];

@@ -13,5 +13,5 @@
 		"paths": {
 			"jquery": ["../node_modules/@types/jquery/dist/"]
 		}
-    },
+    }
 }
