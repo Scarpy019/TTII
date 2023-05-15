@@ -17,7 +17,6 @@ function getCookie (cname) {
 // Inject CSRF into forms present within the document
 const formsInDOM = [...document.getElementsByTagName('form')];
 formsInDOM.forEach(form => {
-	console.log(getCookie('CSRFToken'));
 	const input = document.createElement('input');
 	input.name = '__CSRFToken';
 	input.type = 'hidden';
