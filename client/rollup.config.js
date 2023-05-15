@@ -11,7 +11,7 @@ const plugins=[
 	nodeResolve({
 		browser:true
 	}),
-	terser()
+	// terser()
 ]
 
 export default [
@@ -22,5 +22,13 @@ export default [
 			format: 'es'
 		},
 		plugins: [scss({output:'./static/lapa/headerstyle.css'})].concat(plugins)
+	},
+	{
+		input: './client/client.ts',
+		output: {
+			file: './static/lapa/client.js',
+			format: 'es'
+		},
+		plugins: plugins
 	}
 ];
