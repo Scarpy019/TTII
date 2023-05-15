@@ -7,6 +7,7 @@ import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';
 import { validateAuthToken } from './middleware/AuthTokenMiddleware.js';
 import { headerConstants } from './controllers/config.js';
+import { identifySession, obfuscateServerInfo, validateCSRF } from './middleware/HardeningMiddleware.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -25,6 +26,9 @@ app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
 app.use(validateAuthToken); // To parse authentification tokens
+app.use(identifySession); // To fingerprint the session
+app.use(validateCSRF); // To validate the CSRF token for non-GET requests
+app.use(obfuscateServerInfo); // To hide server-identifying headers
 
 app.use('/', controllerRouter());
 
