@@ -1,0 +1,22 @@
+.nav_buttons a, .user_status a {
+	border-style: solid;
+	border-width: 2px;
+	border-radius: 2px;
+	padding: 5px;
+	align-content: left;
+}
+
+#page_title{
+	align-content: center;
+}
+
+.user_status {
+	align-content: right;
+}
+
+.topbars {
+	position: sticky;
+	display: grid;
+  	grid-template-columns: 30% 40% 30% ;
+}
+
