@@ -16,3 +16,10 @@ export const authorization = {
 	/** secret used to sign JWTs and HMACs */
 	secret: 'Please change me :)'
 };
+export const session = {
+	/** lifetime of the session id token in the browser */
+	tokenLife: 90_000,
+
+	/** secret used to sign JWTs and HMACs */
+	secret: authorization.secret // It can be the same as auth secret I think
+};
