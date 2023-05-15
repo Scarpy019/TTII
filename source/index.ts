@@ -27,11 +27,10 @@ app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
 app.use(validateAuthToken); // To parse authentification tokens
+app.use(applyLogging); // To log actions on endpoints
 app.use(identifySession); // To fingerprint the session
 app.use(validateCSRF); // To validate the CSRF token for non-GET requests
 app.use(obfuscateServerInfo); // To hide server-identifying headers
-
-applyLogging(app);
 
 app.use('/', controllerRouter());
 
