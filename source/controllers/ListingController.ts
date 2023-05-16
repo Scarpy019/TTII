@@ -1,4 +1,5 @@
 import { Listing } from '../models/Listing.js';
+import { Section } from '../models/Section.js';
 import { Subsection } from '../models/Subsection.js';
 import { User } from '../models/User.js';
 import { Controller } from './BaseController.js';
@@ -77,11 +78,14 @@ listing.interface('/item', async (req, res) => {
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId, { include: [Subsection] });
 		if (listing !== null) {
-			if (res.locals.user !== null && res.locals.user !== undefined) {
-				const user: User = res.locals.user;
-				res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}` });
-			} else {
-				res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants });
+			const author = await User.findByPk(listing.userId);
+			if (author !== null && author !== undefined) {
+				if (res.locals.user !== null && res.locals.user !== undefined) {
+					const user: User = res.locals.user;
+					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}` });
+				} else {
+					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, constants: headerConstants });
+				}
 			}
 		} else {
 			res.sendStatus(404);
@@ -91,11 +95,18 @@ listing.interface('/item', async (req, res) => {
 	}
 });
 
-listing.interface('/create', (req, res) => {
+listing.interface('/create', async (req, res) => {
 	if (res.locals.user instanceof User) {
+		const sections = await Section.findAll({ include: [Subsection] });
+		let sectioncount = 0;
+		sections.forEach(element => {
+			if (element.id >= sectioncount && element.id !== null && element.id !== undefined) {
+				sectioncount = element.id;
+			}
+		});
 		if (res.locals.user !== undefined && res.locals.user !== null) {
 			const user: User = res.locals.user;
-			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}` });
+			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}`, sections, sectioncount });
 		} else {
 			res.render('pages/listing/create', { constants: headerConstants });
 		}
