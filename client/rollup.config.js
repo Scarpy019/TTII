@@ -30,5 +30,12 @@ export default [
 			format: 'es'
 		},
 		plugins: plugins
+	},
+	{
+		input: './client/hardening.ts',
+		output: {
+			file: './static/js/hardening.js',
+			format: 'es'
+		}
 	}
 ];
