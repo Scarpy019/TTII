@@ -28,7 +28,7 @@ export async function validateCSRF (req: Request, res: Response, next: NextFunct
 	} else {
 		/* Check CSRF */
 		const CSRFtoken = req.body.__CSRFToken;
-		if (CSRFtoken === undefined) {
+		if (CSRFtoken === undefined || typeof CSRFtoken !== 'string') {
 			res.sendStatus(403);
 		} else {
 			const CSRFdata = jwt.verify(CSRFtoken, config.secret);
