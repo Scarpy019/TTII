@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { db as config } from './config.js';
 import { Bid, Listing, ListingLink, Media, Section, Subsection, User, UserLog } from './models/index.js';
+import { logger } from 'yatsl';
 
 export const sequelize = new Sequelize({
 	database: config.db,
@@ -11,6 +12,13 @@ export const sequelize = new Sequelize({
 	models: [User, UserLog, Section, Subsection, Listing, Bid, Media, ListingLink],
 	define: {
 		freezeTableName: true
+	},
+	logging: (sql: string) => {
+		logger.overrideConfig({
+			name: 'sequelize',
+			logLine: false
+		});
+		logger.log(sql);
 	}
 });
 

@@ -5,10 +5,11 @@ import cookieParser from 'cookie-parser';
 import multer from 'multer';
 import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';
-import { applyLogging } from './middlewares/LoggingMiddleware.js';
+import { logUserAction } from './middleware/LoggingMiddleware.js';
 import { validateAuthToken } from './middleware/AuthTokenMiddleware.js';
 import { headerConstants } from './controllers/config.js';
 import { identifySession, obfuscateServerInfo, validateCSRF } from './middleware/HardeningMiddleware.js';
+import { logger } from './lib/Logger.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -27,7 +28,7 @@ app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
 app.use(validateAuthToken); // To parse authentification tokens
-app.use(applyLogging); // To log actions on endpoints
+app.use(logUserAction); // To log actions on endpoints
 app.use(identifySession); // To fingerprint the session
 app.use(validateCSRF); // To validate the CSRF token for non-GET requests
 app.use(obfuscateServerInfo); // To hide server-identifying headers
@@ -66,5 +67,5 @@ app.get('*', function (req, res) {
 
 app.listen(3000, async function () {
 	await sequelize.sync();
-	console.log('App is listening on port 3000!');
+	logger.info('App is listening on port 3000!');
 });
