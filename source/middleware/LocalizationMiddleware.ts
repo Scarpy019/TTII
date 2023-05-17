@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
-import en from '../localization/en.js';
-import lv from '../localization/lv.js';
+import en from '../localization/lang_en.js';
+import lv from '../localization/lang_lv.js';
 import type locale from '../localization/localization.js';
 
 const localizations: Record<string, locale> = {
