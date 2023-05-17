@@ -1,7 +1,8 @@
 import $ from 'jquery';
+import { fetchWithCSRF } from './hardening.js';
 
 async function signout (): Promise<void> {
-	await fetch('/signout', {
+	await fetchWithCSRF('/signout', {
 		method: 'DELETE'
 	});
 	location.reload();
