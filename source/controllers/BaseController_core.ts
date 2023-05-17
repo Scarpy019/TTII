@@ -9,7 +9,7 @@ const controllers: initializable[] = [];
 
 export function controllerRouter (): Router {
 	console.log('Routing...');
-	controllers.forEach((controller) => { console.log('Initializing...'); controller._init(); });
+	controllers.forEach((controller) => { controller._init(); });
 	return router;
 };
 
@@ -29,6 +29,11 @@ type CustomHandler<customRequest extends CustomRequest<any>> = (req: customReque
 type CustomMethod<handler extends CustomHandler<any>> = ThisOrArr<ThisOrAsync<handler>>;
 
 type CustomFinalHandler<dict extends Record<string, string>> = (req: Request<dict>, res: Response) => void;
+
+type httpmethod = 'get' | 'post' | 'put' | 'delete' | 'all';
+type crud = 'create' | 'read' | 'update' | 'delete';
+type url = `/${string}`;
+type ControllerEndpoint = crud | url;
 
 export interface BaseControlPathHandler<
 	body=any,
@@ -50,6 +55,7 @@ export class BaseController<const params extends readonly string[] = [],
 	readonly prefix: string;
 	private readonly subcontrollers: initializable[] = [];
 	private readonly interfaces: Array<{ name: string; method: handler | BaseControlPathHandler<any, parameterDictionary> }> = [];
+	private readonly overrides: { [T in ControllerEndpoint]?: url } = {};
 	/**
 	 * Overriden by Controller's constructor
 	 */
@@ -131,14 +137,23 @@ export class BaseController<const params extends readonly string[] = [],
 	 * @param name The url suffix to append the name to for running this interface
 	 * @param handler The handler that is responsible for serving this interface
 	 */
-	interface (name: string, handler: handler | ControllerSmartHandler<parameterDictionary>): void {
+	interface (name: url, handler: handler | ControllerSmartHandler<parameterDictionary>): void {
 		this.interfaces.push({ name, method: handler });
+	}
+
+	/**
+	 * Overrides the default route of CRUD functions or interfaces
+	 * @param url The url that the handler is associated with.
+	 * @param name The name of the handler
+	 */
+	override (name: ControllerEndpoint, url: url): void {
+		this.overrides[name] = url;
 	}
 
 	private setroute (
 		method: handler | ControllerSmartHandler<parameterDictionary> | null,
 		route: IRoute,
-		routeMethod: 'all' | 'get' | 'put' | 'delete' | 'post'): IRoute {
+		routeMethod: httpmethod): IRoute {
 		if (method !== null) {
 			if (Array.isArray(method)) {
 				return route[routeMethod](...method);
@@ -173,21 +188,71 @@ export class BaseController<const params extends readonly string[] = [],
 		// init subcontrollers to parse them before the main controller to prevent parameters from being priority
 		this.subcontrollers.forEach((subc) => { subc._init(); });
 
+		console.log('\n\nInitializing %s\n---------------------------------', this.name);
 		// init controller interfaces
 		this.interfaces.forEach(Iface => {
 			// handle the case where name is written with the slash
+			const urlCheck = (x: string): x is url => {
+				return x[0] === '/';
+			};
 			if (Iface.name[0] !== '/') Iface.name = '/' + Iface.name;
-			const routeURL = this.name + Iface.name + this.prefix;
-			this.setroute(Iface.method, router.route(routeURL), 'get');
-			console.log('Controller interface at %s initialized', this.name + Iface.name);
-		});
+			if (urlCheck(Iface.name)) {
+				let routeURL: string;
 
+				// Overrides
+				if (Iface.name in this.overrides) {
+					routeURL = this.overrides[Iface.name] + this.prefix;
+				} else {
+					routeURL = this.name + Iface.name + this.prefix;
+				}
+				let r = router.route(routeURL);
+				r = this.setroute(this.before, r, 'all');
+				this.setroute(Iface.method, r, 'get');
+				console.log('Controller interface at %s initialized\n', routeURL);
+			}
+		});
+		// CRUD routing
 		let route = router.route(this.name + this.prefix);
+
 		route = this.setroute(this.before, route, 'all');
-		route = this.setroute(this.create, route, 'post');
-		route = this.setroute(this.read, route, 'get');
-		route = this.setroute(this.update, route, 'put');
-		this.setroute(this.delete, route, 'delete');
-		console.log('Controller at path %s initialized', this.name);
+
+		console.log('Initializing CRUD methods');
+
+		// create
+		if (this.overrides.create !== undefined) {
+			// different route for overrides, including before method
+			console.log('%s create overriden to %s', this.name, this.overrides.create);
+			let r = router.route(this.overrides.create as string);
+			r = this.setroute(this.before, r, 'all');
+			this.setroute(this.create, r, 'post');
+		} else route = this.setroute(this.create, route, 'post');
+
+		// read
+		if (this.overrides.read !== undefined) {
+			// different route for overrides, including before method
+			console.log('%s read overriden to %s', this.name, this.overrides.read);
+			let r = router.route(this.overrides.read as string);
+			r = this.setroute(this.before, r, 'all');
+			this.setroute(this.read, r, 'get');
+		} else route = this.setroute(this.read, route, 'get');
+
+		// update
+		if (this.overrides.update !== undefined) {
+			// different route for overrides, including before method
+			console.log('%s update overriden to %s', this.name, this.overrides.update);
+			let r = router.route(this.overrides.update as string);
+			r = this.setroute(this.before, r, 'all');
+			this.setroute(this.update, r, 'put');
+		} else route = this.setroute(this.update, route, 'put');
+
+		// delete
+		if (this.overrides.delete !== undefined) {
+			// different route for overrides, including before method
+			console.log('%s delete overriden to %s', this.name, this.overrides.delete);
+			let r = router.route(this.overrides.delete as string);
+			r = this.setroute(this.before, r, 'all');
+			this.setroute(this.delete, r, 'delete');
+		} else this.setroute(this.delete, route, 'delete');
+		console.log('CRUD initialized.\n');
 	}
 };

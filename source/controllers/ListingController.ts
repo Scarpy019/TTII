@@ -61,7 +61,7 @@ listing.create = listing.handler(
 	}
 );
 
-listing.interface('item', async (req, res) => {
+listing.interface('/item', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId, { include: [Subsection] });
@@ -79,7 +79,7 @@ listing.interface('item', async (req, res) => {
 	}
 });
 
-listing.interface('create', (req, res) => {
+listing.interface('/create', (req, res) => {
 	if (res.locals.user instanceof User) {
 		if (res.locals.user !== null && res.locals.user !== undefined) {
 			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
