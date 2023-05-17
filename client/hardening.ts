@@ -1,4 +1,4 @@
-function getCookie (cname) {
+function getCookie (cname: string): string {
 	const name = cname + '=';
 	const decodedCookie = decodeURIComponent(document.cookie);
 	const ca = decodedCookie.split(';');
@@ -23,3 +23,15 @@ formsInDOM.forEach(form => {
 	input.value = getCookie('CSRFToken');
 	form.appendChild(input);
 });
+
+// Custom fetch request that injects the CSRF token into the body
+export async function fetchWithCSRF (url: string, requestInit: RequestInit): Promise<Response> {
+	const body = requestInit.body ?? {};
+	const bodyWithCSRF = { ...body, __CSRFToken: getCookie('CSRFToken') };
+	const headersWithJSON = { ...(requestInit.headers ?? {}), 'content-type': 'application/json' };
+	return await fetch(url, {
+		...requestInit,
+		headers: headersWithJSON,
+		body: JSON.stringify(bodyWithCSRF)
+	});
+}

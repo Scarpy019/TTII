@@ -36,6 +36,7 @@ export default [
 		output: {
 			file: './static/js/hardening.js',
 			format: 'es'
-		}
+		},
+		plugins: plugins
 	}
 ];
