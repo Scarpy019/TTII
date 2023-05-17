@@ -27,7 +27,11 @@ formsInDOM.forEach(form => {
 // Custom fetch request that injects the CSRF token into the body
 export async function fetchWithCSRF (url: string, requestInit: RequestInit): Promise<Response> {
 	const body = requestInit.body ?? {};
-	const bodyWithCSRF = { ...body, __CSRFToken: getCookie('CSRFToken') };
+	const tokenRaw: string | string[] = getCookie('CSRFToken');
+	let token = '';
+	if (Array.isArray(tokenRaw)) token = tokenRaw[tokenRaw.length - 1];
+	else token = tokenRaw;
+	const bodyWithCSRF = { ...body, __CSRFToken: token };
 	const headersWithJSON = { ...(requestInit.headers ?? {}), 'content-type': 'application/json' };
 	return await fetch(url, {
 		...requestInit,
