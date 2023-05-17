@@ -67,8 +67,7 @@ listing.create = listing.handler(
 			res.send(error);
 		};
 	},
-	async (req, res): Promise<void> => {
-		console.log(req.body);
+	(req, res) => {
 		res.sendStatus(400);
 	}
 );

@@ -96,7 +96,7 @@ login.create = login.handler(
 	}
 );
 
-login.delete = async (req, res) => {
+login.delete = (req, res) => {
 	if (res.locals.user !== null && res.locals.user !== undefined) {
 		res.clearCookie('AuthToken');
 		res.send('Logging out');
