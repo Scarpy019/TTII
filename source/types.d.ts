@@ -1,3 +1,4 @@
+import type locale from './localization/localization.js';
 import type { User } from './models';
 
 declare global {
@@ -9,6 +10,10 @@ declare global {
 			sessionId?: string;
 			/** Undefined before the CSRF middleware is run, otherwise contains the CSRF token. */
 			csrfToken?: string;
+
+			// TODO: Link up lang to all Controller methods so TS knows lang is always there
+			/** Undefined at root level only. */
+			lang?: locale;
 		}
 	}
 }
