@@ -38,5 +38,11 @@ export const headerConstants = {
 	search: '/search',
 	publish: '/listing/create',
 	subsection: '/subsection',
-	user: '/user'
+	user: '/user',
+	signouthref: '/user/signout',
+	signinhref: '/user/login',
+	signuphref: '/user/signup',
+	signout_name: 'Sign Out',
+	login_name: 'Login',
+	signup_name: 'Sign up'
 };

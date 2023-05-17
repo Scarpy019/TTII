@@ -1,4 +1,5 @@
 import { Listing } from '../models/Listing.js';
+import { Section } from '../models/Section.js';
 import { Subsection } from '../models/Subsection.js';
 import { User } from '../models/User.js';
 import { Controller } from './BaseController.js';
@@ -13,10 +14,11 @@ listing.read = async (req, res) => {
 		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
 		if (subsection !== null) {
 			if (res.locals.user !== null && res.locals.user !== undefined) { // for header Login&sign up or username& sign out
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
+				const user: User = res.locals.user;
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}` });
 				return;
 			} else {
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: 'Login', userstatus_page: '/user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants });
 				return;
 			}
 		}
@@ -28,14 +30,18 @@ listing.read = async (req, res) => {
 interface ListingCreationForm {
 	listing_name: string;
 	listing_description: string;
-	startprice: number;
+	startprice: string;
 	openstatus: string;
-	subcatid: number;
+	subcatid: string;
 };
 
 function ValidListingCreationForm (obj: any): obj is ListingCreationForm {
 	const valid =
-		('startprice' in obj) && ('listing_name' in obj) && ('listing_description' in obj) && ('openstatus' in obj);
+		('startprice' in obj) && typeof obj.startprice === 'string' && !isNaN(Number(obj.startprice)) && Number(obj.startprice) > 0 && Number(obj.startprice) < 10_000 &&
+		('listing_name' in obj) && typeof obj.listing_name === 'string' &&
+		('listing_description' in obj) && typeof obj.listing_description === 'string' &&
+		('subcatid' in obj) && typeof obj.subcatid === 'string' && !isNaN(Number(obj.subcatid)) &&
+		('openstatus' in obj) && typeof obj.openstatus === 'string';
 	return valid;
 };
 
@@ -43,21 +49,26 @@ listing.create = listing.handler(
 	ValidListingCreationForm,
 	async (req, res): Promise<void> => {
 		try {
-			if (res.locals.user !== null && res.locals.user !== undefined) {
-				await Listing.create({
-					id: uuidv4(),
-					title: req.body.listing_name,
-					body: req.body.listing_description,
-					status: req.body.openstatus,
-					start_price: req.body.startprice,
-					userId: res.locals.user.id,
-					subsectionId: req.body.subcatid
-				});
-			};
-			res.redirect('/listing/' + String(req.body.subcatid));
+			if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
+				if (res.locals.user !== null && res.locals.user !== undefined) {
+					await Listing.create({
+						id: uuidv4(),
+						title: req.body.listing_name,
+						body: req.body.listing_description,
+						status: req.body.openstatus,
+						start_price: Number(req.body.startprice),
+						userId: res.locals.user.id,
+						subsectionId: Number(req.body.subcatid)
+					});
+				};
+				res.redirect('/listing/' + String(req.body.subcatid));
+			}
 		} catch (error) {
 			res.send(error);
 		};
+	},
+	(req, res) => {
+		res.sendStatus(400);
 	}
 );
 
@@ -66,10 +77,14 @@ listing.interface('/item', async (req, res) => {
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId, { include: [Subsection] });
 		if (listing !== null) {
-			if (res.locals.user !== null && res.locals.user !== undefined) {
-				res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
-			} else {
-				res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, constants: headerConstants, userstatus_name: 'Login', userstatus_page: 'user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
+			const author = await User.findByPk(listing.userId);
+			if (author !== null && author !== undefined) {
+				if (res.locals.user !== null && res.locals.user !== undefined) {
+					const user: User = res.locals.user;
+					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}` });
+				} else {
+					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, constants: headerConstants });
+				}
 			}
 		} else {
 			res.sendStatus(404);
@@ -79,12 +94,20 @@ listing.interface('/item', async (req, res) => {
 	}
 });
 
-listing.interface('/create', (req, res) => {
+listing.interface('/create', async (req, res) => {
 	if (res.locals.user instanceof User) {
-		if (res.locals.user !== null && res.locals.user !== undefined) {
-			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
+		const sections = await Section.findAll({ include: [Subsection] });
+		let sectioncount = 0;
+		sections.forEach(element => {
+			if (element.id >= sectioncount && element.id !== null && element.id !== undefined) {
+				sectioncount = element.id;
+			}
+		});
+		if (res.locals.user !== undefined && res.locals.user !== null) {
+			const user: User = res.locals.user;
+			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}`, sections, sectioncount });
 		} else {
-			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: 'Login', userstatus_page: '/user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
+			res.render('pages/listing/create', { constants: headerConstants });
 		}
 	} else {
 		res.redirect('/user/login?redirect=' + Buffer.from('/listing/create').toString('base64'));

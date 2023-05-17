@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="/lapa/client.js", type="module"></script>
 	<title>Create Listing</title>
 </head>
 <body>
@@ -12,17 +13,30 @@
     </div>
 	<form action="/listing" method="post">
 		<label for="listing_name">Listing title</label>
-		<input type="text" id="list_title" name="listing_name"> 
+		<input type="text" id="list_title" name="listing_name" required> 
 		<label for="listing_description">Listing description</label>
-		<input type="text" id="list_desc" name="listing_description"> 
+		<input type="text" id="list_desc" name="listing_description" required> 
 		<label for="startprice">Starting price</label>
-		<input type="number" id="start_price" name="startprice">
+		<input type="number" id="start_price" name="startprice" required>
 		<label for="openstatus">Auction open?</label>
 		<input type="checkbox" id="open_status" name="openstatus">
-		<label for="catid">Category ID</label>
-		<input type="number" id="category_id" name="catid">
-		<label for="subcatid">Subcategory ID</label>
-		<input type="number" id="subcategory_id" name="subcatid">
+		<label for="categoryname">Choose a Category</label>
+		<select id="categories" required>
+		<option value="defcat">Category select</option>
+		<% sections.forEach(element => { %>
+			<option id="category" value="<%-element.id%>"><%-element.name%></option>
+		<% }) %>
+		<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
+		</select>
+		<label for="subcatid">Subcategory name</label>
+		<select id="subcategories" name="subcatid" required>
+		<option id="deffsub" value="defsub">Subcategory select</option>
+			<% sections.forEach(elem => { %>
+				<% elem.subsections.forEach(element => { %>
+					<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+				<% }) %>
+			<% }) %>
+		</select>
 		<input type="submit" value="Submit">
 	</form>
 </body>

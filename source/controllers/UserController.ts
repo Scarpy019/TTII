@@ -96,17 +96,16 @@ login.create = login.handler(
 	}
 );
 
-const signout = user.subcontroller('signout');
-
-signout.read = async (req, res) => { // TODO make this proper using signout.delete
+login.delete = (req, res) => {
 	if (res.locals.user !== null && res.locals.user !== undefined) {
 		res.clearCookie('AuthToken');
-		res.redirect('/section');
+		res.send('Logging out');
 	} else {
 		res.send('Not Logged in');
-		res.redirect('/section');
 	}
 };
+
+login.override('delete', '/signout');
 
 interface UserSignupForm {
 	username: string;
