@@ -28,13 +28,17 @@ export async function validateCSRF (req: Request, res: Response, next: NextFunct
 	} else {
 		/* Check CSRF */
 		const CSRFtoken = req.body.__CSRFToken;
-		if (CSRFtoken === undefined) {
+		if (CSRFtoken === undefined || typeof CSRFtoken !== 'string') {
 			res.sendStatus(403);
 		} else {
-			const CSRFdata = jwt.verify(CSRFtoken, config.secret);
-			if (typeof CSRFdata !== 'string') {
-				next();
-			} else {
+			try {
+				const CSRFdata = jwt.verify(CSRFtoken, config.secret);
+				if (typeof CSRFdata !== 'string' && CSRFdata.sub === res.locals.sessionId) {
+					next();
+				} else {
+					res.sendStatus(403);
+				}
+			} catch (e) {
 				res.sendStatus(403);
 			}
 		}
