@@ -3,10 +3,11 @@
         "module": "ES6",
         "rootDir":"./source",
         "outDir":"./build",
-		"moduleResolution": "bundler",
+		"moduleResolution": "node",
         "target": "es6", // or a more recent ecmascript version
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+		"allowSyntheticDefaultImports": true,
 		"strictNullChecks": true,
 		"strict": true,
 		"declaration": true
