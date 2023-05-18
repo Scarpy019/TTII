@@ -7,6 +7,7 @@ import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';
 import { validateAuthToken } from './middleware/AuthTokenMiddleware.js';
 import { headerConstants } from './controllers/config.js';
+import { localization } from './middleware/LocalizationMiddleware.js';
 import { identifySession, obfuscateServerInfo, validateCSRF } from './middleware/HardeningMiddleware.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
@@ -30,7 +31,7 @@ app.use(identifySession); // To fingerprint the session
 app.use(validateCSRF); // To validate the CSRF token for non-GET requests
 app.use(obfuscateServerInfo); // To hide server-identifying headers
 
-app.use('/', controllerRouter());
+app.use('/', localization, controllerRouter());
 
 // Redirect to sections, possibly implement a full
 app.get('/', (req, res) => {
