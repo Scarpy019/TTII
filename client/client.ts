@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { fetchWithCSRF } from './hardening.js';
+import Cookies from 'js-cookie';
 
 async function signout (): Promise<void> {
 	await fetchWithCSRF('/signout', {
@@ -40,4 +41,10 @@ $('#categories').on('change', function () {
 		currentcat.toString();
 		$(`.category_${currentcat}`).show();
 	}
+});
+
+$('#language').on('change', function () {
+	const currentlang = ($('#language').find(':selected').text());
+	Cookies.set('lang', currentlang);
+	location.reload();
 });

@@ -10,11 +10,19 @@
 	<h1 id="page_title"><%-lang.header.page_title%></h1>
 	<div class="user_status"><% if (user!==null && user!==undefined) { %>
 		<a href="<%=userstatus_page%>"><%-userstatus_name%></a>
-		<button id="signoutbutton"><%-constants.signout_name%></button>
+		<button id="signoutbutton"><%-lang.header.signout_name%></button>
 	<% }else{ %> 
-		<a href="<%=constants.signinhref%>"><%=constants.login_name%></a>
-		<a href="<%=constants.signuphref%>"><%=constants.signup_name%></a>
+		<a href="<%=constants.signinhref%>"><%=lang.header.login_name%></a>
+		<a href="<%=constants.signuphref%>"><%=lang.header.signup_name%></a>
 	<% }%>
+	
 	</div>
-	<div class="language_buttons"></div>
+	<div class="language_buttons">
+		<form>
+			<select id="language">
+				<option id="LV_lang">LV</option>
+				<option id="EN_lang">ENG</option>
+			</select>
+		</form>
+	</div>
 </header>

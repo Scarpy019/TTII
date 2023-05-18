@@ -12,25 +12,25 @@
         <%- include('../misc/header') %>
     </div>
 	<form action="/listing" method="post">
-		<label for="listing_name">Listing title</label>
+		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
 		<input type="text" id="list_title" name="listing_name" required> 
-		<label for="listing_description">Listing description</label>
+		<label for="listing_description"><%-lang.listing_form.listing_desc%></label>
 		<input type="text" id="list_desc" name="listing_description" required> 
-		<label for="startprice">Starting price</label>
+		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
 		<input type="number" id="start_price" name="startprice" required>
-		<label for="openstatus">Auction open?</label>
+		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
 		<input type="checkbox" id="open_status" name="openstatus">
-		<label for="categoryname">Choose a Category</label>
+		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
 		<select id="categories" required>
-		<option value="defcat">Category select</option>
+		<option value="defcat"><%-lang.listing_form.category_def_val%></option>
 		<% sections.forEach(element => { %>
 			<option id="category" value="<%-element.id%>"><%-element.name%></option>
 		<% }) %>
 		<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
 		</select>
-		<label for="subcatid">Subcategory name</label>
+		<label for="subcatid"><%-lang.listing_form.subcategory_select_label%></label>
 		<select id="subcategories" name="subcatid" required>
-		<option id="deffsub" value="defsub">Subcategory select</option>
+		<option id="deffsub" value="defsub"><%-lang.listing_form.subcategory_def_val%></option>
 			<% sections.forEach(elem => { %>
 				<% elem.subsections.forEach(element => { %>
 					<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
