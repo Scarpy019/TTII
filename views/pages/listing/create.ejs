@@ -4,13 +4,18 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/image_upload.css">
 	<script src="/lapa/client.js", type="module"></script>
+	<script src="/lapa/listing_create.js", type="module"></script>
 	<title>Create Listing</title>
 </head>
 <body>
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
+	<div id = "imgdisplay">
+
+	</div>
 	<form action="/listing" method="post">
 		<label for="listing_name">Listing title</label>
 		<input type="text" id="list_title" name="listing_name" required> 
@@ -36,7 +41,9 @@
 					<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
 				<% }) %>
 			<% }) %>
-		</select>
+		</select><br>
+		<input accept="image/png, image/jpeg" type="file" name="images" title="Upload image" id="imgupload">
+		<label for="imgupload">Upload</label>
 		<input type="submit" value="Submit">
 	</form>
 </body>
