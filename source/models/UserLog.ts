@@ -5,13 +5,14 @@ import { UUID } from '../sequelizeSetup.js';
 
 export interface Log {
 	// TODO: keys for db logs
-	action?: 'GET' | 'PUT' | 'DELETE' | 'POST';
+	action?: string;
+	path: string;
 };
 
 interface UserLogAttributes {
 	id: UUID;
 	log: Log;
-	userId: string;
+	userId: string | null;
 };
 
 type UserLogInput = Optional<UserLogAttributes, 'id'>;
@@ -34,7 +35,7 @@ export class UserLog extends Model<UserLogAttributes, UserLogInput> {
 	@ForeignKey(() => User)
 	@IsUUID(4)
 	@Column(DataType.UUID)
-	declare userId: string;
+	declare userId: string | null;
 
 	@BelongsTo(() => User, 'userId')
 	declare user: ReturnType<() => User>;

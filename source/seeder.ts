@@ -3,6 +3,7 @@ import ts from 'typescript';
 import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { logger } from './lib/Logger.js';
 const sys = ts.sys;
 export async function seedAll (): Promise<void> {
 	// -------User and UserLog-------
@@ -23,19 +24,19 @@ export async function seedAll (): Promise<void> {
 	});
 	await userBoi.$create('log', {
 		id: uuidv4(),
-		log: { action: 'GET' } satisfies Log
+		log: { action: 'GET', path: '/' } satisfies Log
 	});
 	await user2.$create('log', {
 		id: uuidv4(),
-		log: { action: 'POST' } satisfies Log
+		log: { action: 'POST', path: '/' } satisfies Log
 	});
 	await userBoi.$create('log', {
 		id: uuidv4(),
-		log: { action: 'PUT' } satisfies Log
+		log: { action: 'PUT', path: '/' } satisfies Log
 	});
 	await userBoi.$create('log', {
 		id: uuidv4(),
-		log: { action: 'DELETE' } satisfies Log
+		log: { action: 'DELETE', path: '/' } satisfies Log
 	});
 	await userBoi.save();
 	await user2.save();
@@ -55,7 +56,7 @@ export async function seedAll (): Promise<void> {
 	await depo.$create('subsection', {
 		name: 'motormotori'
 	});
-	console.log(depo.toJSON());
+	logger.log(depo);
 	await depo.save();
 	// await sequelize.sync();
 
@@ -117,7 +118,7 @@ if (sys.args.includes('--seed')) {
 		// seed
 		void seedAll().then(async () => {
 			// sync in case it isn't synced
-			void sequelize.sync().then(() => { console.log('Done'); });
+			void sequelize.sync().then(() => { logger.info('Done'); });
 		});
 	});
 }

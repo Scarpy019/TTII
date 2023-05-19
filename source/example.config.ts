@@ -1,3 +1,4 @@
+import { LogLevel } from 'yatsl';
 
 export const db = {
 	/** host name for the database */
@@ -22,4 +23,8 @@ export const session = {
 
 	/** secret used to sign JWTs and HMACs */
 	secret: authorization.secret // It can be the same as auth secret I think
+};
+export const logging = {
+	/** Minimum log level */
+	logLevel: LogLevel.INFO
 };
