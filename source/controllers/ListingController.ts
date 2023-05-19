@@ -45,6 +45,25 @@ function ValidListingCreationForm (obj: any): obj is ListingCreationForm {
 	return valid;
 };
 
+interface ListingUpdateForm {
+	listing_name: string;
+	listing_description: string;
+	startprice: string;
+	openstatus: string;
+	subcatid: string;
+	listingid: string;
+};
+
+function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
+	const valid =
+		('startprice' in obj) && typeof obj.startprice === 'string' && !isNaN(Number(obj.startprice)) && Number(obj.startprice) > 0 && Number(obj.startprice) < 10_000 &&
+		('listing_name' in obj) && typeof obj.listing_name === 'string' &&
+		('listing_description' in obj) && typeof obj.listing_description === 'string' &&
+		('subcatid' in obj) && typeof obj.subcatid === 'string' && !isNaN(Number(obj.subcatid)) &&
+		('openstatus' in obj) && typeof obj.openstatus === 'string' && ('listingid' in obj) && typeof obj.listingid === 'string';
+	return valid;
+};
+
 listing.create = listing.handler(
 	ValidListingCreationForm,
 	async (req, res): Promise<void> => {
@@ -81,9 +100,9 @@ listing.interface('/item', async (req, res) => {
 			if (author !== null && author !== undefined) {
 				if (res.locals.user !== null && res.locals.user !== undefined) {
 					const user: User = res.locals.user;
-					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}` });
+					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
 				} else {
-					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, constants: headerConstants });
+					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants });
 				}
 			}
 		} else {
@@ -93,6 +112,44 @@ listing.interface('/item', async (req, res) => {
 		res.sendStatus(404);
 	}
 });
+
+listing.interface('/item/edit', async (req, res) => { // TODO Currently broken, hardening.js refuses to work with this
+	const listId = (req.query.listingId) as unknown;
+	if ((listId) !== null && typeof listId === 'string') {
+		const listing = await Listing.findByPk(listId);
+		if (listing !== null) {
+			const author = await User.findByPk(listing.userId);
+			const accessuser = res.locals.user;
+			if (accessuser !== undefined && accessuser !== null && author !== null && author !== undefined) {
+				if (accessuser === author) {
+					res.render('pages/listing/edit');
+				} else {
+					res.redirect('/section');
+					res.send('im afraind not squire');
+				}
+			}
+		}
+	}
+});
+
+listing.update = listing.handler(
+	ValidListingUpdateForm,
+	async (req, res): Promise<void> => {
+		try {
+			const listinginstance = await Listing.findByPk(req.body.listingid);
+			if (listinginstance !== null) {
+				listinginstance.title = req.body.listing_name;
+				listinginstance.body = req.body.listing_description;
+				listinginstance.status = req.body.openstatus;
+				listinginstance.start_price = Number(req.body.startprice);
+				listinginstance.subsectionId = Number(req.body.subcatid);
+				await listinginstance.save();
+			}
+		} catch (error) {
+			res.send(error);
+		};
+	}
+);
 
 listing.interface('/create', async (req, res) => {
 	if (res.locals.user instanceof User) {

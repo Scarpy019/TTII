@@ -25,5 +25,14 @@ export default {
 		category_def_val: 'Category selection',
 		subcategory_select_label: 'Select a subcategory',
 		subcategory_def_val: 'Subcategory selection'
+	},
+	listing_item: {
+		startprice: 'Starting price',
+		author: 'Author',
+		postdate: 'Posted on',
+		edit: 'Edit'
+	},
+	userpage: {
+		welcome: 'Welcome'
 	}
 } satisfies locale;

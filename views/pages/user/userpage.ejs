@@ -9,19 +9,15 @@
 <body>
     <div class="header">
         <%- include('../misc/header') %>
-        
     </div>
     <div class="main_container">
-
-        <div class="listings">
-            <h1 id="subcategory_name"><%- subsection.name %></h1>
-            <ul id="subcategory_list">
-				<% subsection.listings.forEach(listings => { %>
-					<a href='/listing/item?listingId=<%=listings.id%>'><%- listings.title %></a>
-				<% }) %>
-			</ul>
-        </div>
-
+		<p><%=username%></p>
+		<% userlistings.forEach(element => { %>
+			<a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
+			<% if (authorid == currentuserid) { %>
+				<a href="/listing/edit/item?listingId=<%=element.id%>">Edit</a>
+			<% } %>
+		<% }) %>
     </div>
 </body>
 </html>

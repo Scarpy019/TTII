@@ -24,4 +24,13 @@ export default interface locale {
 		subcategory_select_label: string;
 		subcategory_def_val: string;
 	};
+	listing_item: {
+		startprice: string;
+		author: string;
+		postdate: string;
+		edit: string;
+	};
+	userpage: {
+		welcome: string;
+	};
 };

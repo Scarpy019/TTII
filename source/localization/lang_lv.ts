@@ -25,5 +25,14 @@ export default {
 		category_def_val: 'Sadaļas izvēle',
 		subcategory_select_label: 'Izvēlies apakšsadaļu',
 		subcategory_def_val: 'Apakšsadaļas izvēle'
+	},
+	listing_item: {
+		startprice: 'Sākotnējā cena',
+		author: 'Autors',
+		postdate: 'Izveidots',
+		edit: 'Rediģēt'
+	},
+	userpage: {
+		welcome: 'Sveicināts'
 	}
 } satisfies locale;

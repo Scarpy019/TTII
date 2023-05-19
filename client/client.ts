@@ -11,6 +11,16 @@ async function signout (): Promise<void> {
 
 $('#signoutbutton').on('click', signout);
 
+async function editlisting (): Promise<void> {
+	await fetchWithCSRF('/listingupdate', {
+		method: 'UPDATE'
+	});
+	location.reload();
+	alert('Listing updated');
+}
+
+$('#updatebutton').on('click', editlisting);
+
 $((document) => {
 	const currentcat = $('#categories').find(':selected').val();
 	const sectioncount = Number($('#sectioncount').val());

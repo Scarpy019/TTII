@@ -17,9 +17,12 @@
             <h1 id="listing_name"><%- title %></h1>
             <div class="description">
                 <p><%-body%></p>
-                <p>Starting price - <%-startprice%>$</p>
-                <p>Author - <%-author%></p>
-                <p>Posted on <%-createdAt%></p>
+                <p><%-lang.listing_item.startprice%> - <%-startprice%>$</p>
+                <p><%-lang.listing_item.author%> - <a href="/user/profile/<%=author_profile%>"><%-author%></a></p>
+                <p><%-lang.listing_item.postdate%> <%-createdAt%></p>
+                <% if (authorid == currentuserid) { %>
+                    <a href="/listing/item/edit?listingId=<%=id%>"><%-lang.listing_item.edit%></a>
+                <% } %>
 			</div>
 			<div class="listing_data"></div>
         </div>
