@@ -42,7 +42,6 @@ media.create = [
 			// filter out non-image mime types
 			const fileData = file;
 			if (fileData !== undefined) {
-				console.log(fileData);
 				const mimetypeClass = fileData.mimetype.split('/')[0];
 				if (mimetypeClass === 'image') {
 					callback(null, true);
@@ -65,7 +64,6 @@ media.create = [
 		})
 	}).single('image'),
 	async (req, res) => {
-		console.log('creat');
 		// check if a user is logged in
 		const user = res.locals.user;
 		if (user !== undefined && user !== null) {
@@ -102,7 +100,6 @@ media.create = [
 			}
 			// check if the file actually exists
 			const fileData = req.file;
-			console.log(fileData);
 			if (fileData !== undefined) {
 				// make the entry
 				const dat = fileData.filename.split('.');

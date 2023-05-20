@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import './image_input.scss';
 import { fetchWithCSRF, fetchWithCSRFmultipart } from '../hardening.js';
+import { logger } from '../../node_modules/yatsl/dist/index.js';
 
 // const imageArray: File[] = [];
 
@@ -28,7 +29,7 @@ async function addImage (file: File): Promise<void> {
 	if (response.ok) {
 		void refreshImages();
 	} else {
-		console.error('Something went wrong...');
+		logger.log('Something went wrong...');
 	}
 }
 
