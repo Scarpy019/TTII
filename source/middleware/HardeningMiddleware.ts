@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { randomBytes } from 'crypto';
 import { session as config } from '../config.js';
 import jwt from 'jsonwebtoken';
+import { logger } from '../lib/Logger.js';
 
 export async function identifySession (req: Request, res: Response, next: NextFunction): Promise<void> {
 	if (req.cookies.SessionId === undefined) {
@@ -17,7 +18,7 @@ export async function identifySession (req: Request, res: Response, next: NextFu
 /**
  * Express middleware for checking headers and the body for a valid CSRF token
  *
- * The header name is `__csrftoken` and the body name is `__CSRFToken`
+ * The header name is `x-csrf` and the body name is `__CSRFToken`
  */
 export async function validateCSRF (req: Request, res: Response, next: NextFunction): Promise<void> {
 	if (res.locals.sessionId === undefined) {
@@ -33,12 +34,12 @@ export async function validateCSRF (req: Request, res: Response, next: NextFunct
 	} else {
 		let CSRFtoken: string | undefined;
 		/* Check CSRF */
-		if (req.headers.__csrftoken !== undefined) {
+		if (req.headers['x-csrf'] !== undefined) {
 			// Checking if a CSRF token is added to the headers
-			if (Array.isArray(req.headers.__csrftoken)) {
-				CSRFtoken = req.headers.__csrftoken[0];
+			if (Array.isArray(req.headers['x-csrf'])) {
+				CSRFtoken = req.headers['x-csrf'][0];
 			} else {
-				CSRFtoken = req.headers.__csrftoken;
+				CSRFtoken = req.headers['x-csrf'];
 			}
 		} else {
 			// If not, fall back to checking the body for a CSRF token

@@ -14,9 +14,10 @@
         <%- include('../misc/header') %>
     </div>
 	<div id = "imgdisplay">
-
+		
 	</div>
-	<form action="/listing" method="post">
+	<input accept="image/png, image/jpeg" type="file" name="imgupload" title="Upload image" id="imgupload">
+	<form id="createForm" action="/listing" method="post" enctype="multipart/form-data">
 		<label for="listing_name">Listing title</label>
 		<input type="text" id="list_title" name="listing_name" required> 
 		<label for="listing_description">Listing description</label>
@@ -24,7 +25,8 @@
 		<label for="startprice">Starting price</label>
 		<input type="number" id="start_price" name="startprice" required>
 		<label for="openstatus">Auction open?</label>
-		<input type="checkbox" id="open_status" name="openstatus">
+		<input type="hidden" value="closed" id="open_status_def" name="openstatus">
+		<input type="checkbox" value="open" id="open_status" name="openstatus">
 		<label for="categoryname">Choose a Category</label>
 		<select id="categories" required>
 		<option value="defcat">Category select</option>
@@ -42,8 +44,6 @@
 				<% }) %>
 			<% }) %>
 		</select><br>
-		<input accept="image/png, image/jpeg" type="file" name="images" title="Upload image" id="imgupload">
-		<label for="imgupload">Upload</label>
 		<input type="submit" value="Submit">
 	</form>
 </body>
