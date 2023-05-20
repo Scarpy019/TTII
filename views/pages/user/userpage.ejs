@@ -12,12 +12,14 @@
     </div>
     <div class="main_container">
 		<p><%=username%></p>
+        <ul>
 		<% userlistings.forEach(element => { %>
-			<a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
+			<li><a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
 			<% if (authorid == currentuserid) { %>
-				<a href="/listing/edit/item?listingId=<%=element.id%>">Edit</a>
-			<% } %>
+				<a href="/listing/edit?listingId=<%=element.id%>"><%-lang.listing_item.edit%></a>
+			<% } %> </li>
 		<% }) %>
+        </ul>
     </div>
 </body>
 </html>

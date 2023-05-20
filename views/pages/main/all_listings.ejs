@@ -17,7 +17,9 @@
             <h1 id="subcategory_name"><%- subsection.name %></h1>
             <ul id="subcategory_list">
 				<% subsection.listings.forEach(listings => { %>
-					<a href='/listing/item?listingId=<%=listings.id%>'><%- listings.title %></a>
+                    <% if (listings.status === "on") { %>
+                        <a href='/listing/item?listingId=<%=listings.id%>'><%- listings.title %></a>
+                    <% } %>
 				<% }) %>
 			</ul>
         </div>

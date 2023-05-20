@@ -33,7 +33,7 @@ if (!CSRFDone) {
 
 // Custom fetch request that injects the CSRF token into the body
 export async function fetchWithCSRF (url: string, requestInit: RequestInit): Promise<Response> {
-	const body = requestInit.body ?? {};
+	const body = JSON.parse(requestInit.body as string) ?? {};
 	const tokenRaw: string | string[] = getCookie('CSRFToken');
 	let token = '';
 	if (Array.isArray(tokenRaw)) token = tokenRaw[tokenRaw.length - 1];

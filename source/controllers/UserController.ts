@@ -63,7 +63,7 @@ userpage.read = async (req, res) => {
 				const user: User = res.locals.user;
 				if (user.id === userpageId) {
 					if (res.locals.lang !== undefined) {
-						res.render('pages/user/userpage.ejs', { username: `${res.locals.lang.userpage.welcome} ${usernameVar.username}`, constants: headerConstants, userstatus_page: `/user/profile/${user.id}`, userstatus_name: user.username, userlistings, currentuserid: user.id, authorid: usernameVar.id });
+						res.render('pages/user/userpage.ejs', { username: `${res.locals.lang.userpage.welcome},${usernameVar.username}`, constants: headerConstants, userstatus_page: `/user/profile/${user.id}`, userstatus_name: user.username, userlistings, currentuserid: user.id, authorid: usernameVar.id });
 					}
 				}
 				if (user.id !== userpageId) {

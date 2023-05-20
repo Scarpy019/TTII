@@ -11,18 +11,22 @@
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
-	<form action="/listing" method="post">
+	<form>
 		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
 		<input type="text" id="list_title" name="listing_name" value="<%=existing_title%>" required> 
 		<label for="listing_description"><%-lang.listing_form.listing_desc%></label>
 		<input type="text" id="list_desc" name="listing_description" value="<%=existing_desc%>" required > 
 		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
 		<input type="number" id="start_price" name="startprice" value="<%=existing_startprice%>" required>
-		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
-		<input type="checkbox" id="open_status" name="openstatus" value="<%=existing_status%>">
+		<label for="openstatus"><%-lang.listing_form.auction_status_label%> yes</label>
+		<input type="radio" id="open_yes" name="openstatus" value="on">
+		<label for="openstatus"><%-lang.listing_form.auction_status_label%> no</label>
+		<input type="radio" id="open_no" name="openstatus" value="off">
 		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
+		<input hidden id="exist_cat" value="<%=existing_categoryid%>">
+		<input hidden id="exist_subcat" value="<%=existing_subcategoryid%>">
 		<select id="categories" required>
-		<option value="<%=existing_category%>"><%-lang.listing_form.category_def_val%></option>
+		<option id="deffcat" value="default"><%-lang.listing_form.category_def_val%></option>
 		<% sections.forEach(element => { %>
 			<option id="category" value="<%-element.id%>"><%-element.name%></option>
 		<% }) %>
@@ -30,14 +34,16 @@
 		</select>
 		<label for="subcatid"><%-lang.listing_form.subcategory_select_label%></label>
 		<select id="subcategories" name="subcatid" required>
-		<option id="deffsub" value="<%=existing_subcategory%>"><%-lang.listing_form.subcategory_def_val%></option>
+		<option id="deffsub" value="default"><%-lang.listing_form.subcategory_def_val%></option>
 			<% sections.forEach(elem => { %>
 				<% elem.subsections.forEach(element => { %>
 					<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
 				<% }) %>
 			<% }) %>
 		</select>
-		<button id="updatebutton" value="Update">
+		<input hidden id="edit" value="true">
 	</form>
+	<button id="updatebutton" value="Up">Update</button>
+	<a href="/listing/item?listingId=<%=listingid%>" id="returntolist">Return to listing</button>
 </body>
 </html>

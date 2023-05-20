@@ -12,16 +12,39 @@ async function signout (): Promise<void> {
 $('#signoutbutton').on('click', signout);
 
 async function editlisting (): Promise<void> {
-	await fetchWithCSRF('/listingupdate', {
-		method: 'UPDATE'
-	});
-	location.reload();
-	alert('Listing updated');
+	const listtitle = $('#list_title').val();
+	const listdesc = $('#list_desc').val();
+	const startprice = $('#start_price').val();
+	const openstatus = $("[name='openstatus']").val(); // TODO fix openstatus reporting on always
+	const category = $('#categories').find(':selected').val();
+	const subcategory = $('#subcategories').find(':selected').val();
+	const currentlistingquery = location.search;
+	const currentlisting = currentlistingquery.substring(11);
+	if (listdesc !== undefined && startprice !== undefined && openstatus !== undefined && listtitle !== undefined && category !== undefined && subcategory !== undefined && currentlisting !== undefined) {
+		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), subcatid: subcategory.toString() };
+		console.log(openstatus);
+		await fetchWithCSRF('/listing/update', {
+			method: 'PUT',
+			body: JSON.stringify(formobject)
+		});
+	}
 }
 
 $('#updatebutton').on('click', editlisting);
 
 $((document) => {
+	const langcookie = Cookies.get('lang');
+	if (langcookie !== undefined && langcookie !== null) {
+		$('#language').val(langcookie);
+	}
+	if ($('#edit').val() === 'true') {
+		const editcategory = $('#exist_cat').val();
+		const editsubcategory = $('#exist_subcat').val();
+		if (editcategory !== undefined && editcategory !== null && editsubcategory !== undefined && editsubcategory !== null) {
+			$('#categories').val(editcategory.toString());
+			$('#subcategories').val(editsubcategory.toString());
+		}
+	}
 	const currentcat = $('#categories').find(':selected').val();
 	const sectioncount = Number($('#sectioncount').val());
 	let i;
