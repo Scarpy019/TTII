@@ -1,9 +1,10 @@
-import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, ForeignKey, BelongsTo, IsUUID, DataType, AllowNull } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, ForeignKey, BelongsTo, IsUUID, DataType, AllowNull, HasOne } from 'sequelize-typescript';
 import { Subsection } from './Subsection.js';
 import { User } from './User.js';
 import { type Optional } from 'sequelize';
 import { AutoId, UUID } from '../sequelizeSetup.js';
 import { Bid } from './Bid.js';
+import { Media } from './Media.js';
 
 /**
  * Helper interface for creating new Listings
@@ -18,6 +19,7 @@ interface ListingAttributes {
 	auction_end: Date;
 	userId: UUID;
 	subsectionId: AutoId;
+	is_draft: boolean;
 };
 export type ListingInput = Optional<ListingAttributes, 'is_auction' | 'auction_end'>;
 export type ListingOuput = Required<ListingAttributes>;
@@ -64,6 +66,10 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
 	@Column
     subsectionId!: AutoId;
 
+	@AllowNull(false)
+	@Column
+	is_draft!: boolean;
+
 	// relations
 	@BelongsTo(() => User, 'userId')
     user?: ReturnType<() => User>;
@@ -73,6 +79,12 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
 
 	@HasMany(() => Bid, 'listingId')
     bids?: Bid[];
+
+	@HasMany(() => Media, 'listingId')
+	media?: Media[];
+
+	@HasOne(() => User, 'draftListingId')
+	draftOwner?: ReturnType<() => User>;
 
 	// timestamps
 	@CreatedAt

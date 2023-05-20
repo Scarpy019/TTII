@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, Unique, DataType, Validate } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, IsUUID, CreatedAt, DeletedAt, PrimaryKey, Default, UpdatedAt, Unique, DataType, Validate, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { UserLog } from './UserLog.js';
 import { Listing } from './Listing.js';
 import { type Optional } from 'sequelize';
@@ -15,6 +15,7 @@ interface UserAttributes {
 	password: string;
 	access: string;
 	reputation: number;
+	draftListingId: UUID | null;
 };
 type UserInput = Optional<UserAttributes, 'reputation'>;
 export type UserOutput = Required<UserAttributes>;
@@ -51,6 +52,11 @@ export class User extends Model<UserAttributes, UserInput> {
 	@Column
     reputation!: number;
 
+	@Default(null)
+	@ForeignKey(() => Listing)
+	@Column(DataType.UUID)
+	draftListingId!: string | null;
+
 	// associations
 	@HasMany(() => UserLog, 'userId')
     logs?: UserLog[];
@@ -60,6 +66,9 @@ export class User extends Model<UserAttributes, UserInput> {
 
 	@HasMany(() => Bid, 'userId')
     bids?: Bid[];
+
+	@BelongsTo(() => Listing, 'draftListingId')
+	draftListing?: ReturnType<() => Listing>;
 
 	// timestamps
 	@CreatedAt

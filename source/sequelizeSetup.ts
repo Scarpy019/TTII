@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { db as config } from './config.js';
-import { Bid, Listing, ListingLink, Media, Section, Subsection, User, UserLog } from './models/index.js';
+import { Bid, Listing, Media, Section, Subsection, User, UserLog } from './models/index.js';
 import { logger } from 'yatsl';
 
 export const sequelize = new Sequelize({
@@ -9,7 +9,7 @@ export const sequelize = new Sequelize({
 	username: config.user,
 	password: config.pass,
 	host: config.host,
-	models: [User, UserLog, Section, Subsection, Listing, Bid, Media, ListingLink],
+	models: [User, UserLog, Section, Subsection, Listing, Bid, Media],
 	define: {
 		freezeTableName: true
 	},
