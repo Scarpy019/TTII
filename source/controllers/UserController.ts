@@ -56,7 +56,7 @@ const userpage = user.subcontroller('profile', ['id']);
 userpage.read = async (req, res) => {
 	const userpageId = req.params.id;
 	if (userpageId !== null && userpageId !== undefined) {
-		const usernameVar = await User.findByPk(userpageId, { include: [Listing] });
+		const usernameVar = await User.findByPk(userpageId);
 		if (usernameVar !== null && usernameVar !== undefined) {
 			const userlistings = await Listing.findAll({ where: { userId: usernameVar.id } });
 			if (res.locals.user !== null && res.locals.user !== undefined) {

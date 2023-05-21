@@ -18,10 +18,9 @@
 		<input type="text" id="list_desc" name="listing_description" value="<%=existing_desc%>" required > 
 		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
 		<input type="number" id="start_price" name="startprice" value="<%=existing_startprice%>" required>
-		<label for="openstatus"><%-lang.listing_form.auction_status_label%> yes</label>
-		<input type="radio" id="open_yes" name="openstatus" value="on">
-		<label for="openstatus"><%-lang.listing_form.auction_status_label%> no</label>
-		<input type="radio" id="open_no" name="openstatus" value="off">
+		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
+		<input type="hidden" value="closed" id="open_status_def" name="openstatus">
+		<input type="checkbox" id="open_status" name="openstatus">
 		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
 		<input hidden id="exist_cat" value="<%=existing_categoryid%>">
 		<input hidden id="exist_subcat" value="<%=existing_subcategoryid%>">
@@ -45,5 +44,6 @@
 	</form>
 	<button id="updatebutton" value="Up">Update</button>
 	<a href="/listing/item?listingId=<%=listingid%>" id="returntolist">Return to listing</button>
+	<button id="dangerousdeletebuttonthatdestroys">DELETE!!!!!!!</button>
 </body>
 </html>

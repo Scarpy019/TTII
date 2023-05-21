@@ -54,7 +54,7 @@ function convertFormToJSON (form: JQuery<HTMLFormElement>): any {
 	return json;
 }
 
-$('#createForm').on('submit', async (e) => {
+$('#createForm').on('submit', async (e) => { // TODO FIX THIS fetch with CSRF
 	e.preventDefault();
 	const form: JQuery<HTMLFormElement> = $('#createForm');
 	const response = await fetchWithCSRF('/listing', {

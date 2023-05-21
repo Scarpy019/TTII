@@ -3,8 +3,10 @@ import { fetchWithCSRF } from './hardening.js';
 import Cookies from 'js-cookie';
 
 async function signout (): Promise<void> {
+	const hacker = { hacker: 'hacker' };
 	await fetchWithCSRF('/signout', {
-		method: 'DELETE'
+		method: 'DELETE',
+		body: JSON.stringify(hacker)
 	});
 	location.reload();
 }
@@ -15,22 +17,36 @@ async function editlisting (): Promise<void> {
 	const listtitle = $('#list_title').val();
 	const listdesc = $('#list_desc').val();
 	const startprice = $('#start_price').val();
-	const openstatus = $("[name='openstatus']").val(); // TODO fix openstatus reporting on always
+	let openstatus;
+	if ($('#open_status').is(':checked')) {
+		openstatus = 'open';
+	} else {
+		openstatus = 'closed';
+	}
 	const category = $('#categories').find(':selected').val();
 	const subcategory = $('#subcategories').find(':selected').val();
 	const currentlistingquery = location.search;
 	const currentlisting = currentlistingquery.substring(11);
 	if (listdesc !== undefined && startprice !== undefined && openstatus !== undefined && listtitle !== undefined && category !== undefined && subcategory !== undefined && currentlisting !== undefined) {
 		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), subcatid: subcategory.toString() };
-		console.log(openstatus);
 		await fetchWithCSRF('/listing/update', {
 			method: 'PUT',
 			body: JSON.stringify(formobject)
+		}).then(Response => {
+			location.href = Response.url;
 		});
 	}
 }
 
 $('#updatebutton').on('click', editlisting);
+
+async function deletelisting (): Promise<void> {
+	await fetchWithCSRF('/listing/delete', {
+		method: 'DELETE'
+	});
+}
+
+$('#dangerousdeletebuttonthatdestroys').on('click', deletelisting);
 
 $((document) => {
 	const langcookie = Cookies.get('lang');

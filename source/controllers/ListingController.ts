@@ -68,6 +68,7 @@ function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
 
 listing.create = [
 	async (req, res): Promise<void> => {
+		console.log('nelabi');
 		if (ValidListingCreationForm(req.body)) {
 			try {
 				if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
@@ -120,9 +121,9 @@ listing.interface('/item', async (req, res) => {
 			if (author !== null && author !== undefined) {
 				if (res.locals.user !== null && res.locals.user !== undefined) {
 					const user: User = res.locals.user;
-					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
+					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
 				} else {
-					res.render('pages/main/listing_item.ejs', { title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants });
+					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants });
 				}
 			}
 		} else {
@@ -183,12 +184,29 @@ listing.update = listing.handler(
 				listinginstance.start_price = Number(req.body.startprice);
 				listinginstance.subsectionId = Number(req.body.subcatid);
 				await listinginstance.save();
+				res.redirect(`item?listingId=${listinginstance.id}`);
 			}
 		} catch (error) {
 			res.send(error);
 		};
 	}
 );
+
+listing.override('delete', '/listing/delete');
+
+listing.delete = async (req, res) => {
+	const listingid = req.body.listingId;
+	if (listingid !== null && listingid !== undefined && res.locals.user !== null && res.locals.user !== undefined) {
+		const listingrow = await Listing.findByPk(listingid);
+		const author = listingid.userId;
+		const requestinguser = res.locals.user.id;
+		if (author === requestinguser) {
+			if (listingrow !== null && listingrow !== undefined) {
+				await listingrow.destroy();
+			}
+		}
+	}
+};
 
 listing.interface('/create', async (req, res) => {
 	if (res.locals.user instanceof User) {
