@@ -5,4 +5,3 @@ export { Subsection } from './Subsection.js';
 export { Listing } from './Listing.js';
 export { Bid } from './Bid.js';
 export { Media } from './Media.js';
-export { ListingLink } from './ListingLink.js';

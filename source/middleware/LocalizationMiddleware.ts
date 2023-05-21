@@ -10,7 +10,6 @@ const localizations: Record<string, locale> = {
 
 export function localization (req: Request, res: Response, next: NextFunction): void {
 	const lang = req.cookies.lang;
-	console.log(localizations);
 	if (lang in localizations) {
 		res.locals.lang = localizations[lang];
 	} else {

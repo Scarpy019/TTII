@@ -107,7 +107,6 @@ login.create = login.handler(
 				if (req.body.redirect !== undefined) {
 					redirectURL = req.body.redirect;
 				}
-				console.log(redirectURL);
 				res.redirect(redirectURL);
 				// res.send('Logged in successfully');
 			} else {

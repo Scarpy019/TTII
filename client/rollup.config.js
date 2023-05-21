@@ -38,5 +38,13 @@ export default [
 			format: 'es'
 		},
 		plugins: plugins
+	},
+	{
+		input: './client/listing_create/image_handler.ts',
+		output: {
+			file: './static/lapa/listing_create.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/image_upload.css'})].concat(plugins)
 	}
 ];

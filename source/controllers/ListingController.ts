@@ -4,7 +4,9 @@ import { Subsection } from '../models/Subsection.js';
 import { User } from '../models/User.js';
 import { Controller } from './BaseController.js';
 import { headerConstants } from './config.js';
+import { logger } from 'yatsl';
 import { v4 as uuidv4 } from 'uuid';
+import { Media } from '../models/Media.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -64,32 +66,50 @@ function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
 	return valid;
 };
 
-listing.create = listing.handler(
-	ValidListingCreationForm,
+listing.create = [
 	async (req, res): Promise<void> => {
-		try {
-			if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
-				if (res.locals.user !== null && res.locals.user !== undefined) {
-					await Listing.create({
-						id: uuidv4(),
-						title: req.body.listing_name,
-						body: req.body.listing_description,
-						status: req.body.openstatus,
-						start_price: Number(req.body.startprice),
-						userId: res.locals.user.id,
-						subsectionId: Number(req.body.subcatid)
-					});
-				};
-				res.redirect('/listing/' + String(req.body.subcatid));
-			}
-		} catch (error) {
-			res.send(error);
-		};
-	},
-	(req, res) => {
-		res.sendStatus(400);
+		if (ValidListingCreationForm(req.body)) {
+			try {
+				if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
+					if (res.locals.user !== null && res.locals.user !== undefined) {
+						// generate the new listing
+						const newListing = await Listing.create({
+							id: uuidv4(),
+							title: req.body.listing_name,
+							body: req.body.listing_description,
+							status: req.body.openstatus,
+							start_price: Number(req.body.startprice),
+							userId: res.locals.user.id,
+							subsectionId: Number(req.body.subcatid),
+							is_draft: false
+						});
+						// find the draft's media
+						const media = (await Listing.findByPk(res.locals.user.draftListingId ?? '', {
+							include: [Media]
+						}))?.media;
+						if (media !== undefined) {
+							// relink all of the draft's media to the newly created listing
+							media.forEach(async mediaItem => {
+								mediaItem.listingId = newListing.id;
+								await mediaItem.save();
+							});
+						}
+					};
+					res.redirect(`/listing/${req.body.subcatid}`);
+				} else {
+					logger.info('Subcategory was invalid');
+					res.sendStatus(400);
+				}
+			} catch (error) {
+				res.status(500);
+				res.send(error);
+			};
+		} else {
+			logger.info('Body did not match', req.body);
+			res.sendStatus(400);
+		}
 	}
-);
+];
 
 listing.interface('/item', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;

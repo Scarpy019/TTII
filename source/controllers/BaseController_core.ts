@@ -1,6 +1,12 @@
 import type { NextFunction, Request, Response, IRoute } from 'express';
 import { Router } from 'express';
+import { Logger } from 'yatsl';
+import { logging } from '../config.js';
 const router: Router = Router();
+const logger = new Logger({
+	minLevel: logging.logLevel,
+	logLine: false
+});
 
 interface initializable {
 	_init: () => void;
@@ -8,7 +14,7 @@ interface initializable {
 const controllers: initializable[] = [];
 
 export function controllerRouter (): Router {
-	console.log('Routing...');
+	logger.info('Routing...');
 	controllers.forEach((controller) => { controller._init(); });
 	return router;
 };
@@ -188,7 +194,8 @@ export class BaseController<const params extends readonly string[] = [],
 		// init subcontrollers to parse them before the main controller to prevent parameters from being priority
 		this.subcontrollers.forEach((subc) => { subc._init(); });
 
-		console.log('\n\nInitializing %s\n---------------------------------', this.name);
+		logger.overrideConfig({ name: this.name });
+		logger.info(`Initializing ${this.name}...`);
 		// init controller interfaces
 		this.interfaces.forEach(Iface => {
 			// handle the case where name is written with the slash
@@ -208,7 +215,8 @@ export class BaseController<const params extends readonly string[] = [],
 				let r = router.route(routeURL);
 				r = this.setroute(this.before, r, 'all');
 				this.setroute(Iface.method, r, 'get');
-				console.log('Controller interface at %s initialized\n', routeURL);
+				logger.overrideConfig({ name: this.name });
+				logger.info(`Controller interface at ${routeURL} initialized!`);
 			}
 		});
 		// CRUD routing
@@ -216,12 +224,14 @@ export class BaseController<const params extends readonly string[] = [],
 
 		route = this.setroute(this.before, route, 'all');
 
-		console.log('Initializing CRUD methods');
+		logger.overrideConfig({ name: this.name });
+		logger.info('Initializing CRUD methods...');
 
 		// create
 		if (this.overrides.create !== undefined) {
 			// different route for overrides, including before method
-			console.log('%s create overriden to %s', this.name, this.overrides.create);
+			logger.overrideConfig({ name: this.name });
+			logger.info(`${this.name} create overriden to ${this.overrides.create}`);
 			let r = router.route(this.overrides.create as string);
 			r = this.setroute(this.before, r, 'all');
 			this.setroute(this.create, r, 'post');
@@ -230,7 +240,8 @@ export class BaseController<const params extends readonly string[] = [],
 		// read
 		if (this.overrides.read !== undefined) {
 			// different route for overrides, including before method
-			console.log('%s read overriden to %s', this.name, this.overrides.read);
+			logger.overrideConfig({ name: this.name });
+			logger.info(`${this.name} read overriden to ${this.overrides.read}`);
 			let r = router.route(this.overrides.read as string);
 			r = this.setroute(this.before, r, 'all');
 			this.setroute(this.read, r, 'get');
@@ -239,7 +250,8 @@ export class BaseController<const params extends readonly string[] = [],
 		// update
 		if (this.overrides.update !== undefined) {
 			// different route for overrides, including before method
-			console.log('%s update overriden to %s', this.name, this.overrides.update);
+			logger.overrideConfig({ name: this.name });
+			logger.info(`${this.name} update overriden to ${this.overrides.update}`);
 			let r = router.route(this.overrides.update as string);
 			r = this.setroute(this.before, r, 'all');
 			this.setroute(this.update, r, 'put');
@@ -248,11 +260,13 @@ export class BaseController<const params extends readonly string[] = [],
 		// delete
 		if (this.overrides.delete !== undefined) {
 			// different route for overrides, including before method
-			console.log('%s delete overriden to %s', this.name, this.overrides.delete);
+			logger.overrideConfig({ name: this.name });
+			logger.info(`${this.name} delete overriden to ${this.overrides.delete}`);
 			let r = router.route(this.overrides.delete as string);
 			r = this.setroute(this.before, r, 'all');
 			this.setroute(this.delete, r, 'delete');
 		} else this.setroute(this.delete, route, 'delete');
-		console.log('CRUD initialized.\n');
+		logger.overrideConfig({ name: this.name });
+		logger.info('CRUD initialized!');
 	}
 };

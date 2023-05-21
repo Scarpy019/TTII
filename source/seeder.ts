@@ -1,8 +1,9 @@
-import { Bid, Listing, type Log, Section, Subsection, User, Media, ListingLink } from './models/index.js';
+import { Bid, Listing, type Log, Section, Subsection, User, Media } from './models/index.js';
 import ts from 'typescript';
 import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { logger } from './lib/Logger.js';
 const sys = ts.sys;
 export async function seedAll (): Promise<void> {
 	// -------User and UserLog-------
@@ -23,19 +24,19 @@ export async function seedAll (): Promise<void> {
 	});
 	await userBoi.$create('log', {
 		id: uuidv4(),
-		log: { action: 'GET' } satisfies Log
+		log: { action: 'GET', path: '/' } satisfies Log
 	});
 	await user2.$create('log', {
 		id: uuidv4(),
-		log: { action: 'POST' } satisfies Log
+		log: { action: 'POST', path: '/' } satisfies Log
 	});
 	await userBoi.$create('log', {
 		id: uuidv4(),
-		log: { action: 'PUT' } satisfies Log
+		log: { action: 'PUT', path: '/' } satisfies Log
 	});
 	await userBoi.$create('log', {
 		id: uuidv4(),
-		log: { action: 'DELETE' } satisfies Log
+		log: { action: 'DELETE', path: '/' } satisfies Log
 	});
 	await userBoi.save();
 	await user2.save();
@@ -55,7 +56,7 @@ export async function seedAll (): Promise<void> {
 	await depo.$create('subsection', {
 		name: 'motormotori'
 	});
-	console.log(depo.toJSON());
+	logger.log(depo);
 	await depo.save();
 	// await sequelize.sync();
 
@@ -69,7 +70,8 @@ export async function seedAll (): Promise<void> {
 		start_price: 2000,
 		status: 'open',
 		subsectionId: motorzagi.id,
-		userId: user2.id
+		userId: user2.id,
+		is_draft: false
 	});
 
 	const motorlaivas: Subsection = (await depo.$get('subsections', { where: { name: 'motorlaivas' } }))[0];
@@ -80,7 +82,8 @@ export async function seedAll (): Promise<void> {
 		start_price: 3126,
 		status: 'available',
 		subsectionId: motorlaivas.id,
-		userId: userBoi.id
+		userId: userBoi.id,
+		is_draft: false
 	});
 
 	// ---------Bids--------------
@@ -98,14 +101,10 @@ export async function seedAll (): Promise<void> {
 	// -------Media----------
 	// ----------------------
 
-	const cat = await Media.create({
+	await Media.create({
 		uuid: '0e906ca0-d978-45c2-ad05-30bf16074e31',
-		extension: '.jpg'
-	});
-	await ListingLink.create({
-		image_number: 1,
-		listingId: chainsaw.id,
-		mediaUUID: cat.uuid
+		extension: '.jpg',
+		listingId: chainsaw.id
 	});
 
 	await sequelize.sync();
@@ -117,7 +116,7 @@ if (sys.args.includes('--seed')) {
 		// seed
 		void seedAll().then(async () => {
 			// sync in case it isn't synced
-			void sequelize.sync().then(() => { console.log('Done'); });
+			void sequelize.sync().then(() => { logger.info('Done'); });
 		});
 	});
 }
