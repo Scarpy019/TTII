@@ -1,4 +1,4 @@
-import { Bid, Listing, type Log, Section, Subsection, User, Media, ListingLink } from './models/index.js';
+import { Bid, Listing, type Log, Section, Subsection, User, Media } from './models/index.js';
 import ts from 'typescript';
 import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -70,7 +70,8 @@ export async function seedAll (): Promise<void> {
 		start_price: 2000,
 		status: 'open',
 		subsectionId: motorzagi.id,
-		userId: user2.id
+		userId: user2.id,
+		is_draft: false
 	});
 
 	const motorlaivas: Subsection = (await depo.$get('subsections', { where: { name: 'motorlaivas' } }))[0];
@@ -81,7 +82,8 @@ export async function seedAll (): Promise<void> {
 		start_price: 3126,
 		status: 'available',
 		subsectionId: motorlaivas.id,
-		userId: userBoi.id
+		userId: userBoi.id,
+		is_draft: false
 	});
 
 	// ---------Bids--------------
@@ -99,14 +101,10 @@ export async function seedAll (): Promise<void> {
 	// -------Media----------
 	// ----------------------
 
-	const cat = await Media.create({
+	await Media.create({
 		uuid: '0e906ca0-d978-45c2-ad05-30bf16074e31',
-		extension: '.jpg'
-	});
-	await ListingLink.create({
-		image_number: 1,
-		listingId: chainsaw.id,
-		mediaUUID: cat.uuid
+		extension: '.jpg',
+		listingId: chainsaw.id
 	});
 
 	await sequelize.sync();

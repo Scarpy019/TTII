@@ -2,7 +2,6 @@
 import BodyParser from 'body-parser';
 import express from 'express';// Create a new express app instance
 import cookieParser from 'cookie-parser';
-import multer from 'multer';
 import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';
 import { logUserAction } from './middleware/LoggingMiddleware.js';
@@ -11,6 +10,7 @@ import { headerConstants } from './controllers/config.js';
 import { localization } from './middleware/LocalizationMiddleware.js';
 import { identifySession, obfuscateServerInfo, validateCSRF } from './middleware/HardeningMiddleware.js';
 import { logger } from './lib/Logger.js';
+import cors from 'cors';
 import { server as config } from './config.js';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
@@ -18,14 +18,12 @@ import { createServer } from 'https';
 
 const app: express.Application = express();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const upload = multer({ dest: './files' }); // TODO: add upload use
-
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-app.use('/files', express.static('./files'));
+app.use(cors());
 app.use(express.static('./static'));
+app.use('/files', express.static('./files'));
 app.use(cookieParser()); // to parse cookies properly
 app.use(BodyParser.json()); // to support JSON-encoded bodies
 app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
