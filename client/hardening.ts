@@ -39,7 +39,7 @@ export async function fetchWithCSRF (url: string, requestInit: RequestInit): Pro
 	if (Array.isArray(tokenRaw)) token = tokenRaw[tokenRaw.length - 1];
 	else token = tokenRaw;
 	const bodyWithCSRF = { ...body, __CSRFToken: token };
-	const headersWithJSON = { ...(requestInit.headers ?? {}), 'content-type': 'application/json', csrftoken: token };
+	const headersWithJSON = { ...(requestInit.headers ?? {}), 'content-type': 'application/json', 'X-csrf': token };
 	return await fetch(url, {
 		...requestInit,
 		headers: headersWithJSON,

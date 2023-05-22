@@ -4,7 +4,7 @@ import { Subsection } from '../models/Subsection.js';
 import { User } from '../models/User.js';
 import { Controller } from './BaseController.js';
 import { headerConstants } from './config.js';
-import { logger } from 'yatsl';
+import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
 
