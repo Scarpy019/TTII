@@ -28,3 +28,11 @@ export const logging = {
 	/** Minimum log level */
 	logLevel: LogLevel.INFO
 };
+export const server = {
+	/** Whether or not this is debug */
+	debug: false,
+	/** HTTPS key location */
+	keyLocation: 'server.key',
+	/** HTTPS cert location */
+	certLocation: 'server.cert'
+};
