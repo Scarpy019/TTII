@@ -160,7 +160,6 @@ listing.interface('/edit', async (req, res) => {
 								res.render('pages/listing/edit', { listingid: listId, constants: headerConstants, userstatus_page: `/user/profile/${accessuser.id}`, userstatus_name: accessuser.username, existing_title: listing.title, existing_desc: listing.body, existing_startprice: listing.start_price, existing_status: listing.status, existing_subcategoryid: subcategoryid, existing_categoryid: categoryid, sections: allcategory, sectioncount });
 							} else {
 								res.redirect('/section');
-								res.send('im afraind not squire');
 							}
 						}
 					}
@@ -196,13 +195,17 @@ listing.override('delete', '/listing/delete');
 
 listing.delete = async (req, res) => {
 	const listingid = req.body.listingId;
+	console.log(listingid);
 	if (listingid !== null && listingid !== undefined && res.locals.user !== null && res.locals.user !== undefined) {
 		const listingrow = await Listing.findByPk(listingid);
-		const author = listingid.userId;
-		const requestinguser = res.locals.user.id;
-		if (author === requestinguser) {
-			if (listingrow !== null && listingrow !== undefined) {
-				await listingrow.destroy();
+		if (listingrow !== undefined && listingrow !== null) {
+			const author = listingrow.userId;
+			const requestinguser = res.locals.user.id;
+			if (author === requestinguser) {
+				if (listingrow !== null && listingrow !== undefined) {
+					await listingrow.destroy();
+					res.redirect(`/user/profile/${requestinguser}`);
+				}
 			}
 		}
 	}

@@ -41,8 +41,11 @@ async function editlisting (): Promise<void> {
 $('#updatebutton').on('click', editlisting);
 
 async function deletelisting (): Promise<void> {
+	const currentlistingquery = location.search;
+	const currentlisting = currentlistingquery.substring(11);
 	await fetchWithCSRF('/listing/delete', {
-		method: 'DELETE'
+		method: 'DELETE',
+		body: JSON.stringify({ listingId: currentlisting })
 	});
 }
 
