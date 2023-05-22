@@ -13,13 +13,27 @@ export async function seedAll (): Promise<void> {
 		username: 'xXx_boi_xXx',
 		email: 'boi@boi.boi',
 		password: await bcrypt.hash('boiboi', 12),
-		access: 'boi'
+		access: 'client'
 	});
 	const user2 = await User.create({
 		id: uuidv4(),
 		username: 'gurl',
 		email: 'gurl@boi.boi',
 		password: await bcrypt.hash('gurlgrul', 12),
+		access: 'client'
+	});
+	const user3 = await User.create({
+		id: uuidv4(),
+		username: 'administrators',
+		email: 'admin@admin.user',
+		password: await bcrypt.hash('neuzlauzisietmani', 12),
+		access: 'admin'
+	});
+	const user4 = await User.create({
+		id: uuidv4(),
+		username: 'Delfi-komentetajs',
+		email: 'delfi@delfi.lv',
+		password: await bcrypt.hash('nelauzams', 12),
 		access: 'client'
 	});
 	await userBoi.$create('log', {
@@ -40,6 +54,8 @@ export async function seedAll (): Promise<void> {
 	});
 	await userBoi.save();
 	await user2.save();
+	await user3.save();
+	await user4.save();
 
 	// -----Section and Subsection-------
 	// ----------------------------------
@@ -58,6 +74,79 @@ export async function seedAll (): Promise<void> {
 	});
 	logger.log(depo);
 	await depo.save();
+
+	const majlopi: Section = await Section.create(
+		{
+			name: 'Mājlopi un ferma'
+		}, { include: Subsection });
+	await majlopi.$create('subsection', {
+		name: 'Mājlopi'
+	});
+	await majlopi.$create('subsection', {
+		name: 'Graudi'
+	});
+	await majlopi.$create('subsection', {
+		name: 'Eksotiskie dzīvnieki'
+	});
+	await majlopi.$create('subsection', {
+		name: 'Sēklas'
+	});
+	await majlopi.$create('subsection', {
+		name: 'Traktori'
+	});
+	logger.log(majlopi);
+	await majlopi.save();
+
+	const transport: Section = await Section.create(
+		{
+			name: 'Transports un mēs'
+		}, { include: Subsection });
+	await transport.$create('subsection', {
+		name: 'Autovāģi'
+	});
+	await transport.$create('subsection', {
+		name: 'Minamie ar kājām'
+	});
+	await transport.$create('subsection', {
+		name: 'Ritenīš transports'
+	});
+	await transport.$create('subsection', {
+		name: 'Publiskais transports'
+	});
+	await transport.$create('subsection', {
+		name: 'Lidmašīnas'
+	});
+	logger.log(transport);
+	await transport.save();
+
+	const darbs: Section = await Section.create(
+		{
+			name: 'Darba iespējas'
+		}, { include: Subsection });
+	await darbs.$create('subsection', {
+		name: 'Pilntermiņa darbs'
+	});
+	await darbs.$create('subsection', {
+		name: 'Algots darbs'
+	});
+	await darbs.$create('subsection', {
+		name: 'Puslaika darbs'
+	});
+	await darbs.$create('subsection', {
+		name: 'Profesionālais darbs'
+	});
+	logger.log(darbs);
+	await darbs.save();
+
+	const atdosana: Section = await Section.create(
+		{
+			name: 'Nevajadzīgās mantas'
+		}, { include: Subsection });
+	await atdosana.$create('subsection', {
+		name: 'Nevajadzīgās & ziedojamās mantas'
+	});
+	logger.log(atdosana);
+	await atdosana.save();
 	// await sequelize.sync();
 
 	// ----------Listings---------------
