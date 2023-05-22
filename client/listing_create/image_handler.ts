@@ -59,7 +59,7 @@ $('#createForm').on('submit', async (e) => {
 	const form: JQuery<HTMLFormElement> = $('#createForm');
 	const response = await fetchWithCSRF('/listing', {
 		method: 'POST',
-		body: convertFormToJSON(form)
+		body: JSON.stringify(convertFormToJSON(form))
 	});
 	location.href = response.url;
 	return false;
