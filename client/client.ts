@@ -3,10 +3,9 @@ import { fetchWithCSRF } from './hardening.js';
 import Cookies from 'js-cookie';
 
 async function signout (): Promise<void> {
-	const hacker = { hacker: 'hacker' };
 	await fetchWithCSRF('/signout', {
 		method: 'DELETE',
-		body: JSON.stringify(hacker)
+		body: JSON.stringify('')
 	});
 	location.reload();
 }
