@@ -6,3 +6,7 @@ files
 static/**
 .vs
 .vscode
+
+# HTTPS certs, shouldn't appear on git considering every system should have its own
+**/server.cert
+**/server.key

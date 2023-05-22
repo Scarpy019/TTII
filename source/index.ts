@@ -11,6 +11,9 @@ import { headerConstants } from './controllers/config.js';
 import { localization } from './middleware/LocalizationMiddleware.js';
 import { identifySession, obfuscateServerInfo, validateCSRF } from './middleware/HardeningMiddleware.js';
 import { logger } from './lib/Logger.js';
+import { server as config } from './config.js';
+import { readFileSync } from 'fs';
+import { createServer } from 'https';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -66,7 +69,18 @@ app.get('*', function (req, res) {
 	res.type('txt').send('Page not found');
 });
 
-app.listen(3000, async function () {
+const options = {
+	key: readFileSync(config.keyLocation),
+	cert: readFileSync(config.certLocation)
+};
+
+const HTTPport = config.debug ? 3000 : 80;
+app.listen(HTTPport, async function () {
 	await sequelize.sync();
-	logger.info('App is listening on port 3000!');
+	logger.info(`App is listening for HTTP on ${HTTPport}`);
+
+	const HTTPSport = config.debug ? 3001 : 443;
+	createServer(options, app).listen(HTTPSport, async function () {
+		logger.info(`App is listening for HTTPS on ${HTTPSport}`);
+	});
 });
