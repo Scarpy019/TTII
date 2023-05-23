@@ -9,6 +9,7 @@
 	</div>
 	<h1 id="page_title"><%-lang.header.page_title%></h1>
 	<div class="user_status"><% if (user!==null && user!==undefined) { %>
+		<div hidden id="user_id"><%-user.id%></div>
 		<a href="<%=userstatus_page%>"><%-userstatus_name%></a>
 		<button id="signoutbutton"><%-lang.header.signout_name%></button>
 	<% }else{ %> 

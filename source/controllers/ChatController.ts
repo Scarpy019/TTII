@@ -1,8 +1,9 @@
 import { Sequelize } from 'sequelize';
-import { ChatMessage, MessageComponent } from '../models/index.js';
+import { ChatMessage, MessageComponent, User } from '../models/index.js';
 import { Controller } from './BaseController.js';
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../lib/Logger.js';
+import { headerConstants } from './config.js';
 
 interface ChatMessageBody {
 	messageId: string | null; // Null if ANNOUNCE, otherwise the messageid
@@ -41,16 +42,21 @@ chat.read = async (req, res) => {
 		return;
 	}
 	const secondParty = req.query.userId;
-	if (secondParty === null) {
-		res.sendStatus(400); // You should specify which convo you wish to look at
-		return;
-	}
-	const messages = await ChatMessage.findAll({
-		where: Sequelize.or({ senderId: user.id, receiverId: secondParty }, { senderId: secondParty, receiverId: user.id })
-	});
-	const messageIds = messages.map((msg) => msg.id);
+	if (secondParty === undefined) {
+		const messages = await ChatMessage.findAll({
+			where: Sequelize.or({ senderId: user.id }, { receiverId: user.id })
+		});
+		const messageIds = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).map((msg) => msg.id);
 
-	res.send(JSON.stringify(messageIds)); // Send user all the messages they have received from that user
+		res.send(JSON.stringify(messageIds));
+	} else {
+		const messages = await ChatMessage.findAll({
+			where: Sequelize.or({ senderId: user.id, receiverId: secondParty }, { senderId: secondParty, receiverId: user.id })
+		});
+		const messageIds = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).map((msg) => msg.id);
+
+		res.send(JSON.stringify(messageIds)); // Send user all the messages they have received from that user
+	}
 };
 
 chat.create = chat.handler(
@@ -121,7 +127,7 @@ message.read = async (req, res) => {
 		return;
 	}
 	const stage = req.query.stage;
-	if (stage === null || typeof stage !== 'string' || ['ANNOUNCE', 'KEY', 'MESSAGE'].includes(stage)) {
+	if (stage === null || typeof stage !== 'string' || !['ANNOUNCE', 'KEY', 'MESSAGE'].includes(stage)) {
 		res.sendStatus(400);
 		return;
 	}
@@ -130,7 +136,7 @@ message.read = async (req, res) => {
 		res.sendStatus(400);
 		return;
 	}
-	if (chatMessage.senderId !== user.id || chatMessage.receiverId !== user.id) {
+	if (chatMessage.senderId !== user.id && chatMessage.receiverId !== user.id) {
 		res.sendStatus(403);
 		return;
 	}
@@ -158,4 +164,29 @@ message.read = async (req, res) => {
 			res.send(otherKey.content);
 		}
 	}
+};
+
+const conversation = chat.subcontroller('conversation', ['id']);
+
+conversation.read = async (req, res) => {
+	// Verify that the request comes from someone who's actually logged in
+	const user = res.locals.user;
+	if (user === undefined || user === null) {
+		res.sendStatus(403);
+		return;
+	}
+	const secondParty = req.params.id;
+	const messages = await ChatMessage.findAll({
+		where: Sequelize.or({ senderId: user.id, receiverId: secondParty }, { senderId: secondParty, receiverId: user.id })
+	});
+	const sortedMessages = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+	const messageData: any[] = [];
+	for (const msg of sortedMessages) {
+		if (msg.senderId === null) continue;
+		const user = await User.findByPk(msg.senderId);
+		if (user === null) continue;
+		const returnObj = { id: msg.id, author: user.username };
+		messageData.push(returnObj);
+	}
+	res.render('pages/chat/view.ejs', { constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, messages: messageData, recipient: req.params.id });
 };

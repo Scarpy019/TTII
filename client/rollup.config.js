@@ -3,6 +3,8 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import commonJS from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
 import scss from 'rollup-plugin-scss';
+import json from "@rollup/plugin-json";
+import polyfills from "rollup-plugin-node-polyfills";
 const plugins=[
 	typescript({ tsconfig: "./client/tsconfig.json" }),
 	commonJS({
@@ -11,8 +13,10 @@ const plugins=[
 	nodeResolve({
 		browser:true
 	}),
+	json(),
+	polyfills()
 	// terser()
-]
+];
 
 export default [
 	{
@@ -46,5 +50,13 @@ export default [
 			format: 'es'
 		},
 		plugins: [scss({output:'./static/lapa/image_upload.css'})].concat(plugins)
+	},
+	{
+		input: './client/chatting.ts',
+		output: {
+			file: './static/lapa/chatting.js',
+			format: 'es'
+		},
+		plugins: plugins
 	}
 ];

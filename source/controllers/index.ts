@@ -4,4 +4,5 @@ import './SectionController.js';
 import './SubscetionController.js';
 import './ListingController.js';
 import './MediaController.js';
+import './ChatController.js';
 export { controllerRouter } from './BaseController.js';
