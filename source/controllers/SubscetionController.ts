@@ -13,7 +13,7 @@ subsection.read = async (req, res) => {
 		if (section !== null) {
 			if (res.locals.user !== null && res.locals.user !== undefined) {
 				const user: User = res.locals.user;
-				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/${user.id}` });
+				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
 			} else {
 				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants });
 			}

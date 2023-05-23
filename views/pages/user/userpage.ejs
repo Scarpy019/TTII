@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <div class="header">
+        <%- include('../misc/header') %>
+    </div>
+    <div class="main_container">
+		<p><%=username%></p>
+        <ul>
+		<% userlistings.forEach(element => { %>
+			<li><a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
+			<% if (authorid == currentuserid) { %>
+				<a href="/listing/edit?listingId=<%=element.id%>"><%-lang.listing_item.edit%></a>
+			<% } %> </li>
+		<% }) %>
+        </ul>
+    </div>
+</body>
+</html>

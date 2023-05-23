@@ -11,7 +11,8 @@
 		"declaration": true,
 		"allowSyntheticDefaultImports":true,
 		"paths": {
-			"jquery": ["../node_modules/@types/jquery/dist/"]
+			"jquery": ["../node_modules/@types/jquery/dist/"],
+            "js-cookie": ["../node_modules/@types/js-cookie"]
 		}
     }
 }

@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { User } from '../models/index.js';
+import { Listing, User } from '../models/index.js';
 import { Controller } from './BaseController.js';
 import { authorization as config } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -34,7 +34,7 @@ const user = new Controller('user');
 
 user.read = (req, res) => {
 	const user = res.locals.user;
-	res.send(`User main page. Hello, ${user?.username ?? 'unknown'}!`);
+	res.send(`User main page. Hello, ${user?.username ?? 'unknown'}!`); // TODO possibly delete?
 };
 
 const login = user.subcontroller('login');
@@ -48,6 +48,33 @@ login.read = (req, res) => {
 			redirect = req.query.redirect;
 		}
 		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'base64').toString('ascii'), constants: headerConstants });
+	}
+};
+
+const userpage = user.subcontroller('profile', ['id']);
+
+userpage.read = async (req, res) => {
+	const userpageId = req.params.id;
+	if (userpageId !== null && userpageId !== undefined) {
+		const usernameVar = await User.findByPk(userpageId);
+		if (usernameVar !== null && usernameVar !== undefined) {
+			const userlistings = await Listing.findAll({ where: { userId: usernameVar.id } });
+			if (res.locals.user !== null && res.locals.user !== undefined) {
+				const user: User = res.locals.user;
+				if (user.id === userpageId) {
+					if (res.locals.lang !== undefined) {
+						res.render('pages/user/userpage.ejs', { username: `${res.locals.lang.userpage.welcome},${usernameVar.username}`, constants: headerConstants, userstatus_page: `/user/profile/${user.id}`, userstatus_name: user.username, userlistings, currentuserid: user.id, authorid: usernameVar.id });
+					}
+				}
+				if (user.id !== userpageId) {
+					res.render('pages/user/userpage.ejs', { username: usernameVar.username, constants: headerConstants, userstatus_page: `/user/profile/${user.id}`, userstatus_name: user.username, userlistings, currentuserid: user.id, authorid: 'abc' });
+				}
+			} else {
+				res.render('pages/user/userpage.ejs', { username: usernameVar, constants: headerConstants, userstatus_page: '/user/login', userlistings, currentuserid: null, authorid: 'abc' });
+			}
+		}
+	} else {
+		res.sendStatus(404);
 	}
 };
 
