@@ -15,6 +15,7 @@ export default interface locale {
 		password_label: string;
 	};
 	listing_form: {
+		image_upload_label: string;
 		listing_title: string;
 		listing_desc: string;
 		start_price_label: string;

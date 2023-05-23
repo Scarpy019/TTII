@@ -6,7 +6,6 @@ import { Controller } from './BaseController.js';
 import { headerConstants } from './config.js';
 import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
-import { Media } from '../models/Media.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -84,17 +83,8 @@ listing.create = [
 							subsectionId: Number(req.body.subcatid),
 							is_draft: false
 						});
-						// find the draft's media
-						const media = (await Listing.findByPk(res.locals.user.draftListingId ?? '', {
-							include: [Media]
-						}))?.media;
-						if (media !== undefined) {
-							// relink all of the draft's media to the newly created listing
-							media.forEach(async mediaItem => {
-								mediaItem.listingId = newListing.id;
-								await mediaItem.save();
-							});
-						}
+						res.json({ listingId: newListing.id });
+						return;
 					};
 					res.redirect(`/listing/${req.body.subcatid}`);
 				} else {

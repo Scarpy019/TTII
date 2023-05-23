@@ -2,24 +2,33 @@ import $ from 'jquery';
 import './image_input.scss';
 import { fetchWithCSRF, fetchWithCSRFmultipart } from '../hardening.js';
 
-// const imageArray: File[] = [];
+const imageArray: File[] = [];
 
 async function refreshImages (): Promise<void> {
-	const response = await fetch('/media/draft-img', {
+	/* const response = await fetch('/media/draft-img', {
 		method: 'GET'
 	});
 	if (response.ok) {
 		const imgDisplay = $('#imgdisplay');
 		imgDisplay.empty();
 		imgDisplay.append(await response.text());
-	}
+	} */
+
+	const display = $('#imgdisplay');
+	display.empty();
+	imageArray.forEach(file => {
+		display.append(`<img src="${URL.createObjectURL(file)}">`);
+	});
 }
 void refreshImages();
 async function addImage (file: File): Promise<void> {
-	// const display = $('#imgdisplay');
-	// display.append(`<img src="${URL.createObjectURL(file)}">`);
-	// imageArray.push(file);
-	const data = new FormData();
+	if (file.size > 20_000_000) {
+		alert('File is too large!');
+	} else {
+		imageArray.push(file);
+		void refreshImages();
+	}
+	/* const data = new FormData();
 	data.append('image', file);
 	const response = await fetchWithCSRFmultipart('/media', {
 		method: 'POST',
@@ -29,7 +38,7 @@ async function addImage (file: File): Promise<void> {
 		void refreshImages();
 	} else {
 		console.log('Something went wrong...');
-	}
+	} */
 }
 
 $('#imgupload').on('change', () => {
@@ -58,9 +67,18 @@ $('#createForm').on('submit', async (e) => {
 	const form: JQuery<HTMLFormElement> = $('#createForm');
 	const response = await fetchWithCSRF('/listing', {
 		method: 'POST',
-		body: JSON.stringify(convertFormToJSON(form))
+		body: JSON.stringify({ openstatus: 'closed', ...convertFormToJSON(form) })
+	});
+	const data = new FormData();
+	imageArray.forEach(file => {
+		data.append('image[]', file);
+	});
+	const respJSON = await response.json();
+	data.append('listingId', respJSON.listingId);
+	await fetchWithCSRFmultipart('/media', {
+		method: 'POST',
+		body: data
 	});
 	location.href = response.url;
 	return false;
-	// return false;
 });
