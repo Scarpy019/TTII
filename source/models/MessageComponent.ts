@@ -8,8 +8,8 @@ interface MessageComponentAttributes {
 	messageId: UUID;
 	/*
 	The stage in a sepcific message transfer
-	- ANNOUNCE: Announcing that a new message will be sent, from this the common factors p and g will be derived
-	- KEY: Sent by both users, this is a part of the shared key
+	- ANNOUNCE: Announcing that a new message will be sent, the content contains common factors p and q, format: P|Q
+	- KEY: Sent by both users, this is a part of the shared key, content format: USERID|KEYPART
 	- MESSAGE: The encrypted message
 	*/
 	stage: 'ANNOUNCE' | 'KEY' | 'MESSAGE';
