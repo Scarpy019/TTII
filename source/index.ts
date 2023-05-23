@@ -1,4 +1,3 @@
-
 import BodyParser from 'body-parser';
 import express from 'express';// Create a new express app instance
 import cookieParser from 'cookie-parser';
@@ -50,7 +49,7 @@ app.get('*', function (req, res) {
 	// respond with html page
 	if (req.accepts('html') !== undefined) {
 		if (res.locals.user !== null && res.locals.user !== undefined) {
-			res.render('pages/misc/404', { url: req.url, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
+			res.render('pages/misc/404', { url: req.url, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: '/user/profile/' + res.locals.user.id, signup_out_redirect: '/user/signout', signup_out_name: 'Sign Out' });
 		} else {
 			res.render('pages/misc/404', { url: req.url, constants: headerConstants, userstatus_name: 'Login', userstatus_page: '/user/login', signup_out_redirect: '/user/signup', signup_out_name: 'Sign Up' });
 		}

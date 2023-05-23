@@ -74,7 +74,7 @@ userpage.read = async (req, res) => {
 			}
 		}
 	} else {
-		res.redirect('/whoops');
+		res.sendStatus(404);
 	}
 };
 

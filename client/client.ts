@@ -45,6 +45,8 @@ async function deletelisting (): Promise<void> {
 	await fetchWithCSRF('/listing/delete', {
 		method: 'DELETE',
 		body: JSON.stringify({ listingId: currentlisting })
+	}).then(Response => {
+		location.href = Response.url;
 	});
 }
 
