@@ -118,7 +118,6 @@ function sendAnnounce (recipientId: string, messageContent: string): void {
 		} else {
 			if (res.body !== null) {
 				const payload = await res.text();
-				console.log(payload);
 				queueMessage(payload, messageContent);
 				saveMessage(payload, messageContent);
 				sendKeyComponent(payload);
@@ -237,7 +236,6 @@ function getMessage (messageId: string): string | null {
 	const message = queue.decipheredMessages.get(messageId);
 	if (message === undefined) {
 		if (!queue.awaitingKey.includes(messageId)) {
-			console.log('sup');
 			respondToAnnounce(messageId).catch(e => {
 				console.error(`Error ocurred on responding to ANNOUNCE of ${messageId}: ${e as string}`);
 			});
