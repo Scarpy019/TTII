@@ -144,7 +144,7 @@ media.update = async (req, res) => {
 			await mediaA.save();
 			await mediaB.save();
 		}
-		// TODO: continue for edit listing
+		res.sendStatus(200);
 	} else {
 		res.sendStatus(400);
 	}
