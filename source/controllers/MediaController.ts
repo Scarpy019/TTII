@@ -136,7 +136,8 @@ media.update = async (req, res) => {
 			mediaB.orderNumber = swappableAnum;
 			await mediaB.save();
 		} else if (mediaA !== null && mediaB !== null) {
-			// if both exist swap image UUIDs
+			// if both exist swap image UUIDs,
+			// because swapping of unique fields is a nono
 			const temp = mediaB.uuid;
 			mediaB.uuid = mediaA.uuid;
 			mediaA.uuid = temp;
