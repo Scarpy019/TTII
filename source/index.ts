@@ -41,6 +41,13 @@ app.get('/', (req, res) => {
 	res.redirect('/section');
 });
 
+app.get('/reklama', (_, res) => {
+	res.redirect('http://reklama.narvesen.lv');
+});
+app.get('/narvesen', (_, res) => {
+	res.redirect('http://reklama.narvesen.lv');
+});
+
 // 404 route that accepts all remaining routes
 app.get('*', function (req, res) {
 	// set status
