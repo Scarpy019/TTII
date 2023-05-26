@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/image_upload.css">
+	<script src="/lapa/client.js", type="module"></script>
+	<title>Update subsection</title>
+</head>
+<body>
+	<div class="header">
+        <%- include('../misc/header') %>
+    </div>
+	<form id="updateSubsection">
+		<label for="subsection_name">Subsection name</label>
+		<input type="text" id="subsection_name" name="subsection_name" value="<%=oldsubsectionname%>" required>
+		<input type="text" id="section_name" value="<%=sectionname%>" readonly>
+		<input type="submit" value="Submit"> 
+	</form>
+	<button id="updatesubsection" value="Up">Update</button><br>
+	<button id="delete_subsection">DELETE!!!!!!!</button><br>
+	<a href="/subsection/<%=secId%>" id="returntosubsection">Return to subsections</button><br><br>
+</body>

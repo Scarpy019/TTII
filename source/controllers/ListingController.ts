@@ -17,10 +17,10 @@ listing.read = async (req, res) => {
 		if (subsection !== null) {
 			if (res.locals.user !== null && res.locals.user !== undefined) { // for header Login&sign up or username& sign out
 				const user: User = res.locals.user;
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access });
 				return;
 			} else {
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, useraccess: 'slikti' });
 				return;
 			}
 		}
@@ -68,7 +68,6 @@ function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
 
 listing.create = [
 	async (req, res): Promise<void> => {
-		console.log('nelabi');
 		if (ValidListingCreationForm(req.body)) {
 			try {
 				if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
@@ -121,7 +120,7 @@ listing.interface('/item', async (req, res) => {
 			if (author !== null && author !== undefined) {
 				if (res.locals.user !== null && res.locals.user !== undefined) {
 					const user: User = res.locals.user;
-					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
+					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, userstatus: res.locals.user.access });
 				} else {
 					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants });
 				}
@@ -156,7 +155,7 @@ listing.interface('/edit', async (req, res) => {
 					});
 					if (category !== null && category !== undefined) {
 						if (accessuser !== undefined && accessuser !== null && author !== null && author !== undefined) {
-							if (accessuser.id === author.id) {
+							if (accessuser.id === author.id || accessuser.access === 'admin') {
 								res.render('pages/listing/edit', { listingid: listId, constants: headerConstants, userstatus_page: `/user/profile/${accessuser.id}`, userstatus_name: accessuser.username, existing_title: listing.title, existing_desc: listing.body, existing_startprice: listing.start_price, existing_status: listing.status, existing_subcategoryid: subcategoryid, existing_categoryid: categoryid, sections: allcategory, sectioncount });
 							} else {
 								res.redirect('/section');
@@ -195,7 +194,6 @@ listing.override('delete', '/listing/delete');
 
 listing.delete = async (req, res) => {
 	const listingid = req.body.listingId;
-	console.log(listingid);
 	if (listingid !== null && listingid !== undefined && res.locals.user !== null && res.locals.user !== undefined) {
 		const listingrow = await Listing.findByPk(listingid);
 		if (listingrow !== undefined && listingrow !== null) {

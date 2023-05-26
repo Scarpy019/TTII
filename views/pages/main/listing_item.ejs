@@ -20,7 +20,7 @@
                 <p><%-lang.listing_item.startprice%> - <%-startprice%>$</p>
                 <p><%-lang.listing_item.author%> - <a href="/user/profile/<%=author_profile%>"><%-author%></a></p>
                 <p><%-lang.listing_item.postdate%> <%-createdAt%></p>
-                <% if (authorid == currentuserid) { %>
+                <% if (authorid == currentuserid || useraccess == "admin") { %>
                     <a href="/listing/edit?listingId=<%=id%>"><%-lang.listing_item.edit%></a>
                 <% } %>
 			</div>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/image_upload.css">
+	<script src="/lapa/client.js", type="module"></script>
+	<title>Create subsection</title>
+</head>
+<body>
+	<div class="header">
+        <%- include('../misc/header') %>
+    </div>
+	<form id="createSubsection" action="/subsection/<%=sectionId%>" method="post">
+		<label for="subsection_name">Subsection name</label>
+		<input type="text" id="subsection_name" name="subsection_name" required>
+		<input type="text" id="section_id" name="section_id" value="<%=sectionId%>" readonly hidden>
+		<p>In section <%=sectionname%></p>
+		<input type="submit" value="Submit"> 
+	</form>
+</body>

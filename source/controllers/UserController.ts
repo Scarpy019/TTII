@@ -70,7 +70,7 @@ userpage.read = async (req, res) => {
 					res.render('pages/user/userpage.ejs', { username: usernameVar.username, constants: headerConstants, userstatus_page: `/user/profile/${user.id}`, userstatus_name: user.username, userlistings, currentuserid: user.id, authorid: 'abc' });
 				}
 			} else {
-				res.render('pages/user/userpage.ejs', { username: usernameVar, constants: headerConstants, userstatus_page: '/user/login', userlistings, currentuserid: null, authorid: 'abc' });
+				res.render('pages/user/userpage.ejs', { username: usernameVar.username, constants: headerConstants, userstatus_page: '/user/login', userlistings, currentuserid: null, authorid: 'abc' });
 			}
 		}
 	} else {

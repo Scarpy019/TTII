@@ -50,7 +50,31 @@ async function deletelisting (): Promise<void> {
 	});
 }
 
+async function deleteSection (): Promise<void> {
+	const currentSectionQuery = location.search;
+	const currentSection = currentSectionQuery.substring(11);
+	await fetchWithCSRF('/section/delete', {
+		method: 'DELETE',
+		body: JSON.stringify({ sectionId: currentSection })
+	}).then(Response => {
+		location.href = Response.url;
+	});
+}
+
+async function deleteSubsection (): Promise<void> {
+	const currentSubsectionQuery = location.search;
+	const currentSubsection = currentSubsectionQuery.substring(14);
+	await fetchWithCSRF('/subsection/delete', {
+		method: 'DELETE',
+		body: JSON.stringify({ subsec_id: currentSubsection })
+	}).then(Response => {
+		location.href = Response.url;
+	});
+}
+
 $('#dangerousdeletebuttonthatdestroys').on('click', deletelisting);
+$('#delete_section').on('click', deleteSection);
+$('#delete_subsection').on('click', deleteSubsection);
 
 $((document) => {
 	const langcookie = Cookies.get('lang');
