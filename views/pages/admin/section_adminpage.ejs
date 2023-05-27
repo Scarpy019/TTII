@@ -15,13 +15,13 @@
             <ul id="category_list">
                 <% sections.forEach(element => { %>
                     <a href='/subsection/<%= element.id %>'><%- element.name %></a>
-					<a href="/section/edit?sectionId=<%=element.id%>">Edit</a>
+					<a href="/section/edit?sectionId=<%=element.id%>"><%-lang.admin.edit></a>
                 <% }) %>
             
             </ul>
         </div>
-			<a href="/section/create">Add section</a>
-            <a href="/section">Return to sections</a>
+			<a href="/section/create"><%-lang.admin.add_sect%></a>
+            <a href="/section"><%-lang.admin.return_sect%></a>
     </div>
 </body>
 </html>

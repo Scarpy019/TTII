@@ -18,10 +18,10 @@ listing.read = async (req, res) => {
 		if (subsection !== null) {
 			if (res.locals.user !== null && res.locals.user !== undefined) { // for header Login&sign up or username& sign out
 				const user: User = res.locals.user;
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access, subsec_Id: String(subsecId), secId: subsection.sectionId });
 				return;
 			} else {
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, useraccess: 'slikti' });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, useraccess: 'slikti', subsec_Id: String(subsecId), secId: subsection.sectionId });
 				return;
 			}
 		}
@@ -215,6 +215,8 @@ listing.interface('/create', async (req, res) => {
 	if (res.locals.user instanceof User) {
 		const sections = await Section.findAll({ include: [Subsection] });
 		let sectioncount = 0;
+		const secId = req.query.sectionId;
+		const subsecId = req.query.subsectionId;
 		sections.forEach(element => {
 			if (element.id >= sectioncount && element.id !== null && element.id !== undefined) {
 				sectioncount = element.id;
@@ -222,7 +224,11 @@ listing.interface('/create', async (req, res) => {
 		});
 		if (res.locals.user !== undefined && res.locals.user !== null) {
 			const user: User = res.locals.user;
-			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount });
+			if (secId !== null && secId !== undefined && subsecId !== null && subsecId !== undefined) {
+				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: secId, currentsubsection: subsecId, createfromexistsubcat: 'true' });
+			} else {
+				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: 'null', currentsubsection: 'null', createfromexistsubcat: 'false' });
+			}
 		} else {
 			res.render('pages/listing/create', { constants: headerConstants });
 		}

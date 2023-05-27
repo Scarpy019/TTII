@@ -23,6 +23,10 @@ export default interface locale {
 		category_def_val: string;
 		subcategory_select_label: string;
 		subcategory_def_val: string;
+		update: string;
+		delete: string;
+		return: string;
+		add_listing: string;
 	};
 	listing_item: {
 		startprice: string;
@@ -32,5 +36,17 @@ export default interface locale {
 	};
 	userpage: {
 		welcome: string;
+	};
+	admin: {
+		add_sect: string;
+		return_sect: string;
+		add_subsect: string;
+		return_subsect: string;
+		update: string;
+		delete: string;
+		sec_name: string;
+		subsec_name: string;
+		edit: string;
+		in_sect: string;
 	};
 };

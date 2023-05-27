@@ -13,10 +13,10 @@
         <%- include('../misc/header') %>
     </div>
 	<form id="createSubsection" action="/subsection/<%=sectionId%>" method="post">
-		<label for="subsection_name">Subsection name</label>
+		<label for="subsection_name"><%-lang.admin.subsec_name%></label>
 		<input type="text" id="subsection_name" name="subsection_name" required>
 		<input type="text" id="section_id" name="section_id" value="<%=sectionId%>" readonly hidden>
-		<p>In section <%=sectionname%></p>
+		<p><%-lang.admin.in_sect%> <%=sectionname%></p>
 		<input type="submit" value="Submit"> 
 	</form>
 </body>

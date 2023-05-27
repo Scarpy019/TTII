@@ -13,13 +13,13 @@
         <%- include('../misc/header') %>
     </div>
 	<form id="updateSubsection">
-		<label for="subsection_name">Subsection name</label>
+		<label for="subsection_name"><%-lang.admin.subsec_name%></label>
 		<input type="text" id="subsection_name" name="subsection_name" value="<%=oldsubsectionname%>" required>
-		<label for="section_name">Section name</label>
+		<label for="section_name"><%-lang.admin.sec_name%></label>
 		<input type="text" id="section_name" value="<%=sectionname%>" readonly>
 		<input type="text" id="sectionId" value="<%=secId%>" hidden readonly>
 	</form>
-	<button id="updatesubsection" value="Up">Update</button><br>
-	<button id="delete_subsection">DELETE!!!!!!!</button><br>
-	<a href="/subsection/<%=secId%>" id="returntosubsection">Return to subsections</button><br><br>
+	<button id="updatesubsection" value="Up"><%-lang.admin.update%></button><br>
+	<button id="delete_subsection"><%-lang.admin.delete%></button><br>
+	<a href="/subsection/<%=secId%>" id="returntosubsection"><%-lang.admin.return_subsect%></button><br><br>
 </body>

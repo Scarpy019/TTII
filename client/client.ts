@@ -120,6 +120,14 @@ $((document) => {
 			$('#subcategories').val(editsubcategory.toString());
 		}
 	}
+	if ($('#createfromexistsubcat').val() === 'true') {
+		const oldcategory = $('#oldcategory').val();
+		const oldsubcategory = $('#oldsubcategory').val();
+		if (oldcategory !== undefined && oldcategory !== null && oldsubcategory !== undefined && oldsubcategory !== null) {
+			$('#categories').val(oldcategory.toString());
+			$('#subcategories').val(oldsubcategory.toString());
+		}
+	}
 	const currentcat = $('#categories').find(':selected').val();
 	const sectioncount = Number($('#sectioncount').val());
 	let i;

@@ -24,7 +24,11 @@ export default {
 		category_select_label: 'Izvēlies sadaļu',
 		category_def_val: 'Sadaļas izvēle',
 		subcategory_select_label: 'Izvēlies apakšsadaļu',
-		subcategory_def_val: 'Apakšsadaļas izvēle'
+		subcategory_def_val: 'Apakšsadaļas izvēle',
+		update: 'Saglabāt rediģējumus',
+		delete: 'Izdzēst',
+		return: 'Atgriezties pie sludinājuma',
+		add_listing: 'Pievienot sludinājumu'
 	},
 	listing_item: {
 		startprice: 'Sākotnējā cena',
@@ -34,5 +38,17 @@ export default {
 	},
 	userpage: {
 		welcome: 'Sveicināts'
+	},
+	admin: {
+		add_sect: 'Pievienot sadaļu',
+		return_sect: 'Atgriezties pie sadaļām',
+		add_subsect: 'Pievienot apakšsadaļu',
+		return_subsect: 'Atgriezties apakšsadaļā',
+		update: 'Saglabāt rediģējumus',
+		delete: 'Idzēst',
+		sec_name: 'Sadaļas nosaukums',
+		subsec_name: 'Apakšsadaļas nosaukums',
+		edit: 'Rediģēt',
+		in_sect: 'Iekšā kategorijā - '
 	}
 } satisfies locale;
