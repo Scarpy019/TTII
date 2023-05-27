@@ -45,7 +45,7 @@ export default {
 		add_subsect: 'Pievienot apakšsadaļu',
 		return_subsect: 'Atgriezties apakšsadaļā',
 		update: 'Saglabāt rediģējumus',
-		delete: 'Idzēst',
+		delete: 'Izdzēst',
 		sec_name: 'Sadaļas nosaukums',
 		subsec_name: 'Apakšsadaļas nosaukums',
 		edit: 'Rediģēt',

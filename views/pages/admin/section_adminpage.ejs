@@ -15,7 +15,7 @@
             <ul id="category_list">
                 <% sections.forEach(element => { %>
                     <a href='/subsection/<%= element.id %>'><%- element.name %></a>
-					<a href="/section/edit?sectionId=<%=element.id%>"><%-lang.admin.edit></a>
+					<a href="/section/edit?sectionId=<%=element.id%>"><%-lang.admin.edit%></a>
                 <% }) %>
             
             </ul>
