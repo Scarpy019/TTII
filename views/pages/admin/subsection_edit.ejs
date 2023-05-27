@@ -15,8 +15,9 @@
 	<form id="updateSubsection">
 		<label for="subsection_name">Subsection name</label>
 		<input type="text" id="subsection_name" name="subsection_name" value="<%=oldsubsectionname%>" required>
+		<label for="section_name">Section name</label>
 		<input type="text" id="section_name" value="<%=sectionname%>" readonly>
-		<input type="submit" value="Submit"> 
+		<input type="text" id="sectionId" value="<%=secId%>" hidden readonly>
 	</form>
 	<button id="updatesubsection" value="Up">Update</button><br>
 	<button id="delete_subsection">DELETE!!!!!!!</button><br>

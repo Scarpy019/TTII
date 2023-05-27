@@ -19,6 +19,8 @@ subsection.read = async (req, res) => {
 			} else {
 				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, useraccess: 'slikti' });
 			}
+		} else {
+			res.sendStatus(404);
 		}
 	}
 };
@@ -54,8 +56,12 @@ subsection.create = [
 							name: req.body.subsection_name,
 							sectionId: Number(req.body.section_id)
 						});
+					} else {
+						res.sendStatus(404);
 					}
-				};
+				} else {
+					res.sendStatus(404);
+				}
 				res.redirect(`/subsection/${req.body.section_id}`);
 			} catch (error) {
 				res.status(500);
@@ -79,11 +85,17 @@ subsection.update = subsection.handler(
 						subsectioninstance.name = req.body.subsection_name;
 						await subsectioninstance.save();
 						res.redirect(`/subsection/${req.body.section_id}`);
+					} else {
+						res.sendStatus(404);
 					}
 				} catch (error) {
 					res.send(error);
 				};
+			} else {
+				res.sendStatus(404);
 			}
+		} else {
+			res.sendStatus(404);
 		}
 	}
 );
@@ -98,9 +110,17 @@ subsection.delete = async (req, res) => {
 				if (section !== undefined) {
 					await subsectionrow.destroy();
 					res.redirect(`/subsection/${section}`);
+				} else {
+					res.sendStatus(404);
 				}
+			} else {
+				res.sendStatus(404);
 			}
+		} else {
+			res.sendStatus(404);
 		}
+	} else {
+		res.sendStatus(404);
 	}
 };
 
@@ -116,8 +136,14 @@ subsection.interface('/edit', async (req, res) => {
 			const section = await Section.findByPk(sectionId);
 			if (subsection !== null && section !== null) {
 				res.render('pages/admin/subsection_edit.ejs', { sectionname: section.name, secId: section.id, oldsubsectionname: subsection.name, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+			} else {
+				res.sendStatus(404);
 			}
+		} else {
+			res.sendStatus(404);
 		}
+	} else {
+		res.sendStatus(404);
 	}
 });
 
@@ -145,6 +171,10 @@ subsection.interface('/create', async (req, res) => {
 	if (isLoggedOn(res.locals.user) && section !== null) {
 		if (isAdmin(res.locals.user)) {
 			res.render('pages/admin/subsection_create.ejs', { sectionId: secId, sectionname: section.name, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+		} else {
+			res.sendStatus(404);
 		}
+	} else {
+		res.sendStatus(404);
 	}
 });

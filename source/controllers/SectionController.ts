@@ -1,4 +1,3 @@
-import { logger } from 'yatsl';
 import { isAdmin, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
 import { Section } from '../models/Section.js';
 import { type User } from '../models/User.js';
@@ -54,8 +53,7 @@ section.create = [
 				res.send(error);
 			};
 		} else {
-			logger.info('Body did not match', req.body);
-			res.sendStatus(400);
+			res.sendStatus(404);
 		}
 	}
 ];
@@ -71,11 +69,17 @@ section.update = section.handler(
 						sectioninstance.name = req.body.section_name;
 						await sectioninstance.save();
 						res.redirect('/section');
+					} else {
+						res.sendStatus(404);
 					}
 				} catch (error) {
 					res.send(error);
 				};
+			} else {
+				res.sendStatus(404);
 			}
+		} else {
+			res.sendStatus(404);
 		}
 	}
 );
@@ -88,8 +92,14 @@ section.delete = async (req, res) => {
 			if (sectionrow !== undefined && sectionrow !== null) {
 				await sectionrow.destroy();
 				res.redirect('/section');
+			} else {
+				res.sendStatus(404);
 			}
+		} else {
+			res.sendStatus(404);
 		}
+	} else {
+		res.sendStatus(404);
 	}
 };
 
@@ -102,7 +112,11 @@ section.interface('/edit', async (req, res) => {
 	if (isLoggedOn(res.locals.user) && sections !== null) {
 		if (isAdmin(res.locals.user)) {
 			res.render('pages/admin/section_edit.ejs', { oldsectionname: sections.name, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+		} else {
+			res.sendStatus(404);
 		}
+	} else {
+		res.sendStatus(404);
 	}
 });
 
@@ -111,7 +125,11 @@ section.interface('/admin', async (req, res) => {
 	if (isLoggedOn(res.locals.user)) {
 		if (isAdmin(res.locals.user)) {
 			res.render('pages/admin/section_adminpage.ejs', { sections, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+		} else {
+			res.sendStatus(404);
 		}
+	} else {
+		res.sendStatus(404);
 	}
 });
 
@@ -119,6 +137,10 @@ section.interface('/create', async (req, res) => {
 	if (isLoggedOn(res.locals.user)) {
 		if (isAdmin(res.locals.user)) {
 			res.render('pages/admin/section_create.ejs', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+		} else {
+			res.sendStatus(404);
 		}
+	} else {
+		res.sendStatus(404);
 	}
 });

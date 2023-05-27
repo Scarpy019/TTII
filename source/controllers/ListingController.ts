@@ -7,6 +7,7 @@ import { headerConstants } from './config.js';
 import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
+import { isAdmin } from '../middleware/AdminCheckMiddleware.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -120,9 +121,9 @@ listing.interface('/item', async (req, res) => {
 			if (author !== null && author !== undefined) {
 				if (res.locals.user !== null && res.locals.user !== undefined) {
 					const user: User = res.locals.user;
-					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, userstatus: res.locals.user.access });
+					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access });
 				} else {
-					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants });
+					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants, useraccess: 'nav' });
 				}
 			}
 		} else {
@@ -155,7 +156,7 @@ listing.interface('/edit', async (req, res) => {
 					});
 					if (category !== null && category !== undefined) {
 						if (accessuser !== undefined && accessuser !== null && author !== null && author !== undefined) {
-							if (accessuser.id === author.id || accessuser.access === 'admin') {
+							if (accessuser.id === author.id || isAdmin(accessuser)) {
 								res.render('pages/listing/edit', { listingid: listId, constants: headerConstants, userstatus_page: `/user/profile/${accessuser.id}`, userstatus_name: accessuser.username, existing_title: listing.title, existing_desc: listing.body, existing_startprice: listing.start_price, existing_status: listing.status, existing_subcategoryid: subcategoryid, existing_categoryid: categoryid, sections: allcategory, sectioncount });
 							} else {
 								res.redirect('/section');
@@ -198,11 +199,12 @@ listing.delete = async (req, res) => {
 		const listingrow = await Listing.findByPk(listingid);
 		if (listingrow !== undefined && listingrow !== null) {
 			const author = listingrow.userId;
-			const requestinguser = res.locals.user.id;
-			if (author === requestinguser) {
+			const requestinguser = res.locals.user;
+			const requestinguserid = res.locals.user.id;
+			if (author === requestinguserid || isAdmin(requestinguser)) {
 				if (listingrow !== null && listingrow !== undefined) {
 					await listingrow.destroy();
-					res.redirect(`/user/profile/${requestinguser}`);
+					res.redirect(`/user/profile/${requestinguserid}`);
 				}
 			}
 		}
