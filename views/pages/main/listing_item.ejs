@@ -14,17 +14,17 @@
     <div class="main_container">
 
         <div class="listing">
-            <h1 id="listing_name"><%- title %></h1>
+            <h1 id="listing_name"><%- listing.title %></h1>
             <div class="description">
-                <p><%-body%></p>
-                <p><%-lang.listing_item.startprice%> - <%-startprice%>$</p>
+                <p><%-listing.body%></p>
+                <p><%-lang.listing_item.startprice%> - <%-listing.start_price%>$</p>
                 <p><%-lang.listing_item.author%> - <a href="/user/profile/<%=author_profile%>"><%-author%></a></p>
-                <p><%-lang.listing_item.postdate%> <%-createdAt%></p>
+                <p><%-lang.listing_item.postdate%> <%-listing.createdAt%></p>
                 <% if (authorid == currentuserid || useraccess == "admin") { %>
-                    <a href="/listing/edit?listingId=<%=id%>"><%-lang.listing_item.edit%></a>
+                    <a href="/listing/edit?listingId=<%=listing.id%>"><%-lang.listing_item.edit%></a>
                 <% } %>
 			</div>
-			<div class="listing_data"><img src='<%picture%>' alt='listingimage'></div>
+			<div class="listing_data"><img src='<%listing.media%>' alt='listingimage'></div>
         </div>
 
     </div>

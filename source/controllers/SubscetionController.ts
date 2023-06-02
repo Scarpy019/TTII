@@ -13,9 +13,9 @@ subsection.read = async (req, res) => {
 	if (!isNaN(secId)) {
 		const section = await Section.findByPk(secId, { include: [Subsection] });
 		if (section !== null) {
-			if (res.locals.user !== null && res.locals.user !== undefined) {
+			if (isLoggedOn(res.locals.user)) {
 				const user: User = res.locals.user;
-				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access });
+				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access });
 			} else {
 				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, useraccess: 'slikti' });
 			}
@@ -155,13 +155,13 @@ subsection.interface('/admin', async (req, res) => {
 			if (isAdmin(res.locals.user)) {
 				res.render('pages/admin/subsection_adminpage.ejs', { section, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
 			} else {
-				res.send('boowomp');
+				res.sendStatus(404);
 			}
 		} else {
-			res.send('boowompwomp');
+			res.sendStatus(404);
 		}
 	} else {
-		res.send('wompwompboo');
+		res.sendStatus(404);
 	}
 });
 

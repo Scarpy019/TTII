@@ -11,7 +11,7 @@ section.read = async (req, res) => {
 	const sections = await Section.findAll();
 	if (isLoggedOn(res.locals.user)) { // for header Login&sign up or username& sign out
 		const user: User = res.locals.user;
-		res.render('pages/main/sections_mainpage.ejs', { sections, sectionName: section.name, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access });
+		res.render('pages/main/sections_mainpage.ejs', { sections, sectionName: section.name, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access });
 	} else {
 		res.render('pages/main/sections_mainpage.ejs', { sections, sectionName: section.name, constants: headerConstants, useraccess: 'slikti' });
 	}

@@ -7,7 +7,7 @@ import { headerConstants } from './config.js';
 import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
-import { isAdmin } from '../middleware/AdminCheckMiddleware.js';
+import { isAdmin, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -16,12 +16,12 @@ listing.read = async (req, res) => {
 	if (!isNaN(subsecId)) {
 		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
 		if (subsection !== null) {
-			if (res.locals.user !== null && res.locals.user !== undefined) { // for header Login&sign up or username& sign out
+			if (isLoggedOn(res.locals.user)) { // for header Login&sign up or username& sign out
 				const user: User = res.locals.user;
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access, subsec_Id: String(subsecId), secId: subsection.sectionId });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access, subsec_Id: String(subsecId), secId: subsection.sectionId });
 				return;
 			} else {
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, useraccess: 'slikti', subsec_Id: String(subsecId), secId: subsection.sectionId });
+				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, useraccess: 'no', subsec_Id: String(subsecId), secId: subsection.sectionId });
 				return;
 			}
 		}
@@ -72,7 +72,7 @@ listing.create = [
 		if (ValidListingCreationForm(req.body)) {
 			try {
 				if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
-					if (res.locals.user !== null && res.locals.user !== undefined) {
+					if (isLoggedOn(res.locals.user)) {
 						// generate the new listing
 						const newListing = await Listing.create({
 							id: uuidv4(),
@@ -119,11 +119,11 @@ listing.interface('/item', async (req, res) => {
 		if (listing !== null) {
 			const author = await User.findByPk(listing.userId);
 			if (author !== null && author !== undefined) {
-				if (res.locals.user !== null && res.locals.user !== undefined) {
+				if (isLoggedOn(res.locals.user)) {
 					const user: User = res.locals.user;
-					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: res.locals.user.access });
+					res.render('pages/main/listing_item.ejs', { listing, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access });
 				} else {
-					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants, useraccess: 'nav' });
+					res.render('pages/main/listing_item.ejs', { listing, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants, useraccess: 'nav' });
 				}
 			}
 		} else {
@@ -222,12 +222,12 @@ listing.interface('/create', async (req, res) => {
 				sectioncount = element.id;
 			}
 		});
-		if (res.locals.user !== undefined && res.locals.user !== null) {
+		if (isLoggedOn(res.locals.user)) {
 			const user: User = res.locals.user;
 			if (secId !== null && secId !== undefined && subsecId !== null && subsecId !== undefined) {
-				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: secId, currentsubsection: subsecId, createfromexistsubcat: 'true' });
+				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: secId, currentsubsection: subsecId, createfromexistsubcat: 'true' });
 			} else {
-				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: 'null', currentsubsection: 'null', createfromexistsubcat: 'false' });
+				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: 'null', currentsubsection: 'null', createfromexistsubcat: 'false' });
 			}
 		} else {
 			res.render('pages/listing/create', { constants: headerConstants });
