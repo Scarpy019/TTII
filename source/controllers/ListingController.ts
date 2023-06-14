@@ -6,6 +6,7 @@ import { Controller } from './BaseController.js';
 import { headerConstants } from './config.js';
 import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
+import { Media } from '../models/Media.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -105,8 +106,14 @@ listing.create = [
 listing.interface('/item', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(listId, { include: [Subsection] });
+		const listing = await Listing.findByPk(listId, { include: [Subsection, Media] });
 		if (listing !== null) {
+			res.locals.media = [];
+			if (listing.media !== undefined && listing.media !== null) {
+				const arr = listing.media;
+				arr.sort((a, b) => a.orderNumber - b.orderNumber);
+				res.locals.media = arr;
+			}
 			const author = await User.findByPk(listing.userId);
 			if (author !== null && author !== undefined) {
 				if (res.locals.user !== null && res.locals.user !== undefined) {
@@ -127,10 +134,11 @@ listing.interface('/item', async (req, res) => {
 listing.interface('/edit', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(listId);
+		const listing = await Listing.findByPk(listId, { include: [Media] });
 		if (listing !== null) {
 			const author = await User.findByPk(listing.userId);
 			const accessuser = res.locals.user;
+			res.locals.media = listing.media ?? [];
 			if (listing.subsectionId !== null && listing.subsectionId !== undefined) {
 				const subcategoryid = listing.subsectionId;
 				const subcategory = await Subsection.findByPk(subcategoryid);

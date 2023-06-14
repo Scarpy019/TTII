@@ -4,6 +4,16 @@ import { fetchWithCSRF, fetchWithCSRFmultipart } from '../hardening.js';
 
 const imageArray: File[] = [];
 
+function swap (a: number, b: number): void {
+	const temp = imageArray[a];
+	imageArray[a] = imageArray[b];
+	imageArray[b] = temp;
+}
+
+function erase (a: number): void {
+	imageArray.splice(a, 1);
+}
+
 async function refreshImages (): Promise<void> {
 	/* const response = await fetch('/media/draft-img', {
 		method: 'GET'
@@ -16,8 +26,38 @@ async function refreshImages (): Promise<void> {
 
 	const display = $('#imgdisplay');
 	display.empty();
-	imageArray.forEach(file => {
-		display.append(`<img src="${URL.createObjectURL(file)}">`);
+	imageArray.forEach((file, index) => {
+		const image = $('<div></div>');
+		if (index !== 0) {
+			$(
+				`<button type="button">
+					&lt;
+				</button>
+			`).appendTo(image).on('click', () => {
+				swap(index, index - 1);
+				void refreshImages();
+			});
+		}
+		$(
+			`<button type="button">
+				X
+			</button>
+		`).appendTo(image).on('click', () => {
+			erase(index);
+			void refreshImages();
+		});
+		image.append(`<img src="${URL.createObjectURL(file)}">`);
+		if (index !== imageArray.length - 1) {
+			$(
+				`<button type="button">
+					&gt;
+				</button>
+			`).appendTo(image).on('click', () => {
+				swap(index, index + 1);
+				void refreshImages();
+			});
+		}
+		image.appendTo(display);
 	});
 }
 void refreshImages();

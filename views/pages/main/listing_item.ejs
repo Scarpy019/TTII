@@ -15,6 +15,9 @@
 
         <div class="listing">
             <h1 id="listing_name"><%- title %></h1>
+			<% media.forEach((item, index) => { %>
+				<img src="/files/<%= item.uuid + item.extension %>" alt="descripting image">
+			<% });%>
             <div class="description">
                 <p><%-body%></p>
                 <p><%-lang.listing_item.startprice%> - <%-startprice%>$</p>
@@ -24,9 +27,7 @@
                     <a href="/listing/edit?listingId=<%=id%>"><%-lang.listing_item.edit%></a>
                 <% } %>
 			</div>
-			<div class="listing_data"><img src='<%picture%>' alt='listingimage'></div>
         </div>
-
     </div>
 </body>
 </html>
