@@ -5,12 +5,20 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="/lapa/client.js", type="module"></script>
+	<link rel="stylesheet" href="/lapa/listing_edit.css">
 	<title>Create Listing</title>
 </head>
 <body>
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
+	<div id="imagelist">
+		<% media.forEach((item, index) => { %>
+			<% if(index !== 0) { %> <button type="button">&lt;</button> <% } %>
+			<img src="/files/<%= item.uuid + item.extension %>" alt="" srcset="">
+			<% if(index !== media.length-1) { %> <button type="button">&gt;</button> <% } %>
+		<% }); %>
+	</div>
 	<form>
 		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
 		<input type="text" id="list_title" name="listing_name" value="<%=existing_title%>" required> 
