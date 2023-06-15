@@ -1,7 +1,6 @@
 import { headerConstants } from './config.js';
 import { Section } from '../models/Section.js';
 import { Subsection } from '../models/Subsection.js';
-import { type User } from '../models/User.js';
 import { Controller } from './BaseController.js';
 import { isAdmin, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
 import { logger } from 'yatsl';
@@ -13,12 +12,10 @@ subsection.read = async (req, res) => {
 	if (!isNaN(secId)) {
 		const section = await Section.findByPk(secId, { include: [Subsection] });
 		if (section !== null) {
-			if (isLoggedOn(res.locals.user)) {
-				const user: User = res.locals.user;
-				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access });
-			} else {
-				res.render('pages/main/subcategory_list.ejs', { section, constants: headerConstants, useraccess: 'slikti' });
-			}
+			res.render('pages/main/subcategory_list.ejs', {
+				section,
+				constants: headerConstants
+			});
 		} else {
 			res.sendStatus(404);
 		}
@@ -135,7 +132,12 @@ subsection.interface('/edit', async (req, res) => {
 			const subsection = await Subsection.findByPk(subsecId);
 			const section = await Section.findByPk(sectionId);
 			if (subsection !== null && section !== null) {
-				res.render('pages/admin/subsection_edit.ejs', { sectionname: section.name, secId: section.id, oldsubsectionname: subsection.name, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+				res.render('pages/admin/subsection_edit.ejs', {
+					sectionname: section.name,
+					secId: section.id,
+					oldsubsectionname: subsection.name,
+					constants: headerConstants
+				});
 			} else {
 				res.sendStatus(404);
 			}
@@ -153,7 +155,10 @@ subsection.interface('/admin', async (req, res) => {
 		const section = await Section.findByPk(secId, { include: [Subsection] });
 		if (isLoggedOn(res.locals.user)) {
 			if (isAdmin(res.locals.user)) {
-				res.render('pages/admin/subsection_adminpage.ejs', { section, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+				res.render('pages/admin/subsection_adminpage.ejs', {
+					section,
+					constants: headerConstants
+				});
 			} else {
 				res.sendStatus(404);
 			}
@@ -170,7 +175,11 @@ subsection.interface('/create', async (req, res) => {
 	const section = await Section.findByPk(secId, { include: [Subsection] });
 	if (isLoggedOn(res.locals.user) && section !== null) {
 		if (isAdmin(res.locals.user)) {
-			res.render('pages/admin/subsection_create.ejs', { sectionId: secId, sectionname: section.name, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+			res.render('pages/admin/subsection_create.ejs', {
+				sectionId: secId,
+				sectionname: section.name,
+				constants: headerConstants
+			});
 		} else {
 			res.sendStatus(404);
 		}

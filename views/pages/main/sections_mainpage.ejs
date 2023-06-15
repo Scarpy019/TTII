@@ -19,8 +19,10 @@
             
             </ul>
         </div>
-        <% if (useraccess == "admin") { %>
-            <a href="/section/admin"><%-lang.listing_item.edit%></a>
+        <% if (user != null) { %>
+            <% if (user.accesslevel.category_admin) { %>
+                <a href="/section/admin"><%-lang.listing_item.edit%></a>
+            <% } %>
         <% } %>
     </div>
 </body>

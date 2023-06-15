@@ -20,8 +20,10 @@
                 <p><%-lang.listing_item.startprice%> - <%-listing.start_price%>$</p>
                 <p><%-lang.listing_item.author%> - <a href="/user/profile/<%=author_profile%>"><%-author%></a></p>
                 <p><%-lang.listing_item.postdate%> <%-listing.createdAt%></p>
-                <% if (authorid == currentuserid || useraccess == "admin") { %>
-                    <a href="/listing/edit?listingId=<%=listing.id%>"><%-lang.listing_item.edit%></a>
+                <% if (user != null) { %>
+                    <% if (authorid == user.id || user.accesslevel.category_admin) { %>
+                        <a href="/listing/edit?listingId=<%=listing.id%>"><%-lang.listing_item.edit%></a>
+                    <% } %>
                 <% } %>
 			</div>
 			<div class="listing_data"><img src='<%listing.media%>' alt='listingimage'></div>

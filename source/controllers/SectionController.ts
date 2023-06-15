@@ -1,6 +1,5 @@
 import { isAdmin, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
 import { Section } from '../models/Section.js';
-import { type User } from '../models/User.js';
 import { Controller } from './BaseController.js';
 
 import { headerConstants } from './config.js';
@@ -9,12 +8,11 @@ const section = new Controller('section');
 
 section.read = async (req, res) => {
 	const sections = await Section.findAll();
-	if (isLoggedOn(res.locals.user)) { // for header Login&sign up or username& sign out
-		const user: User = res.locals.user;
-		res.render('pages/main/sections_mainpage.ejs', { sections, sectionName: section.name, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access });
-	} else {
-		res.render('pages/main/sections_mainpage.ejs', { sections, sectionName: section.name, constants: headerConstants, useraccess: 'slikti' });
-	}
+	res.render('pages/main/sections_mainpage.ejs', {
+		sections,
+		sectionName: section.name,
+		constants: headerConstants
+	});
 };
 
 interface SectionCreateForm {
@@ -111,7 +109,10 @@ section.interface('/edit', async (req, res) => {
 	const sections = await Section.findByPk(String(editingsection));
 	if (isLoggedOn(res.locals.user) && sections !== null) {
 		if (isAdmin(res.locals.user)) {
-			res.render('pages/admin/section_edit.ejs', { oldsectionname: sections.name, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+			res.render('pages/admin/section_edit.ejs', {
+				oldsectionname: sections.name,
+				constants: headerConstants
+			});
 		} else {
 			res.sendStatus(404);
 		}
@@ -124,7 +125,10 @@ section.interface('/admin', async (req, res) => {
 	const sections = await Section.findAll();
 	if (isLoggedOn(res.locals.user)) {
 		if (isAdmin(res.locals.user)) {
-			res.render('pages/admin/section_adminpage.ejs', { sections, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+			res.render('pages/admin/section_adminpage.ejs', {
+				sections,
+				constants: headerConstants
+			});
 		} else {
 			res.sendStatus(404);
 		}
@@ -136,7 +140,9 @@ section.interface('/admin', async (req, res) => {
 section.interface('/create', async (req, res) => {
 	if (isLoggedOn(res.locals.user)) {
 		if (isAdmin(res.locals.user)) {
-			res.render('pages/admin/section_create.ejs', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${res.locals.user.id}`, useraccess: res.locals.user.access });
+			res.render('pages/admin/section_create.ejs', {
+				constants: headerConstants
+			});
 		} else {
 			res.sendStatus(404);
 		}

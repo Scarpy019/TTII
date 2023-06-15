@@ -16,14 +16,14 @@ listing.read = async (req, res) => {
 	if (!isNaN(subsecId)) {
 		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
 		if (subsection !== null) {
-			if (isLoggedOn(res.locals.user)) { // for header Login&sign up or username& sign out
-				const user: User = res.locals.user;
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access, subsec_Id: String(subsecId), secId: subsection.sectionId });
-				return;
-			} else {
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, useraccess: 'no', subsec_Id: String(subsecId), secId: subsection.sectionId });
-				return;
-			}
+			res.render('pages/main/all_listings.ejs', {
+				subsection,
+				subsecId,
+				constants: headerConstants,
+				subsec_Id: String(subsecId),
+				secId: subsection.sectionId
+			});
+			return;
 		}
 	}
 	// TODO: proper redirect
@@ -119,15 +119,14 @@ listing.interface('/item', async (req, res) => {
 		if (listing !== null) {
 			const author = await User.findByPk(listing.userId);
 			if (author !== null && author !== undefined) {
-				if (isLoggedOn(res.locals.user)) {
-					const user: User = res.locals.user;
-					res.render('pages/main/listing_item.ejs', { listing, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, useraccess: user.access });
-				} else {
-					res.render('pages/main/listing_item.ejs', { listing, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants, useraccess: 'nav' });
-				}
+				res.render('pages/main/listing_item.ejs', {
+					listing,
+					author: author.username,
+					author_profile: author.id,
+					authorid: author.id,
+					constants: headerConstants
+				});
 			}
-		} else {
-			res.sendStatus(404);
 		}
 	} else {
 		res.sendStatus(404);
@@ -155,9 +154,20 @@ listing.interface('/edit', async (req, res) => {
 						}
 					});
 					if (category !== null && category !== undefined) {
-						if (accessuser !== undefined && accessuser !== null && author !== null && author !== undefined) {
+						if (isLoggedOn(accessuser) && author !== null && author !== undefined) {
 							if (accessuser.id === author.id || isAdmin(accessuser)) {
-								res.render('pages/listing/edit', { listingid: listId, constants: headerConstants, userstatus_page: `/user/profile/${accessuser.id}`, userstatus_name: accessuser.username, existing_title: listing.title, existing_desc: listing.body, existing_startprice: listing.start_price, existing_status: listing.status, existing_subcategoryid: subcategoryid, existing_categoryid: categoryid, sections: allcategory, sectioncount });
+								res.render('pages/listing/edit', {
+									listingid: listId,
+									constants: headerConstants,
+									existing_title: listing.title,
+									existing_desc: listing.body,
+									existing_startprice: listing.start_price,
+									existing_status: listing.status,
+									existing_subcategoryid: subcategoryid,
+									existing_categoryid: categoryid,
+									sections: allcategory,
+									sectioncount
+								});
 							} else {
 								res.redirect('/section');
 							}
@@ -195,7 +205,7 @@ listing.override('delete', '/listing/delete');
 
 listing.delete = async (req, res) => {
 	const listingid = req.body.listingId;
-	if (listingid !== null && listingid !== undefined && res.locals.user !== null && res.locals.user !== undefined) {
+	if (listingid !== null && listingid !== undefined && isLoggedOn(res.locals.user)) {
 		const listingrow = await Listing.findByPk(listingid);
 		if (listingrow !== undefined && listingrow !== null) {
 			const author = listingrow.userId;
@@ -223,14 +233,29 @@ listing.interface('/create', async (req, res) => {
 			}
 		});
 		if (isLoggedOn(res.locals.user)) {
-			const user: User = res.locals.user;
 			if (secId !== null && secId !== undefined && subsecId !== null && subsecId !== undefined) {
-				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: secId, currentsubsection: subsecId, createfromexistsubcat: 'true' });
+				res.render('pages/listing/create', {
+					constants: headerConstants,
+					sections,
+					sectioncount,
+					currentsection: secId,
+					currentsubsection: subsecId,
+					createfromexistsubcat: 'true'
+				});
 			} else {
-				res.render('pages/listing/create', { constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount, currentsection: 'null', currentsubsection: 'null', createfromexistsubcat: 'false' });
+				res.render('pages/listing/create', {
+					constants: headerConstants,
+					sections,
+					sectioncount,
+					currentsection: 'null',
+					currentsubsection: 'null',
+					createfromexistsubcat: 'false'
+				});
 			}
 		} else {
-			res.render('pages/listing/create', { constants: headerConstants });
+			res.render('pages/listing/create', {
+				constants: headerConstants
+			});
 		}
 	} else {
 		res.redirect('/user/login?redirect=' + Buffer.from('/listing/create').toString('base64'));
