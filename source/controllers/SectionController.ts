@@ -1,4 +1,4 @@
-import { isAdmin, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
+import { isAdmin, isLoggedOn, isCategory } from '../middleware/AdminCheckMiddleware.js';
 import { Section } from '../models/Section.js';
 import { Controller } from './BaseController.js';
 
@@ -63,7 +63,7 @@ section.update = section.handler(
 			if (isAdmin(res.locals.user)) {
 				try {
 					const sectioninstance = await Section.findByPk(req.body.section_id);
-					if (sectioninstance !== null) {
+					if (isCategory(sectioninstance)) {
 						sectioninstance.name = req.body.section_name;
 						await sectioninstance.save();
 						res.redirect('/section');
@@ -87,7 +87,7 @@ section.delete = async (req, res) => {
 	if (sectionId !== null && sectionId !== undefined && isLoggedOn(res.locals.user)) {
 		if (isAdmin(res.locals.user)) {
 			const sectionrow = await Section.findByPk(sectionId);
-			if (sectionrow !== undefined && sectionrow !== null) {
+			if (isCategory(sectionrow)) {
 				await sectionrow.destroy();
 				res.redirect('/section');
 			} else {

@@ -2,7 +2,7 @@ import { headerConstants } from './config.js';
 import { Section } from '../models/Section.js';
 import { Subsection } from '../models/Subsection.js';
 import { Controller } from './BaseController.js';
-import { isAdmin, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
+import { isAdmin, isLoggedOn, isCategory, isSubcategory } from '../middleware/AdminCheckMiddleware.js';
 import { logger } from 'yatsl';
 
 const subsection = new Controller('subsection', ['sectionId']);
@@ -11,7 +11,7 @@ subsection.read = async (req, res) => {
 	const secId = Number(req.params.sectionId);
 	if (!isNaN(secId)) {
 		const section = await Section.findByPk(secId, { include: [Subsection] });
-		if (section !== null) {
+		if (isCategory(section)) {
 			res.render('pages/main/subcategory_list.ejs', {
 				section,
 				constants: headerConstants
@@ -78,7 +78,7 @@ subsection.update = subsection.handler(
 			if (isAdmin(res.locals.user)) {
 				try {
 					const subsectioninstance = await Subsection.findByPk(req.body.subsection_id);
-					if (subsectioninstance !== null) {
+					if (isSubcategory(subsectioninstance)) {
 						subsectioninstance.name = req.body.subsection_name;
 						await subsectioninstance.save();
 						res.redirect(`/subsection/${req.body.section_id}`);
@@ -102,7 +102,7 @@ subsection.delete = async (req, res) => {
 	if (subsectionId !== null && subsectionId !== undefined && isLoggedOn(res.locals.user)) {
 		if (isAdmin(res.locals.user)) {
 			const subsectionrow = await Subsection.findByPk(subsectionId);
-			if (subsectionrow !== undefined && subsectionrow !== null) {
+			if (isSubcategory(subsectionrow)) {
 				const section = subsectionrow.sectionId;
 				if (section !== undefined) {
 					await subsectionrow.destroy();
@@ -131,7 +131,7 @@ subsection.interface('/edit', async (req, res) => {
 		if (isAdmin(res.locals.user)) {
 			const subsection = await Subsection.findByPk(subsecId);
 			const section = await Section.findByPk(sectionId);
-			if (subsection !== null && section !== null) {
+			if (isSubcategory(subsection) && isCategory(section)) {
 				res.render('pages/admin/subsection_edit.ejs', {
 					sectionname: section.name,
 					secId: section.id,

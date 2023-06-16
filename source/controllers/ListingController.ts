@@ -7,7 +7,7 @@ import { headerConstants } from './config.js';
 import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
-import { isAdmin, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
+import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategory, isUserAuthor } from '../middleware/AdminCheckMiddleware.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -15,7 +15,7 @@ listing.read = async (req, res) => {
 	const subsecId = Number(req.params.subsectionId);
 	if (!isNaN(subsecId)) {
 		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
-		if (subsection !== null) {
+		if (isSubcategory(subsection)) {
 			res.render('pages/main/all_listings.ejs', {
 				subsection,
 				subsecId,
@@ -116,9 +116,9 @@ listing.interface('/item', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId, { include: [Subsection] });
-		if (listing !== null) {
+		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
-			if (author !== null && author !== undefined) {
+			if (doesUserExist(author)) {
 				res.render('pages/main/listing_item.ejs', {
 					listing,
 					author: author.username,
@@ -137,13 +137,13 @@ listing.interface('/edit', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId);
-		if (listing !== null) {
+		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
 			const accessuser = res.locals.user;
 			if (listing.subsectionId !== null && listing.subsectionId !== undefined) {
 				const subcategoryid = listing.subsectionId;
 				const subcategory = await Subsection.findByPk(subcategoryid);
-				if (subcategory !== null && subcategory !== undefined) {
+				if (isSubcategory(subcategory)) {
 					const categoryid = subcategory.sectionId;
 					const category = await Section.findByPk(categoryid, { include: [Subsection] });
 					const allcategory = await Section.findAll({ include: [Subsection] });
@@ -153,9 +153,9 @@ listing.interface('/edit', async (req, res) => {
 							sectioncount = element.id;
 						}
 					});
-					if (category !== null && category !== undefined) {
-						if (isLoggedOn(accessuser) && author !== null && author !== undefined) {
-							if (accessuser.id === author.id || isAdmin(accessuser)) {
+					if (isCategory(category)) {
+						if (isLoggedOn(accessuser) && doesUserExist(author)) {
+							if (isUserAuthor(accessuser, author) || isAdmin(accessuser)) {
 								res.render('pages/listing/edit', {
 									listingid: listId,
 									constants: headerConstants,
@@ -186,7 +186,7 @@ listing.update = listing.handler(
 	async (req, res): Promise<void> => {
 		try {
 			const listinginstance = await Listing.findByPk(req.body.listingid);
-			if (listinginstance !== null) {
+			if (isListing(listinginstance)) {
 				listinginstance.title = req.body.listing_name;
 				listinginstance.body = req.body.listing_description;
 				listinginstance.status = req.body.openstatus;
@@ -207,12 +207,12 @@ listing.delete = async (req, res) => {
 	const listingid = req.body.listingId;
 	if (listingid !== null && listingid !== undefined && isLoggedOn(res.locals.user)) {
 		const listingrow = await Listing.findByPk(listingid);
-		if (listingrow !== undefined && listingrow !== null) {
-			const author = listingrow.userId;
+		if (isListing(listingrow)) {
+			const author = await User.findByPk(listingrow.userId);
 			const requestinguser = res.locals.user;
 			const requestinguserid = res.locals.user.id;
-			if (author === requestinguserid || isAdmin(requestinguser)) {
-				if (listingrow !== null && listingrow !== undefined) {
+			if (isUserAuthor(requestinguser, author) || isAdmin(requestinguser)) {
+				if (isListing(listingrow)) {
 					await listingrow.destroy();
 					res.redirect(`/user/profile/${requestinguserid}`);
 				}

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { headerConstants } from './config.js';
-import { isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
+import { doesUserExist, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
 
 interface UserSigninForm {
 	user: string;
@@ -58,7 +58,7 @@ userpage.read = async (req, res) => {
 	const userpageId = req.params.id;
 	if (userpageId !== null && userpageId !== undefined) {
 		const usernameVar = await User.findByPk(userpageId);
-		if (usernameVar !== null && usernameVar !== undefined) {
+		if (doesUserExist(usernameVar)) {
 			const userlistings = await Listing.findAll({ where: { userId: usernameVar.id } });
 			res.render('pages/user/userpage.ejs', {
 				username: usernameVar.username,
@@ -117,7 +117,7 @@ login.create = login.handler(
 );
 
 login.delete = (req, res) => {
-	if (res.locals.user !== null && res.locals.user !== undefined) {
+	if (isLoggedOn(res.locals.user)) {
 		res.clearCookie('AuthToken');
 		res.send('Logging out');
 	} else {
@@ -151,7 +151,7 @@ function isUserSignupForm (obj: any): obj is UserSignupForm {
 const signup = user.subcontroller('signup');
 
 signup.read = (req, res): void => {
-	if (res.locals.user !== null && res.locals.user !== undefined) {
+	if (isLoggedOn(res.locals.user)) {
 		res.redirect('/section');
 	} else {
 		res.render('pages/user/signup', { constants: headerConstants });
