@@ -122,7 +122,7 @@ listing.interface('/item', async (req, res) => {
 				res.render('pages/main/listing_item.ejs', {
 					listing,
 					author: author.username,
-					author_profile: author.id,
+					author_profile: author.username,
 					authorid: author.id,
 					constants: headerConstants
 				});
@@ -210,11 +210,10 @@ listing.delete = async (req, res) => {
 		if (isListing(listingrow)) {
 			const author = await User.findByPk(listingrow.userId);
 			const requestinguser = res.locals.user;
-			const requestinguserid = res.locals.user.id;
 			if (isUserAuthor(requestinguser, author) || isAdmin(requestinguser)) {
 				if (isListing(listingrow)) {
 					await listingrow.destroy();
-					res.redirect(`/user/profile/${requestinguserid}`);
+					res.redirect(`/user/profile/${requestinguser.username}`);
 				}
 			}
 		}

@@ -52,12 +52,12 @@ login.read = (req, res) => {
 	}
 };
 
-const userpage = user.subcontroller('profile', ['id']);
+const userpage = user.subcontroller('profile', ['username']);
 
 userpage.read = async (req, res) => {
-	const userpageId = req.params.id;
-	if (userpageId !== null && userpageId !== undefined) {
-		const usernameVar = await User.findByPk(userpageId);
+	const URLusername = req.params.username;
+	if (URLusername !== null && URLusername !== undefined) {
+		const usernameVar = await User.findOne({ where: { username: URLusername } });
 		if (doesUserExist(usernameVar)) {
 			const userlistings = await Listing.findAll({ where: { userId: usernameVar.id } });
 			res.render('pages/user/userpage.ejs', {
