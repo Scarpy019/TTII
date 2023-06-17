@@ -1,9 +1,18 @@
 import multer, { diskStorage } from 'multer';
-import { Listing, Media } from '../models/index.js';
+import { Listing, Media, type User } from '../models/index.js';
 import { Controller } from './BaseController.js';
 import { v4 as uuid } from 'uuid';
 
 const media = new Controller('media');
+
+async function userOwnsListing (user: User, listingId: string): Promise<boolean> {
+	return (await Listing.count({
+		where: {
+			userId: user.id,
+			id: listingId
+		}
+	})) > 0;
+}
 
 media.read = async (req, res) => {
 	const listingId = req.query.listingId;
@@ -49,7 +58,6 @@ media.create = [
 		limits: {
 			fileSize: 20_000_000
 		},
-		// TODO: add size limitation
 		fileFilter: (req, file, callback) => {
 			// filter out non-image mime types
 			const fileData = file;
@@ -81,28 +89,33 @@ media.create = [
 		if (listingId !== undefined && listingId !== null && typeof listingId === 'string') {
 			// check if a user is logged in again for safe typing
 			const user = res.locals.user;
-			if (user !== undefined && user !== null) {
-				const fileData = req.files;
-				if (fileData !== undefined && Array.isArray(fileData)) {
-					fileData.forEach(async (file, i) => {
-						// make the entry
-						const dat = file.filename.split('.');
-						const id = dat[0];
-						const ext = `.${dat[1]}`;
-						await Media.create({
-							uuid: id,
-							orderNumber: i + 1,
-							extension: ext,
-							listingId
-						});
-					});
-					res.sendStatus(200);
-				} else {
-					res.sendStatus(400);
-				}
-			} else {
-				// unauthenticated users should not be allowed uploading images
+			// check login
+			if (user === null || user === undefined) {
 				res.sendStatus(401);
+				return;
+			}
+			if (!await userOwnsListing(user, listingId)) {
+				res.sendStatus(401);
+				return;
+			}
+			const media = await Media.findAll({ where: { listingId } });
+			const fileData = req.files;
+			if (fileData !== undefined && Array.isArray(fileData)) {
+				fileData.forEach(async (file, i) => {
+					// make the entry
+					const dat = file.filename.split('.');
+					const id = dat[0];
+					const ext = `.${dat[1]}`;
+					await Media.create({
+						uuid: id,
+						orderNumber: media.length + i + 1,
+						extension: ext,
+						listingId
+					});
+				});
+				res.sendStatus(200);
+			} else {
+				res.sendStatus(400);
 			}
 		} else {
 			res.sendStatus(400);
@@ -115,6 +128,16 @@ media.update = async (req, res) => {
 	const listingId = req.body.listingId;
 	const swappableAnum = Number(req.body.Anum);
 	const swappableBnum = Number(req.body.Bnum);
+	const user = res.locals.user;
+	// check login
+	if (user === null || user === undefined) {
+		res.sendStatus(401);
+		return;
+	}
+	if (!await userOwnsListing(user, listingId)) {
+		res.sendStatus(401);
+		return;
+	}
 	if (listingId !== undefined && listingId !== null) {
 		const mediaA = await Media.findOne({
 			where: {
@@ -136,13 +159,14 @@ media.update = async (req, res) => {
 			mediaB.orderNumber = swappableAnum;
 			await mediaB.save();
 		} else if (mediaA !== null && mediaB !== null) {
-			// if both exist swap image UUIDs,
-			// because swapping of unique fields is a nono
-			const temp = mediaB.uuid;
-			mediaB.uuid = mediaA.uuid;
-			mediaA.uuid = temp;
+			// if both exist swap image UUIDs and extensions,
+			// because swapping of unique fields is a nono in MySQL
+			[mediaA.uuid, mediaB.uuid] = [mediaB.uuid, mediaA.uuid];
+			[mediaA.extension, mediaB.extension] = [mediaB.extension, mediaA.extension];
 			await mediaA.save();
 			await mediaB.save();
+		} else {
+			res.sendStatus(400);
 		}
 		res.sendStatus(200);
 	} else {

@@ -1,7 +1,6 @@
 import BodyParser from 'body-parser';
 import express from 'express';// Create a new express app instance
 import cookieParser from 'cookie-parser';
-import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';
 import { logUserAction } from './middleware/LoggingMiddleware.js';
 import { validateAuthToken } from './middleware/AuthTokenMiddleware.js';
@@ -13,6 +12,7 @@ import cors from 'cors';
 import { server as config } from './config.js';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
+import { sequelize } from './sequelizeSetup.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -37,7 +37,7 @@ app.use(obfuscateServerInfo); // To hide server-identifying headers
 app.use('/', localization, controllerRouter());
 
 // Redirect to sections, possibly implement a full
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
 	res.redirect('/section');
 });
 
@@ -73,7 +73,7 @@ const options = {
 
 const HTTPport = config.debug ? 3000 : 80;
 app.listen(HTTPport, async function () {
-	await sequelize.sync();
+	await sequelize.sync({ alter: false });
 	logger.info(`App is listening for HTTP on ${HTTPport}`);
 
 	const HTTPSport = config.debug ? 3001 : 443;

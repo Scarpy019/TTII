@@ -19,6 +19,8 @@
 			<% if(index !== media.length-1) { %> <button data-index="<%= index+1 %>" type="button" class="moveRight">&gt;</button> <% } %>
 		<% }); %>
 	</div>
+	<%-lang.listing_form.image_upload_label%>
+	<input type="file" name="" id="imgupload">
 	<form>
 		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
 		<input type="text" id="list_title" name="listing_name" value="<%=existing_title%>" required> 

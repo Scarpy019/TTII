@@ -31,14 +31,15 @@ export class User extends Model<UserAttributes, UserInput> {
 	@Column(DataType.UUID)
     id!: UUID;
 
-	@Unique
+	@Unique('username')
 	@Column
     username!: string;
 
 	@Validate({
 		is: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/
 	})
-	@Unique
+
+	@Unique('email')
 	@Column
     email!: string;
 
