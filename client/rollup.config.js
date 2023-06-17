@@ -59,5 +59,14 @@ export default [
 			format: 'es'
 		},
 		plugins: [scss({output:'./static/lapa/listing_edit.css'})].concat(plugins)
+	},
+	{
+		input: './client/listing_item/entry_point.ts',
+		output: {
+			sourceMap: true,
+			file: './static/lapa/listing_item.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/listing_item.css'})].concat(plugins)
 	}
 ];
