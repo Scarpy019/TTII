@@ -173,3 +173,71 @@ media.update = async (req, res) => {
 		res.sendStatus(400);
 	}
 };
+
+media.delete = [
+	// permission check
+	async (req, res, next) => {
+		console.log(req.body);
+		if (req.body.mediaId === null || req.body.mediaId === undefined) {
+			res.status(400);
+			res.send('non-existant body data');
+			return;
+		}
+		const media = await Media.findOne({
+			where: {
+				uuid: req.body.mediaId
+			},
+			include: [Listing]
+		});
+		res.locals.media = media;
+		// the user exists
+		if (res.locals.user === null || res.locals.user === undefined) {
+			res.status(400);
+			res.send('user no exist');
+			return;
+		}
+
+		// check if the media item exists
+		if (media === null || media === undefined) {
+			res.status(400);
+			res.send('media no exist');
+			return;
+		}
+
+		// check if its listing exists
+		if (media.listings === null || media.listings === undefined) {
+			res.status(400);
+			res.send('media listing no exist');
+			return;
+		}
+
+		// the user is the owner of the listing that has this media item
+		if (media.listings.userId !== res.locals.user.id) {
+			res.status(401);
+			res.send('wrong user');
+			return;
+		}
+		next();
+	},
+	async (req, res, next) => {
+		if (res.locals.media === null || res.locals.media === undefined) {
+			// typeguard for a local, should never execute
+			res.status(500);
+			res.send('media no exist???');
+			return;
+		}
+		if (!(res.locals.media instanceof Media)) {
+			res.status(400);
+			res.send('media aint media???');
+			return;
+		}
+		const listingId = res.locals.media.listingId;
+		await res.locals.media.destroy();
+		const remainingMedia = await Media.findAll({ where: { listingId }, order: [['orderNumber', 'ASC']] });
+		for (let i = 0; i < remainingMedia.length; i++) {
+			remainingMedia[i].orderNumber = i + 1;
+			await remainingMedia[i].save();
+		}
+		res.sendStatus(200);
+	}
+];

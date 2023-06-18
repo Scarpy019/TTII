@@ -16,6 +16,7 @@
 		<% media.forEach((item, index) => { %>
 			<% if(index !== 0) { %> <button data-index="<%= index+1 %>" type="button" class="moveLeft">&lt;</button> <% } %>
 			<img src="/files/<%= item.uuid + item.extension %>" alt="" srcset="">
+			<button data-mediaid="<%= item.uuid %>" type="button" class="deleteBtn">X</button>
 			<% if(index !== media.length-1) { %> <button data-index="<%= index+1 %>" type="button" class="moveRight">&gt;</button> <% } %>
 		<% }); %>
 	</div>
