@@ -1,4 +1,4 @@
-import { isAdmin, isLoggedOn, isCategory } from '../middleware/AdminCheckMiddleware.js';
+import { isAdmin, isLoggedOn, isCategory } from '../middleware/ObjectCheckingMiddleware.js';
 import { Section } from '../models/Section.js';
 import { Controller } from './BaseController.js';
 

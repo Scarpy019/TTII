@@ -7,7 +7,7 @@ import { headerConstants } from './config.js';
 import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
-import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategory, isUserAuthor } from '../middleware/AdminCheckMiddleware.js';
+import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategory, isUserAuthor } from '../middleware/ObjectCheckingMiddleware.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -155,8 +155,8 @@ listing.interface('/edit', async (req, res) => {
 					});
 					if (isCategory(category)) {
 						if (isLoggedOn(accessuser) && doesUserExist(author)) {
-							if (isUserAuthor(accessuser, author) || isAdmin(accessuser)) {
-								res.render('pages/listing/edit', {
+							if (isUserAuthor(accessuser, author) || isAdmin(accessuser)) { // Both the author and admin can edit listing
+								res.render('pages/listing/edit', { // Used for filling all the form with current listing data
 									listingid: listId,
 									constants: headerConstants,
 									existing_title: listing.title,
@@ -233,7 +233,7 @@ listing.interface('/create', async (req, res) => {
 		});
 		if (isLoggedOn(res.locals.user)) {
 			if (secId !== null && secId !== undefined && subsecId !== null && subsecId !== undefined) {
-				res.render('pages/listing/create', {
+				res.render('pages/listing/create', { // User can access the create listing page from a subcategory page where it autofills the category and subcategory
 					constants: headerConstants,
 					sections,
 					sectioncount,
@@ -242,7 +242,7 @@ listing.interface('/create', async (req, res) => {
 					createfromexistsubcat: 'true'
 				});
 			} else {
-				res.render('pages/listing/create', {
+				res.render('pages/listing/create', { // There is no autofill for listings because this comes from the Create listing button in the header
 					constants: headerConstants,
 					sections,
 					sectioncount,
@@ -252,7 +252,7 @@ listing.interface('/create', async (req, res) => {
 				});
 			}
 		} else {
-			res.render('pages/listing/create', {
+			res.render('pages/listing/create', { // Sends the non logged in user to the page but a different function redirects the user to login page
 				constants: headerConstants
 			});
 		}

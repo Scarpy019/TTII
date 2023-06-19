@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { headerConstants } from './config.js';
-import { doesUserExist, isLoggedOn } from '../middleware/AdminCheckMiddleware.js';
+import { doesUserExist, isLoggedOn } from '../middleware/ObjectCheckingMiddleware.js';
 
 interface UserSigninForm {
 	user: string;
@@ -60,7 +60,7 @@ userpage.read = async (req, res) => {
 		const usernameVar = await User.findOne({ where: { username: URLusername } });
 		if (doesUserExist(usernameVar)) {
 			const userlistings = await Listing.findAll({ where: { userId: usernameVar.id } });
-			res.render('pages/user/userpage.ejs', {
+			res.render('pages/user/userpage.ejs', { // Sends all userpage information which gets compared with local user in the ejs file for personal userpage display
 				username: usernameVar.username,
 				constants: headerConstants,
 				userlistings,

@@ -2,7 +2,7 @@ import { headerConstants } from './config.js';
 import { Section } from '../models/Section.js';
 import { Subsection } from '../models/Subsection.js';
 import { Controller } from './BaseController.js';
-import { isAdmin, isLoggedOn, isCategory, isSubcategory } from '../middleware/AdminCheckMiddleware.js';
+import { isAdmin, isLoggedOn, isCategory, isSubcategory } from '../middleware/ObjectCheckingMiddleware.js';
 import { logger } from 'yatsl';
 
 const subsection = new Controller('subsection', ['sectionId']);
@@ -124,7 +124,7 @@ subsection.delete = async (req, res) => {
 subsection.override('delete', '/subsection/delete');
 subsection.override('update', '/subsection/update');
 
-subsection.interface('/edit', async (req, res) => {
+subsection.interface('/edit', async (req, res) => { // Accesibly only by admins
 	const subsecId = String(req.query.subsectionId);
 	const sectionId = String(req.params.sectionId);
 	if (isLoggedOn(res.locals.user)) {
@@ -132,7 +132,7 @@ subsection.interface('/edit', async (req, res) => {
 			const subsection = await Subsection.findByPk(subsecId);
 			const section = await Section.findByPk(sectionId);
 			if (isSubcategory(subsection) && isCategory(section)) {
-				res.render('pages/admin/subsection_edit.ejs', {
+				res.render('pages/admin/subsection_edit.ejs', { // Sends variables to prepopulate two fields in the edit form
 					sectionname: section.name,
 					secId: section.id,
 					oldsubsectionname: subsection.name,
@@ -149,7 +149,7 @@ subsection.interface('/edit', async (req, res) => {
 	}
 });
 
-subsection.interface('/admin', async (req, res) => {
+subsection.interface('/admin', async (req, res) => { // Admin view of subsection page with edit buttons
 	const secId = (req.params.sectionId) as unknown;
 	if (!isNaN(Number(secId)) && typeof secId === 'string') {
 		const section = await Section.findByPk(secId, { include: [Subsection] });
@@ -170,10 +170,10 @@ subsection.interface('/admin', async (req, res) => {
 	}
 });
 
-subsection.interface('/create', async (req, res) => {
+subsection.interface('/create', async (req, res) => { // Accessible only by admins
 	const secId = (req.params.sectionId);
 	const section = await Section.findByPk(secId, { include: [Subsection] });
-	if (isLoggedOn(res.locals.user) && section !== null) {
+	if (isLoggedOn(res.locals.user) && isCategory(section)) {
 		if (isAdmin(res.locals.user)) {
 			res.render('pages/admin/subsection_create.ejs', {
 				sectionId: secId,
