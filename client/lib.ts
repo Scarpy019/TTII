@@ -23,16 +23,16 @@ export function getCookie (cname: string): string {
  * LocalStorage Management
  */
 // Storage of all DH keypairs in local storage, each message has its own pair to ensure forward secrecy
-export interface Keypair {
+interface Keypair {
 	publicKey: string;
 	privateKey: string;
 };
 // Object that contains a dictionary of message IDs and keypairs that correspond to them.
-export interface CodeBook {
+interface CodeBook {
 	messageKeypair: Map<string, Keypair>;
 };
 // Message queue object, tracks messages awaiting key from other user, messages pending encryption and messages that have been decrypted
-export interface MessageQueue {
+interface MessageQueue {
 	awaitingKey: string[];
 	pendingMessage: Map<string, string>; // MessageID, content
 	decipheredMessages: Map<string, string>; // MessageID, content
