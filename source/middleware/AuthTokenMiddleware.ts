@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { User } from '../models/index.js';
+import { User, UserAccess } from '../models/index.js';
 import jwt from 'jsonwebtoken';
 import { authorization as config } from '../config.js';
 
@@ -13,7 +13,8 @@ export async function validateAuthToken (req: Request, res: Response, next: Next
 				const user = await User.findOne({
 					where: {
 						id: decoded.sub
-					}
+					},
+					include: [UserAccess]
 				});
 				res.locals.user = user;
 			}

@@ -1,3 +1,4 @@
+export { UserAccess } from './UserAccess.js';
 export { User } from './User.js';
 export { UserLog, type Log } from './UserLog.js';
 export { Section } from './Section.js';

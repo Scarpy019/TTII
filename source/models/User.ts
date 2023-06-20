@@ -4,6 +4,7 @@ import { Listing } from './Listing.js';
 import { type Optional } from 'sequelize';
 import { UUID } from '../sequelizeSetup.js';
 import { Bid } from './Bid.js';
+import { UserAccess } from './UserAccess.js';
 
 /**
  * Helper interface for Users
@@ -31,22 +32,26 @@ export class User extends Model<UserAttributes, UserInput> {
 	@Column(DataType.UUID)
     id!: UUID;
 
-	@Unique
+	@Unique('username')
 	@Column
     username!: string;
 
 	@Validate({
 		is: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/
 	})
-	@Unique
+	@Unique('email')
 	@Column
     email!: string;
 
 	@Column
     password!: string;
 
+	@ForeignKey(() => UserAccess)
 	@Column
-    access!: string;
+	access!: string;
+
+	@BelongsTo(() => UserAccess, 'access')
+	accesslevel!: ReturnType<() => UserAccess>;
 
 	@Default(0)
 	@Column

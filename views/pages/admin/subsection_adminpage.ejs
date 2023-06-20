@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,14 +16,12 @@
             <ul id="subcategory_list">
 				<% section.subsections.forEach(subsection => { %>
 					<a href='/listing/<%=subsection.id%>'><%- subsection.name %></a>
+					<a href="/subsection/edit/<%=section.id%>?subsectionId=<%=subsection.id%>">Edit</a>
 				<% }) %>
 			</ul>
         </div>
-        <% if (user != null) { %>
-            <% if (user.accesslevel.category_admin) { %>
-                <a href="/subsection/admin/<%=section.id%>"><%-lang.listing_item.edit%></a>
-            <% } %>
-        <% } %>
+		<a href="/subsection/create/<%=section.id%>"><%-lang.admin.add_subsect%></a>
+        <a href="/subsection/<%=section.id%>"><%-lang.admin.return_subsect%></a>
     </div>
 </body>
 </html>

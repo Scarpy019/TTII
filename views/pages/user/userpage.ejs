@@ -11,14 +11,26 @@
         <%- include('../misc/header') %>
     </div>
     <div class="main_container">
-		<p><%=username%></p>
+        <% if (user != null) { %>
+            <% if (authorid == user.id) { %>
+		        <p><%=lang.userpage.welcome%>, <%=username%></p>
+            <% } else { %> 
+                <%=username%>
+            <% } %> 
+        <% } else { %> 
+            <%=username%>
+        <% }%>
         <ul>
 		<% userlistings.forEach(element => { %>
 			<li><a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
-			<% if (authorid == currentuserid) { %>
-				<a href="/listing/edit?listingId=<%=element.id%>"><%-lang.listing_item.edit%></a>
-			<% } %> </li>
+            <% if (user != null) { %>
+                <% if (authorid == user.id) { %>
+                    <a href="/listing/edit?listingId=<%=element.id%>"><%-lang.listing_item.edit%></a>
+                <% } %> 
+            <% } %> 
+            </li>
 		<% }) %>
+        
         </ul>
     </div>
 </body>
