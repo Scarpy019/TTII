@@ -95,6 +95,15 @@ function awaitKey (messageId: string): void {
 	localStorage.setItem(getUser() + '-queue', JSON.stringify(queue, replacer));
 }
 
+function stopAwaitKey (messageId: string): void {
+	const queue = getMessageQueue();
+	const index = queue.awaitingKey.indexOf(messageId);
+	if (index > -1) {
+		queue.awaitingKey.splice(index, 1);
+	}
+	localStorage.setItem(getUser() + '-queue', JSON.stringify(queue, replacer));
+}
+
 function saveMessage (messageId: string, messageContent: string): void {
 	const queue = getMessageQueue();
 	queue.decipheredMessages.set(messageId, messageContent);
@@ -146,6 +155,11 @@ function sendAnnounce (recipientId: string, messageContent: string): void {
 function sendKeyComponent (messageId: string): void {
 	const user = getUser();
 	const dh = createDiffieHellman('secp256k1');
+	const preexistingKey = loadKeypair(messageId);
+	if (preexistingKey !== undefined) {
+		awaitKey(messageId);
+		return;
+	}
 	dh.generateKeys();
 	const keycomp = dh.getPublicKey('hex') as string;
 	saveKeypair(messageId, dh.getPublicKey('hex') as string, dh.getPrivateKey('hex') as string);
@@ -182,6 +196,7 @@ async function fetchKey (messageId: string): Promise<void> {
 
 	const secret = dh.computeSecret(keyPortion.split('|')[1], 'hex');
 	const queue = getMessageQueue();
+	stopAwaitKey(messageId);
 	if (queue.pendingMessage.has(messageId)) {
 		const message = queue.pendingMessage.get(messageId) ?? '';
 		let messageBytes = utils.utf8.toBytes(message);
@@ -210,6 +225,7 @@ async function fetchKey (messageId: string): Promise<void> {
 		});
 	} else {
 		// Wait for CONTENT to be sent.
+		await fetchContent(messageId);
 	}
 }
 
@@ -299,9 +315,17 @@ function createSocketConnection (): void {
 	});
 }
 
+function trySendQueue (): void {
+	const queue = getMessageQueue();
+	queue.awaitingKey.forEach(async (v) => {
+		await fetchKey(v);
+	});
+}
+
 document.body.onload = () => {
 	// setInterval(keepMessagesFresh, 500);
 	createSocketConnection();
+	trySendQueue();
 	const messageList = document.getElementById('messages');
 	const decryptTextElem = document.getElementById('decryptingText');
 	if (messageList === null || decryptTextElem === null) return;
