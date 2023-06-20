@@ -1,3 +1,4 @@
+// Gets the specified cookie from document.cookie
 export function getCookie (cname: string): string {
 	const name = cname + '=';
 	const decodedCookie = decodeURIComponent(document.cookie);

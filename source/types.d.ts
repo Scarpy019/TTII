@@ -19,9 +19,9 @@ declare global {
 
 	// Socket.io types
 	interface ServerToClientEvents {
-		messageAnnounce: (user: string, message: string) => void;
-		messageKey: (user: string, message: string) => void;
-		messageContent: (user: string, message: string) => void;
+		messageAnnounce: (user: string, message: string) => void; // Fired when an ANNOUNCE message component is sent concerning the user
+		messageKey: (user: string, message: string) => void; // Fired when a KEY message component is sent
+		messageContent: (user: string, message: string) => void; // Fired when a MESSAGE message component is sent
 	}
 
 	interface ClientToServerEvents {
@@ -29,6 +29,6 @@ declare global {
 	}
 
 	interface SocketData {
-		userId: string | null;
+		userId: string | null; // Contains the user ID of the user to whom the connection belongs to, otherwise null
 	}
 }

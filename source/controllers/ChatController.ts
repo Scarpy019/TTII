@@ -43,18 +43,18 @@ chat.read = async (req, res) => {
 		return;
 	}
 	const secondParty = req.query.userId;
-	if (secondParty === undefined) {
+	if (secondParty === undefined) { // If a user is not specified, return all messages sent by the logged in user
 		const messages = await ChatMessage.findAll({
 			where: Sequelize.or({ senderId: user.id }, { receiverId: user.id })
 		});
-		const messageIds = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).map((msg) => msg.id);
+		const messageIds = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).map((msg) => msg.id); // Sort messages by timestamp
 
 		res.send(JSON.stringify(messageIds));
-	} else {
+	} else { // If a user is specified, return all messages sent to and from that user
 		const messages = await ChatMessage.findAll({
 			where: Sequelize.or({ senderId: user.id, receiverId: secondParty }, { senderId: secondParty, receiverId: user.id })
 		});
-		const messageIds = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).map((msg) => msg.id);
+		const messageIds = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).map((msg) => msg.id); // Sort messages by timestamp
 
 		res.send(JSON.stringify(messageIds)); // Send user all the messages they have received from that user
 	}
@@ -136,16 +136,16 @@ message.read = async (req, res) => {
 	}
 	const stage = req.query.stage;
 	if (stage === null || typeof stage !== 'string' || !['ANNOUNCE', 'KEY', 'MESSAGE'].includes(stage)) {
-		res.sendStatus(400);
+		res.sendStatus(400); // Malformed request
 		return;
 	}
 	const chatMessage = await ChatMessage.findByPk(req.params.id);
 	if (chatMessage === undefined || chatMessage === null) {
-		res.sendStatus(400);
+		res.sendStatus(400); // Invalid data
 		return;
 	}
 	if (chatMessage.senderId !== user.id && chatMessage.receiverId !== user.id) {
-		res.sendStatus(403);
+		res.sendStatus(403); // Trying to snoop on someone else's convos
 		return;
 	}
 	const stageMessages = await MessageComponent.findAll({
@@ -183,11 +183,13 @@ conversation.read = async (req, res) => {
 		res.redirect(403, '/'); // Redirect back to root
 		return;
 	}
+	// Retrieve all messages sent to that user
 	const secondParty = req.params.id;
 	const messages = await ChatMessage.findAll({
 		where: Sequelize.or({ senderId: user.id, receiverId: secondParty }, { senderId: secondParty, receiverId: user.id })
 	});
-	const sortedMessages = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+	const sortedMessages = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); // Sort them by timestamp
+	// Condense these messages into a simpler structure of id and author, the content will be retrieved individually by the client
 	const messageData: any[] = [];
 	for (const msg of sortedMessages) {
 		if (msg.senderId === null) continue;

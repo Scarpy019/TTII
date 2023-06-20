@@ -76,7 +76,7 @@ app.get('*', function (req, res) {
 });
 
 const server = http.createServer(app);
-io.listen(server);
+io.listen(server); // Make the Socket.IO server listen to the HTTP server
 
 const options = {
 	key: readFileSync(config.keyLocation),
@@ -91,7 +91,7 @@ server.listen(HTTPport, async function () {
 
 	const HTTPSport = config.debug ? 3001 : 443;
 	const HTTPSserver = createServer(options, app);
-	io.listen(HTTPSserver);
+	io.listen(HTTPSserver); // Make the Socket.IO server listen to the HTTPS server
 	HTTPSserver.listen(HTTPSport, async function () {
 		logger.info(`App is listening for HTTPS on ${HTTPSport}`);
 	});
