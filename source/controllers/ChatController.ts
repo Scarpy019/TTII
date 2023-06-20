@@ -180,7 +180,7 @@ conversation.read = async (req, res) => {
 	// Verify that the request comes from someone who's actually logged in
 	const user = res.locals.user;
 	if (user === undefined || user === null) {
-		res.sendStatus(403);
+		res.redirect(403, '/'); // Redirect back to root
 		return;
 	}
 	const secondParty = req.params.id;
