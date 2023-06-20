@@ -36,10 +36,6 @@ export class ChatMessage extends Model<ChatMessageAttributes, ChatMessageInput> 
 	@Column
 	readonly createdAt!: Date;
 
-	@DeletedAt
-	@Column
-	readonly deletedAt!: Date;
-
 	@UpdatedAt
 	@Column
 	readonly updatedAt!: Date;

@@ -44,10 +44,6 @@ export class MessageComponent extends Model<MessageComponentAttributes, MessageC
 	@Column
 	readonly createdAt!: Date;
 
-	@DeletedAt
-	@Column
-	readonly deletedAt!: Date;
-
 	@UpdatedAt
 	@Column
 	readonly updatedAt!: Date;
