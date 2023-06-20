@@ -1,4 +1,4 @@
-import { Table, Column, Model, CreatedAt, DeletedAt, PrimaryKey, UpdatedAt, IsUUID, DataType, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, CreatedAt, PrimaryKey, UpdatedAt, IsUUID, DataType, ForeignKey } from 'sequelize-typescript';
 import { User } from './User.js';
 import { type Optional } from 'sequelize';
 import { UUID } from '../sequelizeSetup.js';
