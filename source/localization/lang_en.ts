@@ -24,7 +24,11 @@ export default {
 		category_select_label: 'Select a category',
 		category_def_val: 'Category selection',
 		subcategory_select_label: 'Select a subcategory',
-		subcategory_def_val: 'Subcategory selection'
+		subcategory_def_val: 'Subcategory selection',
+		update: 'Update',
+		delete: 'Delete',
+		return: 'Return to listing',
+		add_listing: 'Create listing'
 	},
 	listing_item: {
 		startprice: 'Starting price',
@@ -38,5 +42,17 @@ export default {
 	chat: {
 		send_message: 'Enter message:',
 		awaiting_decrypt: 'Decrypting message, please wait...'
+	},
+	admin: {
+		add_sect: 'Add section',
+		return_sect: 'Return to sections',
+		add_subsect: 'Add subsection',
+		return_subsect: 'Return to subsection',
+		update: 'Update',
+		delete: 'Delete',
+		sec_name: 'Section name',
+		subsec_name: 'Subsection name',
+		edit: 'Edit',
+		in_sect: 'In section - '
 	}
 } satisfies locale;

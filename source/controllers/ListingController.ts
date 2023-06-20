@@ -7,6 +7,7 @@ import { headerConstants } from './config.js';
 import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
+import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategory, isUserAuthor } from '../middleware/ObjectCheckingMiddleware.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -14,15 +15,15 @@ listing.read = async (req, res) => {
 	const subsecId = Number(req.params.subsectionId);
 	if (!isNaN(subsecId)) {
 		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
-		if (subsection !== null) {
-			if (res.locals.user !== null && res.locals.user !== undefined) { // for header Login&sign up or username& sign out
-				const user: User = res.locals.user;
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
-				return;
-			} else {
-				res.render('pages/main/all_listings.ejs', { subsection, subsecId, constants: headerConstants });
-				return;
-			}
+		if (isSubcategory(subsection)) {
+			res.render('pages/main/all_listings.ejs', {
+				subsection,
+				subsecId,
+				constants: headerConstants,
+				subsec_Id: String(subsecId),
+				secId: subsection.sectionId
+			});
+			return;
 		}
 	}
 	// TODO: proper redirect
@@ -68,11 +69,10 @@ function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
 
 listing.create = [
 	async (req, res): Promise<void> => {
-		console.log('nelabi');
 		if (ValidListingCreationForm(req.body)) {
 			try {
 				if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
-					if (res.locals.user !== null && res.locals.user !== undefined) {
+					if (isLoggedOn(res.locals.user)) {
 						// generate the new listing
 						const newListing = await Listing.create({
 							id: uuidv4(),
@@ -116,18 +116,17 @@ listing.interface('/item', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId, { include: [Subsection] });
-		if (listing !== null) {
+		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
-			if (author !== null && author !== undefined) {
-				if (res.locals.user !== null && res.locals.user !== undefined) {
-					const user: User = res.locals.user;
-					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: user.id, constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}` });
-				} else {
-					res.render('pages/main/listing_item.ejs', { picture: listing.media, title: listing.title, id: listing.id, body: listing.body, status: listing.status, subsecId: listing.subsectionId, startprice: listing.start_price, auctionend: listing.auction_end, userId: listing.userId, isAuction: listing.is_auction, createdAt: listing.createdAt, author: author.username, author_profile: author.id, authorid: author.id, currentuserid: null, constants: headerConstants });
-				}
+			if (doesUserExist(author)) {
+				res.render('pages/main/listing_item.ejs', {
+					listing,
+					author: author.username,
+					author_profile: author.username,
+					authorid: author.id,
+					constants: headerConstants
+				});
 			}
-		} else {
-			res.sendStatus(404);
 		}
 	} else {
 		res.sendStatus(404);
@@ -138,13 +137,13 @@ listing.interface('/edit', async (req, res) => {
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId);
-		if (listing !== null) {
+		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
 			const accessuser = res.locals.user;
 			if (listing.subsectionId !== null && listing.subsectionId !== undefined) {
 				const subcategoryid = listing.subsectionId;
 				const subcategory = await Subsection.findByPk(subcategoryid);
-				if (subcategory !== null && subcategory !== undefined) {
+				if (isSubcategory(subcategory)) {
 					const categoryid = subcategory.sectionId;
 					const category = await Section.findByPk(categoryid, { include: [Subsection] });
 					const allcategory = await Section.findAll({ include: [Subsection] });
@@ -154,10 +153,21 @@ listing.interface('/edit', async (req, res) => {
 							sectioncount = element.id;
 						}
 					});
-					if (category !== null && category !== undefined) {
-						if (accessuser !== undefined && accessuser !== null && author !== null && author !== undefined) {
-							if (accessuser.id === author.id) {
-								res.render('pages/listing/edit', { listingid: listId, constants: headerConstants, userstatus_page: `/user/profile/${accessuser.id}`, userstatus_name: accessuser.username, existing_title: listing.title, existing_desc: listing.body, existing_startprice: listing.start_price, existing_status: listing.status, existing_subcategoryid: subcategoryid, existing_categoryid: categoryid, sections: allcategory, sectioncount });
+					if (isCategory(category)) {
+						if (isLoggedOn(accessuser) && doesUserExist(author)) {
+							if (isUserAuthor(accessuser, author) || isAdmin(accessuser)) { // Both the author and admin can edit listing
+								res.render('pages/listing/edit', { // Used for filling all the form with current listing data
+									listingid: listId,
+									constants: headerConstants,
+									existing_title: listing.title,
+									existing_desc: listing.body,
+									existing_startprice: listing.start_price,
+									existing_status: listing.status,
+									existing_subcategoryid: subcategoryid,
+									existing_categoryid: categoryid,
+									sections: allcategory,
+									sectioncount
+								});
 							} else {
 								res.redirect('/section');
 							}
@@ -176,7 +186,7 @@ listing.update = listing.handler(
 	async (req, res): Promise<void> => {
 		try {
 			const listinginstance = await Listing.findByPk(req.body.listingid);
-			if (listinginstance !== null) {
+			if (isListing(listinginstance)) {
 				listinginstance.title = req.body.listing_name;
 				listinginstance.body = req.body.listing_description;
 				listinginstance.status = req.body.openstatus;
@@ -195,16 +205,15 @@ listing.override('delete', '/listing/delete');
 
 listing.delete = async (req, res) => {
 	const listingid = req.body.listingId;
-	console.log(listingid);
-	if (listingid !== null && listingid !== undefined && res.locals.user !== null && res.locals.user !== undefined) {
+	if (listingid !== null && listingid !== undefined && isLoggedOn(res.locals.user)) {
 		const listingrow = await Listing.findByPk(listingid);
-		if (listingrow !== undefined && listingrow !== null) {
-			const author = listingrow.userId;
-			const requestinguser = res.locals.user.id;
-			if (author === requestinguser) {
-				if (listingrow !== null && listingrow !== undefined) {
+		if (isListing(listingrow)) {
+			const author = await User.findByPk(listingrow.userId);
+			const requestinguser = res.locals.user;
+			if (isUserAuthor(requestinguser, author) || isAdmin(requestinguser)) {
+				if (isListing(listingrow)) {
 					await listingrow.destroy();
-					res.redirect(`/user/profile/${requestinguser}`);
+					res.redirect(`/user/profile/${requestinguser.username}`);
 				}
 			}
 		}
@@ -215,16 +224,37 @@ listing.interface('/create', async (req, res) => {
 	if (res.locals.user instanceof User) {
 		const sections = await Section.findAll({ include: [Subsection] });
 		let sectioncount = 0;
+		const secId = req.query.sectionId;
+		const subsecId = req.query.subsectionId;
 		sections.forEach(element => {
 			if (element.id >= sectioncount && element.id !== null && element.id !== undefined) {
 				sectioncount = element.id;
 			}
 		});
-		if (res.locals.user !== undefined && res.locals.user !== null) {
-			const user: User = res.locals.user;
-			res.render('pages/listing/create', { constants: headerConstants, userstatus_name: res.locals.user.username, userstatus_page: `/user/profile/${user.id}`, sections, sectioncount });
+		if (isLoggedOn(res.locals.user)) {
+			if (secId !== null && secId !== undefined && subsecId !== null && subsecId !== undefined) {
+				res.render('pages/listing/create', { // User can access the create listing page from a subcategory page where it autofills the category and subcategory
+					constants: headerConstants,
+					sections,
+					sectioncount,
+					currentsection: secId,
+					currentsubsection: subsecId,
+					createfromexistsubcat: 'true'
+				});
+			} else {
+				res.render('pages/listing/create', { // There is no autofill for listings because this comes from the Create listing button in the header
+					constants: headerConstants,
+					sections,
+					sectioncount,
+					currentsection: 'null',
+					currentsubsection: 'null',
+					createfromexistsubcat: 'false'
+				});
+			}
 		} else {
-			res.render('pages/listing/create', { constants: headerConstants });
+			res.render('pages/listing/create', { // Sends the non logged in user to the page but a different function redirects the user to login page
+				constants: headerConstants
+			});
 		}
 	} else {
 		res.redirect('/user/login?redirect=' + Buffer.from('/listing/create').toString('base64'));
