@@ -1,6 +1,7 @@
 <%- include('../misc/hardening.ejs') %>
 <header class ="topbars">
 	<script src="/lapa/client.js" defer type="module"></script>
+	<script src="/lapa/chatting.js" defer type="module"></script>
 	<link rel="stylesheet" href="/lapa/headerstyle.css">
 	<div class="nav_buttons">
 		<a href="<%=constants.section%>" id="home_button"><%=lang.header.home_button%></a>
@@ -10,6 +11,7 @@
 	<h1 id="page_title"><%-lang.header.page_title%></h1>
 	<div class="user_status">
 		<% if (user!==null && user!==undefined) { %>
+			<div hidden id="user_id"><%-user.id%></div>
 			<a href="/user/profile/<%=user.username%>"><%=user.username%></a>
 			<button id="signoutbutton"><%-lang.header.signout_name%></button>
 		<% }else{ %> 

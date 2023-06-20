@@ -39,6 +39,10 @@ export default {
 	userpage: {
 		welcome: 'Sveicināts'
 	},
+	chat: {
+		send_message: 'Ievadiet ziņu:',
+		awaiting_decrypt: 'Atšifrē ziņu, lūdzam uzgaidīt...'
+	},
 	admin: {
 		add_sect: 'Pievienot sadaļu',
 		return_sect: 'Atgriezties pie sadaļām',

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/image_upload.css">
+	<script src="/lapa/client.js" , type="module"></script>
+	<title>Create Listing</title>
+</head>
+
+<body>
+	<div class="header">
+		<%- include('../misc/header') %>
+	</div>
+	<div hidden id="decryptingText"><%-lang.chat.awaiting_decrypt%></div>
+	<div id="messages">
+		<% messages.forEach(message=> { %>
+			<div id="<%=message.id%>|container" hidden> <!-- Gets unhidden once the message is written -->
+				<span class="author">
+					<%=message.author%>:
+				</span>
+				<span class="content">
+
+				</span>
+			</div>
+			<% }) %>
+	</div>
+	<form id="sendMessage" action="/chat" method="post">
+		<input type="hidden" id="recipientId" name="recipientId" value="<%=recipient%>" required>
+		<label for="messageContent"><%-lang.chat.send_message%></label>
+		<input type="text" id="messageContent" name="messageContent" required>
+		<input type="submit" value="Send">
+	</form>
+</body>
+
+</html>

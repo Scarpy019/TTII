@@ -16,4 +16,19 @@ declare global {
 			lang?: locale;
 		}
 	}
+
+	// Socket.io types
+	interface ServerToClientEvents {
+		messageAnnounce: (user: string, message: string) => void; // Fired when an ANNOUNCE message component is sent concerning the user
+		messageKey: (user: string, message: string) => void; // Fired when a KEY message component is sent
+		messageContent: (user: string, message: string) => void; // Fired when a MESSAGE message component is sent
+	}
+
+	interface ClientToServerEvents {
+		authenticate: (token: string) => string; // Returns "Success" or an error reason
+	}
+
+	interface SocketData {
+		userId: string | null; // Contains the user ID of the user to whom the connection belongs to, otherwise null
+	}
 }

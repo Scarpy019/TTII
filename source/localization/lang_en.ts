@@ -39,6 +39,10 @@ export default {
 	userpage: {
 		welcome: 'Welcome'
 	},
+	chat: {
+		send_message: 'Enter message:',
+		awaiting_decrypt: 'Decrypting message, please wait...'
+	},
 	admin: {
 		add_sect: 'Add section',
 		return_sect: 'Return to sections',
