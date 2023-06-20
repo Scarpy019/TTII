@@ -10,9 +10,12 @@
 		"strict": true,
 		"declaration": true,
 		"allowSyntheticDefaultImports":true,
+		"moduleResolution": "NodeNext",
 		"paths": {
 			"jquery": ["../node_modules/@types/jquery/dist/"],
-            "js-cookie": ["../node_modules/@types/js-cookie"]
+			"js-cookie": [
+				"../node_modules/@types/js-cookie"
+			]
 		}
     }
 }

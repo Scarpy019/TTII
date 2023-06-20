@@ -3,6 +3,8 @@ import { fetchWithCSRF } from './hardening.js';
 import { fromHex, randomBytes, toHex } from './crypto/cryptography.js';
 import { ModeOfOperation, utils } from 'aes-js';
 import $ from 'jquery';
+import { io, type Socket } from 'socket.io-client';
+import { getCookie } from './lib.js';
 
 // Storage of all DH keypairs in local storage, each message has its own pair to ensure forward secrecy
 interface Keypair {
@@ -82,6 +84,9 @@ function dequeueMessage (messageId: string): void {
 	const queue = getMessageQueue();
 	queue.pendingMessage.delete(messageId);
 	localStorage.setItem(getUser() + '-queue', JSON.stringify(queue, replacer));
+
+	const messageList = document.getElementById('messages');
+	if (messageList !== null) location.reload(); // reload the chat page so the new messages are visible
 }
 
 function awaitKey (messageId: string): void {
@@ -100,6 +105,11 @@ function saveKeypair (messageId: string, publicKey: string, privateKey: string):
 	const codebook = getCodebook();
 	codebook.messageKeypair.set(messageId, { publicKey, privateKey });
 	localStorage.setItem(getUser() + '-keys', JSON.stringify(codebook, replacer));
+}
+
+function loadKeypair (messageId: string): Keypair | undefined {
+	const codebook = getCodebook();
+	return codebook.messageKeypair.get(messageId);
 }
 
 function sendAnnounce (recipientId: string, messageContent: string): void {
@@ -128,10 +138,10 @@ function sendAnnounce (recipientId: string, messageContent: string): void {
 	});
 }
 
-interface DiffieHellmanData {
-	publicKey: string;
-	privateKey: string;
-}
+// interface DiffieHellmanData {
+// 	publicKey: string;
+// 	privateKey: string;
+// }
 
 function sendKeyComponent (messageId: string): void {
 	const user = getUser();
@@ -153,23 +163,22 @@ function sendKeyComponent (messageId: string): void {
 			console.error(`KEY message returned ${res.status}`);
 		} else {
 			awaitKey(messageId);
-			const interval: NodeJS.Timer = setInterval(async () => {
-				await tryFetchKey(interval, messageId, { publicKey: dh.getPublicKey('hex'), privateKey: dh.getPrivateKey('hex') });
-			}, 100);
 		}
 	}).catch(e => {
 		console.error(`KEY message to ${messageId} failed: ${e as string}`);
 	});
 }
 
-async function tryFetchKey (interval: NodeJS.Timer, messageId: string, dhData: DiffieHellmanData): Promise<void> {
+async function fetchKey (messageId: string): Promise<void> {
 	const response = await fetch(`/chat/message/${messageId}?stage=KEY`);
 	if (response.status !== 200) return;
 	const keyPortion = await response.text();
+	const keyPair = loadKeypair(messageId);
+	if (keyPair === undefined) throw new Error(`Keypair for ${messageId} was not saved!`);
 	const dh = createDiffieHellman('secp256k1');
 	dh.generateKeys(); // need to do this for some reason lol
-	dh.setPublicKey(dhData.publicKey, 'hex');
-	dh.setPrivateKey(dhData.privateKey, 'hex');
+	dh.setPublicKey(keyPair.publicKey, 'hex');
+	dh.setPrivateKey(keyPair.privateKey, 'hex');
 
 	const secret = dh.computeSecret(keyPortion.split('|')[1], 'hex');
 	const queue = getMessageQueue();
@@ -195,34 +204,49 @@ async function tryFetchKey (interval: NodeJS.Timer, messageId: string, dhData: D
 				console.error(`MESSAGE message returned ${res.status}`);
 			} else {
 				dequeueMessage(messageId);
-				clearInterval(interval);
 			}
 		}).catch(e => {
 			console.error(`MESSAGE message to ${messageId} failed: ${e as string}`);
 		});
 	} else {
-		const result = await fetch(`/chat/message/${messageId}?stage=MESSAGE`);
-		if (result.status === 404) {
-			return;
-		} else if (result.status !== 200) {
-			console.error(`Server returned ${result.status} to a MESSAGE chat request!`);
-			return;
-		}
-		const serverText = await result.text();
-		const [ciphertext, ivtext] = serverText.split('|');
-		const iv = fromHex(ivtext);
-		const cipher = fromHex(ciphertext);
-		// eslint-disable-next-line new-cap
-		const decryptor = new ModeOfOperation.cbc(secret, iv);
-		const decryptedBytes = decryptor.decrypt(cipher);
-		let contentEnd = decryptedBytes.length - 1;
-		for (; contentEnd > 0; contentEnd--) {
-			if (decryptedBytes[contentEnd] !== 0) break;
-		}
-		const trimmedBytes = decryptedBytes.subarray(0, contentEnd + 1);
-		saveMessage(messageId, utils.utf8.fromBytes(trimmedBytes));
-		clearInterval(interval);
+		// Wait for CONTENT to be sent.
 	}
+}
+
+async function fetchContent (messageId: string): Promise<void> {
+	const response = await fetch(`/chat/message/${messageId}?stage=KEY`);
+	if (response.status !== 200) return;
+	const keyPortion = await response.text();
+	const keyPair = loadKeypair(messageId);
+	if (keyPair === undefined) throw new Error(`Keypair for ${messageId} was not saved!`);
+	const dh = createDiffieHellman('secp256k1');
+	dh.generateKeys(); // need to do this for some reason lol
+	dh.setPublicKey(keyPair.publicKey, 'hex');
+	dh.setPrivateKey(keyPair.privateKey, 'hex');
+
+	const secret = dh.computeSecret(keyPortion.split('|')[1], 'hex');
+	const result = await fetch(`/chat/message/${messageId}?stage=MESSAGE`);
+	if (result.status === 404) {
+		return;
+	} else if (result.status !== 200) {
+		console.error(`Server returned ${result.status} to a MESSAGE chat request!`);
+		return;
+	}
+	const serverText = await result.text();
+	const [ciphertext, ivtext] = serverText.split('|');
+	const iv = fromHex(ivtext);
+	const cipher = fromHex(ciphertext);
+	// eslint-disable-next-line new-cap
+	const decryptor = new ModeOfOperation.cbc(secret, iv);
+	const decryptedBytes = decryptor.decrypt(cipher);
+	let contentEnd = decryptedBytes.length - 1;
+	for (; contentEnd > 0; contentEnd--) {
+		if (decryptedBytes[contentEnd] !== 0) break;
+	}
+	const trimmedBytes = decryptedBytes.subarray(0, contentEnd + 1);
+	saveMessage(messageId, utils.utf8.fromBytes(trimmedBytes));
+	const messageList = document.getElementById('messages');
+	if (messageList !== null) location.reload(); // reload the chat page so the new messages are visible
 }
 
 async function respondToAnnounce (messageId: string): Promise<void> {
@@ -246,16 +270,38 @@ function getMessage (messageId: string): string | null {
 	}
 }
 
-// TODO: This loop really should be replaced with a websocket
-async function keepMessagesFresh (): Promise<void> {
-	const response = await fetch('/chat');
-	if (response.status !== 200) return;
-	const messageIds: string[] = await response.json();
-	messageIds.forEach(msg => getMessage(msg));
+function createSocketConnection (): void {
+	const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
+	console.log('help');
+	socket.on('connect', () => {
+		const authToken = getCookie('AuthToken');
+		console.log(authToken);
+		if (authToken === '') return;
+		socket.emit('authenticate', authToken);
+	});
+
+	socket.on('messageAnnounce', (user: string, message: string) => {
+		respondToAnnounce(message).catch((e: Error) => {
+			console.log(`Failed to respond to ANNOUNCE for ${message}: ${e.message}`);
+		});
+	});
+
+	socket.on('messageKey', (user: string, message: string) => {
+		fetchKey(message).catch((e: Error) => {
+			console.log(`Failed to respond to KEY for ${message}: ${e.message}`);
+		});
+	});
+
+	socket.on('messageContent', (user: string, message: string) => {
+		fetchContent(message).catch((e: Error) => {
+			console.log(`Failed to respond to CONTENT for ${message}: ${e.message}`);
+		});
+	});
 }
 
 document.body.onload = () => {
 	// setInterval(keepMessagesFresh, 500);
+	createSocketConnection();
 	const messageList = document.getElementById('messages');
 	if (messageList === null) return;
 	for (const elem of messageList.children) {

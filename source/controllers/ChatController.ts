@@ -4,7 +4,7 @@ import { Controller } from './BaseController.js';
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../lib/Logger.js';
 import { headerConstants } from './config.js';
-import { io } from '../index.js';
+import { io } from '../sockets/Socket.js';
 
 interface ChatMessageBody {
 	messageId: string | null; // Null if ANNOUNCE, otherwise the messageid
@@ -114,9 +114,12 @@ chat.create = chat.handler(
 				stage: req.body.stage,
 				content: req.body.content
 			});
-			if (req.body.userId !== null) {
-				if (req.body.stage === 'KEY') io.to(req.body.userId).emit('messageKey', user.id, chatMessage.id); // Notify that a KEY component is ready
-				else io.to(req.body.userId).emit('messageContent', user.id, chatMessage.id); // Notify that a CONTENT component is ready
+			if (chatMessage.receiverId !== null && chatMessage.senderId !== null) {
+				if (req.body.stage === 'KEY') {
+					// Notify that a KEY component is ready
+					if (user.id === chatMessage.receiverId) io.to(chatMessage.senderId).emit('messageKey', user.id, chatMessage.id);
+					else io.to(chatMessage.receiverId).emit('messageKey', user.id, chatMessage.id);
+				} else io.to(chatMessage.receiverId).emit('messageContent', user.id, chatMessage.id); // Notify that a CONTENT component is ready
 			}
 			res.sendStatus(200);
 		}

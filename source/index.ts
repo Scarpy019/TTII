@@ -13,9 +13,8 @@ import cors from 'cors';
 import { server as config } from './config.js';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
-import { Server } from 'socket.io';
 import * as http from 'http';
-import { authenticateSocket } from './sockets/AuthenticationMiddleware.js';
+import { io } from './sockets/Socket.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -77,15 +76,7 @@ app.get('*', function (req, res) {
 });
 
 const server = http.createServer(app);
-export const io = new Server<ClientToServerEvents, ServerToClientEvents, any, SocketData>(server); // TODO: Figure out how to improve this to not need be exported
-
-io.on('connection', (socket) => {
-	logger.log('A user connected to socket');
-	socket.data.userId = null; // We do not know who this is yet.
-	socket.on('authenticate', (token) => {
-		return authenticateSocket(socket, token);
-	});
-});
+io.listen(server);
 
 const options = {
 	key: readFileSync(config.keyLocation),
