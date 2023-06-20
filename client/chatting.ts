@@ -303,13 +303,14 @@ document.body.onload = () => {
 	// setInterval(keepMessagesFresh, 500);
 	createSocketConnection();
 	const messageList = document.getElementById('messages');
-	if (messageList === null) return;
+	const decryptTextElem = document.getElementById('decryptingText');
+	if (messageList === null || decryptTextElem === null) return;
 	for (const elem of messageList.children) {
 		const messageId = elem.id.split('|')[0];
 		const message = getMessage(messageId);
 		for (const child of elem.children) {
 			if (child.className === 'content') {
-				(child as HTMLElement).innerText = message ?? 'Decrypting... Please wait!';
+				(child as HTMLElement).innerText = message ?? decryptTextElem.innerText;
 			}
 		}
 		if (message !== null) (elem as HTMLElement).hidden = false;

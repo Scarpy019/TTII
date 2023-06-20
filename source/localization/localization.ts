@@ -33,4 +33,8 @@ export default interface locale {
 	userpage: {
 		welcome: string;
 	};
+	chat: {
+		send_message: string;
+		awaiting_decrypt: string;
+	};
 };

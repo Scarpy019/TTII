@@ -34,5 +34,9 @@ export default {
 	},
 	userpage: {
 		welcome: 'Welcome'
+	},
+	chat: {
+		send_message: 'Enter message:',
+		awaiting_decrypt: 'Decrypting message, please wait...'
 	}
 } satisfies locale;

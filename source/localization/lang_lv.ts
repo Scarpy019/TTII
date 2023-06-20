@@ -34,5 +34,9 @@ export default {
 	},
 	userpage: {
 		welcome: 'Sveicināts'
+	},
+	chat: {
+		send_message: 'Ievadiet ziņu:',
+		awaiting_decrypt: 'Atšifrē ziņu, lūdzam uzgaidīt...'
 	}
 } satisfies locale;
