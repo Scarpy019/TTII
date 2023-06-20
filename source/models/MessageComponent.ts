@@ -21,8 +21,7 @@ export type MessageComponentOutput = Required<MessageComponentAttributes>;
 
 @Table({
 	tableName: 'messageComponents',
-	timestamps: true,
-	paranoid: true
+	timestamps: true
 })
 export class MessageComponent extends Model<MessageComponentAttributes, MessageComponentInput> {
 	@PrimaryKey

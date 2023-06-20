@@ -14,8 +14,7 @@ export type ChatMessageOutput = Required<ChatMessageAttributes>;
 
 @Table({
 	tableName: 'chatMessages',
-	timestamps: true,
-	paranoid: true
+	timestamps: true
 })
 export class ChatMessage extends Model<ChatMessageAttributes, ChatMessageInput> {
 	@PrimaryKey
