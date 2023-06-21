@@ -30,7 +30,11 @@
 		<select id="categories" required>
 		<option value="defcat"><%-lang.listing_form.category_def_val%></option>
 		<% sections.forEach(element => { %>
-			<option id="category" value="<%-element.id%>"><%-element.name%></option>
+			<% if (lang.header.current_lang == "ENG") { %>
+				<option id="category" value="<%-element.id%>"><%-element.name%></option>
+			<% } else if(lang.header.current_lang == "LV") { %>
+				<option id="category" value="<%-element.id%>"><%-element.nameLV%></option>
+			<% } %>
 		<% }) %>
 		<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
 		</select>
@@ -39,7 +43,11 @@
 		<option id="deffsub" value="defsub"><%-lang.listing_form.subcategory_def_val%></option>
 			<% sections.forEach(elem => { %>
 				<% elem.subsections.forEach(element => { %>
-					<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+					<% if (lang.header.current_lang == "ENG") { %>
+						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+					<% } else if(lang.header.current_lang == "LV") { %>
+						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.nameLV%></option>
+					<% } %>
 				<% }) %>
 			<% }) %>
 		</select><br>

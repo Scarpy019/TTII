@@ -27,7 +27,11 @@
 		<select id="categories" required>
 		<option id="deffcat" value="default"><%-lang.listing_form.category_def_val%></option>
 		<% sections.forEach(element => { %>
-			<option id="category" value="<%-element.id%>"><%-element.name%></option>
+			<% if (lang.header.current_lang == "ENG") { %>
+				<option id="category" value="<%-element.id%>"><%-element.name%></option>
+			<% } else if(lang.header.current_lang == "LV") { %>
+				<option id="category" value="<%-element.id%>"><%-element.nameLV%></option>
+			<% } %>
 		<% }) %>
 		<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
 		</select>
@@ -36,14 +40,18 @@
 		<option id="deffsub" value="default"><%-lang.listing_form.subcategory_def_val%></option>
 			<% sections.forEach(elem => { %>
 				<% elem.subsections.forEach(element => { %>
-					<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+					<% if (lang.header.current_lang == "ENG") { %>
+						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+					<% } else if(lang.header.current_lang == "LV") { %>
+						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.nameLV%></option>
+					<% } %>
 				<% }) %>
 			<% }) %>
-		</select>
+		</select> 
 		<input hidden id="edit" value="true">
 	</form>
 	<button id="updatebutton" value="Up"><%-lang.listing_form.update%></button><br>
 	<button id="dangerousdeletebuttonthatdestroys"><%-lang.listing_form.delete%></button><br>
-	<a href="/listing/item?listingId=<%=listingid%>" id="returntolist"><%-lang.listing_form.return%></button><br><br>
+	<a href="/listing/item?listingId=<%=listingid%>" id="returntolist"><%-lang.listing_form.return%><br><br>
 </body>
 </html>

@@ -6,6 +6,7 @@ import { AutoId } from '../sequelizeSetup.js';
 export interface SectionAttributes {
 	id: AutoId;
 	name: string;
+	nameLV: string;
 	subsections: Subsection[];
 };
 type SectionInput = Optional<SectionAttributes, 'id' | 'subsections'>;
@@ -25,6 +26,10 @@ export class Section extends Model<SectionAttributes, SectionInput> {
 	@AllowNull(false)
 	@Column
     name!: string;
+
+	@AllowNull(false)
+	@Column
+    nameLV!: string;
 
 	@HasMany(() => Subsection, 'sectionId')
     subsections?: Subsection[];

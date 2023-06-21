@@ -12,22 +12,32 @@ import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategor
 const listing = new Controller('listing', [], ['subsectionId']);
 
 listing.read = async (req, res) => {
+	if (isLoggedOn(res.locals.user)) {
+		if (res.locals.user.banned) {
+			res.clearCookie('AuthToken');
+			res.redirect('/section');
+			return;
+		}
+	}
 	const subsecId = Number(req.params.subsectionId);
 	if (!isNaN(subsecId)) {
-		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
+		// const subsection = await Subsection.findByPk(subsecId, { include: [Listing, { include: [User] }] });
+		const listings = await Listing.findAll({ where: { subsectionId: subsecId }, limit: 5000, include: [{ model: User, as: 'user' }] });
+		const subsection = await Subsection.findByPk(subsecId);
 		if (isSubcategory(subsection)) {
 			res.render('pages/main/all_listings.ejs', {
-				subsection,
+				subsec_name: subsection.name,
+				listings,
 				subsecId,
 				constants: headerConstants,
 				subsec_Id: String(subsecId),
 				secId: subsection.sectionId
 			});
-			return;
 		}
+	} else {
+		// TODO: proper redirect
+		res.sendStatus(404);
 	}
-	// TODO: proper redirect
-	res.sendStatus(404);
 };
 
 interface ListingCreationForm {
@@ -113,19 +123,34 @@ listing.create = [
 ];
 
 listing.interface('/item', async (req, res) => {
+	if (isLoggedOn(res.locals.user)) {
+		if (res.locals.user.banned) {
+			res.clearCookie('AuthToken');
+			res.redirect('/section');
+			return;
+		}
+	}
 	const listId = (req.query.listingId) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
 		const listing = await Listing.findByPk(listId, { include: [Subsection] });
 		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
 			if (doesUserExist(author)) {
-				res.render('pages/main/listing_item.ejs', {
-					listing,
-					author: author.username,
-					author_profile: author.username,
-					authorid: author.id,
-					constants: headerConstants
-				});
+				if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
+					res.redirect('/section');
+				} else {
+					if (listing.status === 'open' || (listing.status === 'closed' && res.locals.user === author)) {
+						res.render('pages/main/listing_item.ejs', {
+							listing,
+							author: author.username,
+							author_profile: author.username,
+							authorid: author.id,
+							constants: headerConstants
+						});
+					} else if (listing.status === 'closed') {
+						res.redirect('/section');
+					}
+				}
 			}
 		}
 	} else {
@@ -200,6 +225,21 @@ listing.update = listing.handler(
 		};
 	}
 );
+
+const listingstatus = listing.subcontroller('listingstatus');
+
+listingstatus.update = async (req, res) => {
+	const listinginstance = await Listing.findByPk(req.body.listingid);
+	const changestatus = req.body.newstatus;
+	if (changestatus === 'open' || changestatus === 'closed') {
+		if (isListing(listinginstance)) {
+			listinginstance.status = changestatus;
+			await listinginstance.save();
+		}
+	}
+};
+
+listingstatus.override('update', '/listing/statusupdate');
 
 listing.override('delete', '/listing/delete');
 

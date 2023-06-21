@@ -12,6 +12,20 @@ async function signout (): Promise<void> {
 
 $('#signoutbutton').on('click', signout);
 
+async function banorUnbanUser (userid: any, newstatus: string): Promise<void> {
+	if (userid !== null && userid !== undefined && typeof userid === 'string') {
+		await fetchWithCSRF('/user/ban_or_unban', {
+			method: 'PUT',
+			body: JSON.stringify({ status: newstatus, targetuser: userid })
+		}).then(Response => {
+			location.href = Response.url;
+		});
+	}
+}
+
+$('#banbutton').on('click', () => { void banorUnbanUser($('#banbutton').val(), 'ban'); });
+$('#unbanbutton').on('click', () => { void banorUnbanUser($('#unbanbutton').val(), 'unban'); });
+
 async function editlisting (): Promise<void> {
 	const listtitle = $('#list_title').val();
 	const listdesc = $('#list_desc').val();
@@ -37,14 +51,31 @@ async function editlisting (): Promise<void> {
 	}
 }
 
+$('#closelisting').on('click', () => { void editlistingstatus('closed'); });
+$('#openlisting').on('click', () => { void editlistingstatus('open'); });
+
+async function editlistingstatus (openstatus: any): Promise<void> {
+	const currentlistingquery = location.search;
+	const currentlisting = currentlistingquery.substring(11);
+	if (openstatus === 'open' || openstatus === 'closed') {
+		await fetchWithCSRF('/listing/updatestatus', {
+			method: 'PUT',
+			body: JSON.stringify({ listingid: currentlisting, newstatus: openstatus })
+		}).then(Response => {
+			location.href = Response.url;
+		});
+	}
+}
+
 async function editSection (): Promise<void> {
 	const sectionTitle = $('#section_name').val();
+	const LVsectionTitle = $('#lv_section_name').val();
 	const sectionidquery = location.search;
 	const sectionId = sectionidquery.substring(11);
 	if (sectionTitle !== null && sectionTitle !== undefined && sectionId !== null && sectionId !== undefined) {
 		await fetchWithCSRF('/section/update', {
 			method: 'PUT',
-			body: JSON.stringify({ section_name: sectionTitle, section_id: sectionId })
+			body: JSON.stringify({ section_name: sectionTitle, section_id: sectionId, lv_section_name: LVsectionTitle })
 		}).then(Response => {
 			location.href = Response.url;
 		});
@@ -54,12 +85,13 @@ async function editSection (): Promise<void> {
 async function editSubsection (): Promise<void> {
 	const subsectionTitle = $('#subsection_name').val();
 	const sectionId = $('#sectionId').val();
+	const LVsubsectionTitle = $('#lv_subsection_name').val();
 	const subsectionidquery = location.search;
 	const subsectionId = subsectionidquery.substring(14);
 	if (subsectionTitle !== null && subsectionTitle !== undefined && subsectionId !== null && subsectionId !== undefined && sectionId !== null && sectionId !== undefined) {
 		await fetchWithCSRF('/subsection/update', {
 			method: 'PUT',
-			body: JSON.stringify({ subsection_name: subsectionTitle, subsection_id: subsectionId, section_id: sectionId })
+			body: JSON.stringify({ subsection_name: subsectionTitle, subsection_id: subsectionId, section_id: sectionId, lv_subsection_name: LVsubsectionTitle })
 		}).then(Response => {
 			location.href = Response.url;
 		});

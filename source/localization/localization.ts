@@ -7,6 +7,7 @@ export default interface locale {
 		login_name: string;
 		signup_name: string;
 		signout_name: string;
+		current_lang: string;
 	};
 	forms: {
 		username_label: string;
@@ -50,6 +51,8 @@ export default interface locale {
 		delete: string;
 		sec_name: string;
 		subsec_name: string;
+		lv_sec_name: string;
+		lv_subsec_name: string;
 		edit: string;
 		in_sect: string;
 	};

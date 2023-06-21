@@ -88,89 +88,112 @@ export async function seedAll (): Promise<void> {
 	// ----------------------------------
 	const depo: Section = await Section.create(
 		{
-			name: 'Depo and things'
+			name: 'Depo and things',
+			nameLV: 'Depo un lietas'
 		}, { include: Subsection });
 	await depo.$create('subsection', {
-		name: 'motorzagi'
+		name: 'Chainsaws',
+		nameLV: 'motorzagi'
 	});
 	await depo.$create('subsection', {
-		name: 'motorlaivas'
+		name: 'Engine boats',
+		nameLV: 'motorlaivas'
 	});
 	await depo.$create('subsection', {
-		name: 'motormotori'
+		name: 'Engine engines',
+		nameLV: 'motormotori'
 	});
 	logger.log(depo);
 	await depo.save();
 
 	const majlopi: Section = await Section.create(
 		{
-			name: 'Mājlopi un ferma'
+			name: 'Pets and farm',
+			nameLV: 'Mājlopi un ferma'
 		}, { include: Subsection });
 	await majlopi.$create('subsection', {
-		name: 'Mājlopi'
+		name: 'Livestock',
+		nameLV: 'Mājlopi'
 	});
 	await majlopi.$create('subsection', {
-		name: 'Graudi'
+		name: 'Grains',
+		nameLV: 'Graudi'
 	});
 	await majlopi.$create('subsection', {
-		name: 'Eksotiskie dzīvnieki'
+		name: 'Exotic animals',
+		nameLV: 'Eksotiskie dzīvnieki'
 	});
 	await majlopi.$create('subsection', {
-		name: 'Sēklas'
+		name: 'Seeds',
+		nameLV: 'Sēklas'
 	});
 	await majlopi.$create('subsection', {
-		name: 'Traktori'
+		name: 'Tractors',
+		nameLV: 'Traktori'
 	});
 	logger.log(majlopi);
 	await majlopi.save();
 
 	const transport: Section = await Section.create(
 		{
-			name: 'Transports un mēs'
+			name: 'Transport and us',
+			nameLV: 'Transports un mēs'
 		}, { include: Subsection });
 	await transport.$create('subsection', {
-		name: 'Autovāģi'
+		name: 'Cars',
+		nameLV: 'Autovāģi'
 	});
 	await transport.$create('subsection', {
-		name: 'Minamie ar kājām'
+		name: 'Pedal vehicles',
+		nameLV: 'Minamie ar kājām'
 	});
 	await transport.$create('subsection', {
-		name: 'Ritenīš transports'
+		name: 'Wheel using transport',
+		nameLV: 'Ritenīš transports'
 	});
 	await transport.$create('subsection', {
-		name: 'Publiskais transports'
+		name: 'Public transport',
+		nameLV: 'Publiskais transports'
 	});
 	await transport.$create('subsection', {
-		name: 'Lidmašīnas'
+		name: 'Planes',
+		nameLV: 'Lidmašīnas'
 	});
 	logger.log(transport);
 	await transport.save();
 
 	const darbs: Section = await Section.create(
 		{
-			name: 'Darba iespējas'
+			name: 'Jobs n stuff',
+			nameLV: 'Darba iespējas'
 		}, { include: Subsection });
 	await darbs.$create('subsection', {
-		name: 'Pilntermiņa darbs'
+		name: 'Full time work',
+		nameLV: 'Pilntermiņa darbs'
 	});
 	await darbs.$create('subsection', {
-		name: 'Algots darbs'
+		name: 'Contract work',
+		nameLV: 'Algots darbs'
 	});
 	await darbs.$create('subsection', {
-		name: 'Puslaika darbs'
+		name: 'Half time work',
+		nameLV: 'Puslaika darbs'
 	});
 	await darbs.$create('subsection', {
-		name: 'Profesionālais darbs'
+		name: 'Professional job',
+		nameLV: 'Profesionālais darbs'
 	});
 	logger.log(darbs);
 	await darbs.save();
 
 	const atdosana: Section = await Section.create(
 		{
-			name: 'Nevajadzīgās mantas'
+			name: 'No longer needed items',
+			nameLV: 'Nevajadzīgās mantas'
 		}, { include: Subsection });
 	await atdosana.$create('subsection', {
-		name: 'Nevajadzīgās & ziedojamās mantas'
+		name: 'Unneeded or for donations items',
+		nameLV: 'Nevajadzīgās & ziedojamās mantas'
 	});
 	logger.log(atdosana);
 	await atdosana.save();
@@ -178,7 +201,7 @@ export async function seedAll (): Promise<void> {
 
 	// ----------Listings---------------
 	// ---------------------------------
-	const motorzagi: Subsection = (await depo.$get('subsections', { where: { name: 'motorzagi' } }))[0];
+	const motorzagi: Subsection = (await depo.$get('subsections', { where: { nameLV: 'motorzagi' } }))[0];
 	const chainsaw = await Listing.create({
 		id: uuidv4(),
 		title: 'Big chonky chainsaw',
@@ -190,7 +213,7 @@ export async function seedAll (): Promise<void> {
 		is_draft: false
 	});
 
-	const motorlaivas: Subsection = (await depo.$get('subsections', { where: { name: 'motorlaivas' } }))[0];
+	const motorlaivas: Subsection = (await depo.$get('subsections', { where: { nameLV: 'motorlaivas' } }))[0];
 	await Listing.create({
 		id: uuidv4(),
 		title: 'Big chonky boat motor',

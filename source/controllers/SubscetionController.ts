@@ -8,6 +8,13 @@ import { logger } from 'yatsl';
 const subsection = new Controller('subsection', ['sectionId']);
 
 subsection.read = async (req, res) => {
+	if (isLoggedOn(res.locals.user)) {
+		if (res.locals.user.banned) {
+			res.clearCookie('AuthToken');
+			res.redirect('/section');
+			return;
+		}
+	}
 	const secId = Number(req.params.sectionId);
 	if (!isNaN(secId)) {
 		const section = await Section.findByPk(secId, { include: [Subsection] });
@@ -24,22 +31,24 @@ subsection.read = async (req, res) => {
 
 interface SubsectionCreateForm {
 	subsection_name: string;
+	lv_subsection_name: string;
 	section_id: string;
 };
 
 interface SubectionEditForm {
 	subsection_name: string;
+	lv_subsection_name: string;
 	section_id: string;
 	subsection_id: string;
 };
 
 function ValidsubsectionCreateForm (obj: any): obj is SubsectionCreateForm {
-	const valid = ('subsection_name' in obj) && typeof obj.subsection_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string' && !isNaN(Number(obj.section_id));
+	const valid = ('subsection_name' in obj) && typeof obj.subsection_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string' && !isNaN(Number(obj.section_id)) && ('lv_subsection_name' in obj) && typeof obj.lv_subsection_name === 'string';
 	return valid;
 };
 
 function ValidsubsectionUpdateForm (obj: any): obj is SubectionEditForm {
-	const valid = ('subsection_name' in obj) && typeof obj.subsection_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string' && ('subsection_id' in obj) && typeof obj.subsection_id === 'string' && !isNaN(Number(obj.section_id)) && !isNaN(Number(obj.subsection_id));
+	const valid = ('subsection_name' in obj) && typeof obj.subsection_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string' && ('subsection_id' in obj) && typeof obj.subsection_id === 'string' && !isNaN(Number(obj.section_id)) && !isNaN(Number(obj.subsection_id)) && ('lv_subsection_name' in obj) && typeof obj.lv_subsection_name === 'string';
 	return valid;
 };
 
@@ -51,6 +60,7 @@ subsection.create = [
 					if (isAdmin(res.locals.user)) {
 						await Subsection.create({
 							name: req.body.subsection_name,
+							nameLV: req.body.lv_subsection_name,
 							sectionId: Number(req.body.section_id)
 						});
 					} else {
@@ -80,6 +90,7 @@ subsection.update = subsection.handler(
 					const subsectioninstance = await Subsection.findByPk(req.body.subsection_id);
 					if (isSubcategory(subsectioninstance)) {
 						subsectioninstance.name = req.body.subsection_name;
+						subsectioninstance.nameLV = req.body.lv_subsection_name;
 						await subsectioninstance.save();
 						res.redirect(`/subsection/${req.body.section_id}`);
 					} else {
@@ -134,8 +145,10 @@ subsection.interface('/edit', async (req, res) => { // Accesibly only by admins
 			if (isSubcategory(subsection) && isCategory(section)) {
 				res.render('pages/admin/subsection_edit.ejs', { // Sends variables to prepopulate two fields in the edit form
 					sectionname: section.name,
+					lvsectionname: section.nameLV,
 					secId: section.id,
 					oldsubsectionname: subsection.name,
+					oldlvsubsectionname: subsection.nameLV,
 					constants: headerConstants
 				});
 			} else {

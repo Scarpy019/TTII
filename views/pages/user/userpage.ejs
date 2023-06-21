@@ -32,6 +32,17 @@
 		<% }) %>
         
         </ul>
+        <div class="admin_button">
+            <% if (user != null) { %>
+                <% if (user.accesslevel.ban_user && user.id != authorid) { %>
+                    <% if(authorbanstatus) { %>
+                        <button id="unbanbutton" value="<%=authorid%>">Unban user</button>
+                    <% } else { %> 
+                        <button id="banbutton" value="<%=authorid%>">Ban user</button>
+                    <% } %>
+                <% } %>
+            <% } %>
+        </div>
     </div>
 </body>
 </html>

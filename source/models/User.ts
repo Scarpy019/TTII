@@ -50,6 +50,10 @@ export class User extends Model<UserAttributes, UserInput> {
 	@Column
 	access!: string;
 
+	@Default(false)
+	@Column
+	banned!: boolean;
+
 	@BelongsTo(() => UserAccess, 'access')
 	accesslevel!: ReturnType<() => UserAccess>;
 
