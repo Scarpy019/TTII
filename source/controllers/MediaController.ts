@@ -5,6 +5,15 @@ import { v4 as uuid } from 'uuid';
 
 const media = new Controller('media');
 
+// decreases all media order numbers as much as possible
+async function cleanupMedia (listingId: string): Promise<void> {
+	const remainingMedia = await Media.findAll({ where: { listingId }, order: [['orderNumber', 'ASC']] });
+	for (let i = 0; i < remainingMedia.length; i++) {
+		remainingMedia[i].orderNumber = i + 1;
+		await remainingMedia[i].save();
+	}
+}
+
 async function userOwnsListing (user: User, listingId: string): Promise<boolean> {
 	return (await Listing.count({
 		where: {
@@ -17,6 +26,7 @@ async function userOwnsListing (user: User, listingId: string): Promise<boolean>
 media.read = async (req, res) => {
 	const listingId = req.query.listingId;
 	if (listingId !== undefined && typeof listingId === 'string') {
+		await cleanupMedia(listingId);
 		const listing = await Listing.findByPk(listingId, { include: [Media] });
 		const media = listing?.media;
 		if (media !== undefined) {
@@ -32,6 +42,7 @@ media.read = async (req, res) => {
 media.interface('/draft-img', async (req, res, next) => {
 	const listingId = res.locals.user?.draftListingId;
 	if (listingId !== undefined && typeof listingId === 'string') {
+		await cleanupMedia(listingId);
 		const listing = await Listing.findByPk(listingId, { include: [Media] });
 		const media = listing?.media;
 		if (media !== undefined) {
@@ -113,6 +124,7 @@ media.create = [
 						listingId
 					});
 				});
+				await cleanupMedia(listingId);
 				res.sendStatus(200);
 			} else {
 				res.sendStatus(400);
@@ -138,7 +150,7 @@ media.update = async (req, res) => {
 		res.sendStatus(401);
 		return;
 	}
-	if (listingId !== undefined && listingId !== null) {
+	if (listingId !== undefined && listingId !== null && typeof listingId === 'string') {
 		const mediaA = await Media.findOne({
 			where: {
 				listingId,
@@ -165,6 +177,7 @@ media.update = async (req, res) => {
 			[mediaA.extension, mediaB.extension] = [mediaB.extension, mediaA.extension];
 			await mediaA.save();
 			await mediaB.save();
+			await cleanupMedia(listingId);
 		} else {
 			res.sendStatus(400);
 		}
@@ -233,11 +246,7 @@ media.delete = [
 		}
 		const listingId = res.locals.media.listingId;
 		await res.locals.media.destroy();
-		const remainingMedia = await Media.findAll({ where: { listingId }, order: [['orderNumber', 'ASC']] });
-		for (let i = 0; i < remainingMedia.length; i++) {
-			remainingMedia[i].orderNumber = i + 1;
-			await remainingMedia[i].save();
-		}
+		await cleanupMedia(listingId);
 		res.sendStatus(200);
 	}
 ];
