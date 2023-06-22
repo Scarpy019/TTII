@@ -4,6 +4,7 @@ import { Listing } from './Listing.js';
 import { type Optional } from 'sequelize';
 import { UUID } from '../sequelizeSetup.js';
 import { Bid } from './Bid.js';
+import { UserAccess } from './UserAccess.js';
 
 /**
  * Helper interface for Users
@@ -46,8 +47,12 @@ export class User extends Model<UserAttributes, UserInput> {
 	@Column
     password!: string;
 
+	@ForeignKey(() => UserAccess)
 	@Column
-    access!: string;
+	access!: string;
+
+	@BelongsTo(() => UserAccess, 'access')
+	accesslevel!: ReturnType<() => UserAccess>;
 
 	@Default(0)
 	@Column

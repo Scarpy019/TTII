@@ -37,7 +37,38 @@ async function editlisting (): Promise<void> {
 	}
 }
 
+async function editSection (): Promise<void> {
+	const sectionTitle = $('#section_name').val();
+	const sectionidquery = location.search;
+	const sectionId = sectionidquery.substring(11);
+	if (sectionTitle !== null && sectionTitle !== undefined && sectionId !== null && sectionId !== undefined) {
+		await fetchWithCSRF('/section/update', {
+			method: 'PUT',
+			body: JSON.stringify({ section_name: sectionTitle, section_id: sectionId })
+		}).then(Response => {
+			location.href = Response.url;
+		});
+	}
+}
+
+async function editSubsection (): Promise<void> {
+	const subsectionTitle = $('#subsection_name').val();
+	const sectionId = $('#sectionId').val();
+	const subsectionidquery = location.search;
+	const subsectionId = subsectionidquery.substring(14);
+	if (subsectionTitle !== null && subsectionTitle !== undefined && subsectionId !== null && subsectionId !== undefined && sectionId !== null && sectionId !== undefined) {
+		await fetchWithCSRF('/subsection/update', {
+			method: 'PUT',
+			body: JSON.stringify({ subsection_name: subsectionTitle, subsection_id: subsectionId, section_id: sectionId })
+		}).then(Response => {
+			location.href = Response.url;
+		});
+	}
+}
+
 $('#updatebutton').on('click', editlisting);
+$('#updatesection').on('click', editSection);
+$('#updatesubsection').on('click', editSubsection);
 
 async function deletelisting (): Promise<void> {
 	const currentlistingquery = location.search;
@@ -50,7 +81,31 @@ async function deletelisting (): Promise<void> {
 	});
 }
 
+async function deleteSection (): Promise<void> {
+	const currentSectionQuery = location.search;
+	const currentSection = currentSectionQuery.substring(11);
+	await fetchWithCSRF('/section/delete', {
+		method: 'DELETE',
+		body: JSON.stringify({ sectionId: currentSection })
+	}).then(Response => {
+		location.href = Response.url;
+	});
+}
+
+async function deleteSubsection (): Promise<void> {
+	const currentSubsectionQuery = location.search;
+	const currentSubsection = currentSubsectionQuery.substring(14);
+	await fetchWithCSRF('/subsection/delete', {
+		method: 'DELETE',
+		body: JSON.stringify({ subsec_id: currentSubsection })
+	}).then(Response => {
+		location.href = Response.url;
+	});
+}
+
 $('#dangerousdeletebuttonthatdestroys').on('click', deletelisting);
+$('#delete_section').on('click', deleteSection);
+$('#delete_subsection').on('click', deleteSubsection);
 
 $((document) => {
 	const langcookie = Cookies.get('lang');
@@ -63,6 +118,14 @@ $((document) => {
 		if (editcategory !== undefined && editcategory !== null && editsubcategory !== undefined && editsubcategory !== null) {
 			$('#categories').val(editcategory.toString());
 			$('#subcategories').val(editsubcategory.toString());
+		}
+	}
+	if ($('#createfromexistsubcat').val() === 'true') {
+		const oldcategory = $('#oldcategory').val();
+		const oldsubcategory = $('#oldsubcategory').val();
+		if (oldcategory !== undefined && oldcategory !== null && oldsubcategory !== undefined && oldsubcategory !== null) {
+			$('#categories').val(oldcategory.toString());
+			$('#subcategories').val(oldsubcategory.toString());
 		}
 	}
 	const currentcat = $('#categories').find(':selected').val();

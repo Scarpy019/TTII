@@ -13,6 +13,8 @@ import { server as config } from './config.js';
 import { readFileSync } from 'fs';
 import { createServer } from 'https';
 import { sequelize } from './sequelizeSetup.js';
+import * as http from 'http';
+import { io } from './sockets/Socket.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -41,6 +43,13 @@ app.get('/', (_req, res) => {
 	res.redirect('/section');
 });
 
+app.get('/reklama', (_, res) => {
+	res.redirect('http://reklama.narvesen.lv');
+});
+app.get('/narvesen', (_, res) => {
+	res.redirect('http://reklama.narvesen.lv');
+});
+
 // 404 route that accepts all remaining routes
 app.get('*', function (req, res) {
 	// set status
@@ -66,18 +75,23 @@ app.get('*', function (req, res) {
 	res.type('txt').send('Page not found');
 });
 
+const server = http.createServer(app);
+io.listen(server); // Make the Socket.IO server listen to the HTTP server
+
 const options = {
 	key: readFileSync(config.keyLocation),
 	cert: readFileSync(config.certLocation)
 };
 
 const HTTPport = config.debug ? 3000 : 80;
-app.listen(HTTPport, async function () {
-	await sequelize.sync({ alter: false });
+server.listen(HTTPport, async function () {
+	await sequelize.sync();
 	logger.info(`App is listening for HTTP on ${HTTPport}`);
 
 	const HTTPSport = config.debug ? 3001 : 443;
-	createServer(options, app).listen(HTTPSport, async function () {
+	const HTTPSserver = createServer(options, app);
+	io.listen(HTTPSserver); // Make the Socket.IO server listen to the HTTPS server
+	HTTPSserver.listen(HTTPSport, async function () {
 		logger.info(`App is listening for HTTPS on ${HTTPSport}`);
 	});
 });

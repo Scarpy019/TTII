@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { headerConstants } from './config.js';
+import { doesUserExist, isLoggedOn } from '../middleware/ObjectCheckingMiddleware.js';
 
 interface UserSigninForm {
 	user: string;
@@ -40,7 +41,7 @@ user.read = (req, res) => {
 const login = user.subcontroller('login');
 
 login.read = (req, res) => {
-	if (res.locals.user !== null && res.locals.user !== undefined) {
+	if (isLoggedOn(res.locals.user)) {
 		res.redirect('/section');
 	} else {
 		let redirect = '';
@@ -51,27 +52,20 @@ login.read = (req, res) => {
 	}
 };
 
-const userpage = user.subcontroller('profile', ['id']);
+const userpage = user.subcontroller('profile', ['username']);
 
 userpage.read = async (req, res) => {
-	const userpageId = req.params.id;
-	if (userpageId !== null && userpageId !== undefined) {
-		const usernameVar = await User.findByPk(userpageId);
-		if (usernameVar !== null && usernameVar !== undefined) {
+	const URLusername = req.params.username;
+	if (URLusername !== null && URLusername !== undefined) {
+		const usernameVar = await User.findOne({ where: { username: URLusername } });
+		if (doesUserExist(usernameVar)) {
 			const userlistings = await Listing.findAll({ where: { userId: usernameVar.id } });
-			if (res.locals.user !== null && res.locals.user !== undefined) {
-				const user: User = res.locals.user;
-				if (user.id === userpageId) {
-					if (res.locals.lang !== undefined) {
-						res.render('pages/user/userpage.ejs', { username: `${res.locals.lang.userpage.welcome},${usernameVar.username}`, constants: headerConstants, userstatus_page: `/user/profile/${user.id}`, userstatus_name: user.username, userlistings, currentuserid: user.id, authorid: usernameVar.id });
-					}
-				}
-				if (user.id !== userpageId) {
-					res.render('pages/user/userpage.ejs', { username: usernameVar.username, constants: headerConstants, userstatus_page: `/user/profile/${user.id}`, userstatus_name: user.username, userlistings, currentuserid: user.id, authorid: 'abc' });
-				}
-			} else {
-				res.render('pages/user/userpage.ejs', { username: usernameVar, constants: headerConstants, userstatus_page: '/user/login', userlistings, currentuserid: null, authorid: 'abc' });
-			}
+			res.render('pages/user/userpage.ejs', { // Sends all userpage information which gets compared with local user in the ejs file for personal userpage display
+				username: usernameVar.username,
+				constants: headerConstants,
+				userlistings,
+				authorid: usernameVar.id
+			});
 		}
 	} else {
 		res.sendStatus(404);
@@ -123,7 +117,7 @@ login.create = login.handler(
 );
 
 login.delete = (req, res) => {
-	if (res.locals.user !== null && res.locals.user !== undefined) {
+	if (isLoggedOn(res.locals.user)) {
 		res.clearCookie('AuthToken');
 		res.send('Logging out');
 	} else {
@@ -157,7 +151,7 @@ function isUserSignupForm (obj: any): obj is UserSignupForm {
 const signup = user.subcontroller('signup');
 
 signup.read = (req, res): void => {
-	if (res.locals.user !== null && res.locals.user !== undefined) {
+	if (isLoggedOn(res.locals.user)) {
 		res.redirect('/section');
 	} else {
 		res.render('pages/user/signup', { constants: headerConstants });

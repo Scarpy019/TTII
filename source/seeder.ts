@@ -1,4 +1,4 @@
-import { Bid, Listing, type Log, Section, Subsection, User, Media } from './models/index.js';
+import { Bid, Listing, type Log, Section, Subsection, User, Media, UserAccess } from './models/index.js';
 import ts from 'typescript';
 import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,6 +8,33 @@ const sys = ts.sys;
 export async function seedAll (): Promise<void> {
 	// -------User and UserLog-------
 	// ------------------------------
+	const clientAccess = await UserAccess.create({
+		access: 'client',
+		client_access: true,
+		hide_posts: false,
+		timeout_user: false,
+		category_admin: false,
+		ban_user: false
+	});
+	await clientAccess.save();
+	const moderatorAccess = await UserAccess.create({
+		access: 'moderator',
+		client_access: true,
+		hide_posts: true,
+		timeout_user: true,
+		category_admin: false,
+		ban_user: false
+	});
+	await moderatorAccess.save();
+	const adminAccess = await UserAccess.create({
+		access: 'admin',
+		client_access: true,
+		hide_posts: true,
+		timeout_user: true,
+		category_admin: true,
+		ban_user: true
+	});
+	await adminAccess.save();
 	const userBoi = await User.create({
 		id: uuidv4(),
 		username: 'xXx_boi_xXx',
