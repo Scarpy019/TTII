@@ -35,7 +35,6 @@ async function userOwnsListing (user: User, listingId: string): Promise<boolean>
 media.read = async (req, res) => {
 	const listingId = req.query.listingId;
 	if (listingId !== undefined && typeof listingId === 'string') {
-		await cleanupMedia(listingId);
 		const listing = await Listing.findByPk(listingId, { include: [Media] });
 		const media = listing?.media;
 		if (media !== undefined) {
@@ -51,7 +50,6 @@ media.read = async (req, res) => {
 media.interface('/draft-img', async (req, res, next) => {
 	const listingId = res.locals.user?.draftListingId;
 	if (listingId !== undefined && typeof listingId === 'string') {
-		await cleanupMedia(listingId);
 		const listing = await Listing.findByPk(listingId, { include: [Media] });
 		const media = listing?.media;
 		if (media !== undefined) {
