@@ -1,13 +1,40 @@
+body {
+	margin: 0;
+}
+
+.topbars>div {
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.nav_buttons {
+	justify-items: left;
+	padding-left: 1vw;
+}
+
+.topbars-options {
+	justify-items: right;
+	padding-right: 1vw;
+}
+
 .nav_buttons a, .user_status a, #signoutbutton {
 	border-style: solid;
 	border-width: 2px;
 	border-radius: 2px;
 	padding: 5px;
 	align-content: left;
+
 }
 
 #page_title{
-	align-content: center;
+	text-align: center;
+	width: 100%;
 }
 
 .user_status {
@@ -17,5 +44,6 @@
 .topbars {
 	position: sticky;
 	display: grid;
-  	grid-template-columns: 30% 30% 20% 20% ;
+  	grid-template-columns: 1fr 3fr 1fr;
+	background-color: aquamarine;
 }
