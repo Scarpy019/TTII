@@ -22,7 +22,7 @@ export default [
 	{
 		input: './client/buttonStyling/entry.ts',
 		output: {
-			sourceMap: true,
+			sourcemap: true,
 			file: './static/lapa/headerstyle.js',
 			format: 'es'
 		},
@@ -31,7 +31,7 @@ export default [
 	{
 		input: './client/client.ts',
 		output: {
-			sourceMap: true,
+			sourcemap: true,
 			file: './static/lapa/client.js',
 			format: 'es'
 		},
@@ -40,7 +40,7 @@ export default [
 	{
 		input: './client/hardening.ts',
 		output: {
-			sourceMap: true,
+			sourcemap: true,
 			file: './static/js/hardening.js',
 			format: 'es'
 		},
@@ -49,7 +49,7 @@ export default [
 	{
 		input: './client/listing_create/image_handler.ts',
 		output: {
-			sourceMap: true,
+			sourcemap: true,
 			file: './static/lapa/listing_create.js',
 			format: 'es'
 		},
@@ -58,7 +58,7 @@ export default [
 	{
 		input: './client/listing_edit/entry_point.ts',
 		output: {
-			sourceMap: true,
+			sourcemap: true,
 			file: './static/lapa/listing_edit.js',
 			format: 'es'
 		},
@@ -67,11 +67,13 @@ export default [
 	{
 		input: './client/listing_item/entry_point.ts',
 		output: {
-			sourceMap: true,
+			sourcemap: true,
 			file: './static/lapa/listing_item.js',
 			format: 'es'
 		},
 		plugins: [scss({output:'./static/lapa/listing_item.css'})].concat(plugins)
+	},
+	{
 		input: './client/chatting.ts',
 		output: {
 			file: './static/lapa/chatting.js',

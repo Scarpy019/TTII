@@ -9,8 +9,17 @@ const media = new Controller('media');
 async function cleanupMedia (listingId: string): Promise<void> {
 	const remainingMedia = await Media.findAll({ where: { listingId }, order: [['orderNumber', 'ASC']] });
 	for (let i = 0; i < remainingMedia.length; i++) {
-		remainingMedia[i].orderNumber = i + 1;
-		await remainingMedia[i].save();
+		// Sequelize doesn't like me changing the primary key but i must
+		if (remainingMedia[i].orderNumber !== i + 1) {
+			await Media.update({
+				orderNumber: i + 1
+			},
+			{
+				where: {
+					orderNumber: remainingMedia[i].orderNumber
+				}
+			});
+		}
 	}
 }
 
@@ -109,6 +118,7 @@ media.create = [
 				res.sendStatus(401);
 				return;
 			}
+			await cleanupMedia(listingId);
 			const media = await Media.findAll({ where: { listingId } });
 			const fileData = req.files;
 			if (fileData !== undefined && Array.isArray(fileData)) {
@@ -151,6 +161,7 @@ media.update = async (req, res) => {
 		return;
 	}
 	if (listingId !== undefined && listingId !== null && typeof listingId === 'string') {
+		await cleanupMedia(listingId);
 		const mediaA = await Media.findOne({
 			where: {
 				listingId,
