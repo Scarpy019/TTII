@@ -136,10 +136,10 @@ listing.interface('/item', async (req, res) => {
 		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
 			if (doesUserExist(author)) {
-				if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
+				if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
 					res.redirect('/section');
 				} else {
-					if (listing.status === 'open' || (listing.status === 'closed' && res.locals.user === author)) {
+					if (listing.status === 'open' || (listing.status === 'closed' && isLoggedOn(res.locals.user) && res.locals.user.id === author.id)) {
 						res.render('pages/main/listing_item.ejs', {
 							listing,
 							author: author.username,
@@ -235,6 +235,7 @@ listingstatus.update = async (req, res) => {
 		if (isListing(listinginstance)) {
 			listinginstance.status = changestatus;
 			await listinginstance.save();
+			res.redirect(`item?listingId=${listinginstance.id}`);
 		}
 	}
 };

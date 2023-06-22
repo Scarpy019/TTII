@@ -22,7 +22,11 @@
         <% }%>
         <ul>
 		<% userlistings.forEach(element => { %>
-			<li><a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
+			<li>
+            <% if (element.status == 'open' || user.id == authorid) { %>
+                <a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
+            <% } %> 
+            
             <% if (user != null) { %>
                 <% if (authorid == user.id) { %>
                     <a href="/listing/edit?listingId=<%=element.id%>"><%-lang.listing_item.edit%></a>

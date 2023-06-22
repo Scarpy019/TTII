@@ -22,7 +22,12 @@
                 <p><%-lang.listing_item.postdate%> <%-listing.createdAt%></p>
                 <% if (user != null) { %>
                     <% if (authorid == user.id || user.accesslevel.category_admin) { %>
-                        <a href="/listing/edit?listingId=<%=listing.id%>"><%-lang.listing_item.edit%></a>
+                        <a href="/listing/edit?listingId=<%=listing.id%>"><%-lang.listing_item.edit%></a> <br>
+                        <% if (listing.status == 'open') { %>
+                            <button id="closelisting">Close listing</button>
+                        <% } else { %>
+                            <button id="openlisting">Open listing</button>
+                        <% } %>
                     <% } %>
                 <% } %>
 			</div>

@@ -58,7 +58,7 @@ async function editlistingstatus (openstatus: any): Promise<void> {
 	const currentlistingquery = location.search;
 	const currentlisting = currentlistingquery.substring(11);
 	if (openstatus === 'open' || openstatus === 'closed') {
-		await fetchWithCSRF('/listing/updatestatus', {
+		await fetchWithCSRF('/listing/statusupdate', {
 			method: 'PUT',
 			body: JSON.stringify({ listingid: currentlisting, newstatus: openstatus })
 		}).then(Response => {
