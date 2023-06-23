@@ -28,6 +28,8 @@ export default interface locale {
 		delete: string;
 		return: string;
 		add_listing: string;
+		yes: string;
+		no: string;
 	};
 	listing_item: {
 		startprice: string;

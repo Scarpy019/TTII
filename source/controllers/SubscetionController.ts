@@ -21,7 +21,8 @@ subsection.read = async (req, res) => {
 		if (isCategory(section)) {
 			res.render('pages/main/subcategory_list.ejs', {
 				section,
-				constants: headerConstants
+				constants: headerConstants,
+				originURL: `()subsection()${secId}` // For redirect purposes with login button
 			});
 		} else {
 			res.sendStatus(404);

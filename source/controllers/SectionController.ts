@@ -18,7 +18,8 @@ section.read = async (req, res) => {
 	res.render('pages/main/sections_mainpage.ejs', {
 		sections,
 		sectionName: section.name,
-		constants: headerConstants
+		constants: headerConstants,
+		originURL: '()section' // For redirect purposes with login button
 	});
 };
 

@@ -31,7 +31,8 @@ listing.read = async (req, res) => {
 				subsecId,
 				constants: headerConstants,
 				subsec_Id: String(subsecId),
-				secId: subsection.sectionId
+				secId: subsection.sectionId,
+				originURL: `()listing()${String(subsecId)}` // For redirect purposes with login button
 			});
 		}
 	} else {
@@ -145,7 +146,8 @@ listing.interface('/item', async (req, res) => {
 							author: author.username,
 							author_profile: author.username,
 							authorid: author.id,
-							constants: headerConstants
+							constants: headerConstants,
+							originURL: `()listing()item?listingId=${listing.id}` // For redirect purposes with login button
 						});
 					} else if (listing.status === 'closed') {
 						res.redirect('/section');

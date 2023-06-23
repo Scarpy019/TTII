@@ -43,7 +43,7 @@ login.read = (req, res) => {
 		if (typeof req.query.redirect === 'string') {
 			redirect = req.query.redirect;
 		}
-		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'base64').toString('ascii'), constants: headerConstants });
+		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'utf8').toString('ascii'), constants: headerConstants });
 	}
 };
 
@@ -128,7 +128,11 @@ login.create = login.handler(
 
 				let redirectURL = '/';
 				if (req.body.redirect !== undefined) {
-					redirectURL = req.body.redirect;
+					// redirectURL = req.body.redirect;
+					redirectURL = Buffer.from(req.body.redirect, 'ascii').toString('utf8');
+					while (redirectURL.includes('()')) {
+						redirectURL = redirectURL.replace('()', '/');
+					}
 				}
 				res.redirect(redirectURL);
 				// res.send('Logged in successfully');

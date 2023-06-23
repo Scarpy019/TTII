@@ -15,7 +15,7 @@
 			<a href="/user/profile/<%=user.username%>"><%=user.username%></a>
 			<button id="signoutbutton"><%-lang.header.signout_name%></button>
 		<% }else{ %> 
-			<a href="<%=constants.signinhref%>"><%=lang.header.login_name%></a>
+			<a href="<%=constants.signinhref%>?redirect=<%=originURL%>"><%=lang.header.login_name%></a>
 			<a href="<%=constants.signuphref%>"><%=lang.header.signup_name%></a>
 		<% }%>
 	</div>
