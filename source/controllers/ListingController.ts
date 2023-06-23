@@ -87,7 +87,6 @@ listing.create = [
 						res.json({ listingId: newListing.id });
 						return;
 					};
-					res.redirect(`/listing/${req.body.subcatid}`);
 				} else {
 					logger.info('Subcategory was invalid');
 					res.sendStatus(400);

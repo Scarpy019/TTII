@@ -2,6 +2,7 @@ import multer, { diskStorage } from 'multer';
 import { Listing, Media, type User } from '../models/index.js';
 import { Controller } from './BaseController.js';
 import { v4 as uuid } from 'uuid';
+import { isLoggedOn } from '../middleware/ObjectCheckingMiddleware.js';
 
 const media = new Controller('media');
 
@@ -66,7 +67,7 @@ media.create = [
 	// precheck user auth to prevent file uploads
 	(req, res, next) => {
 		const user = res.locals.user;
-		if (user !== undefined && user !== null) {
+		if (isLoggedOn(user)) {
 			next();
 		} else {
 			res.sendStatus(400);
@@ -133,7 +134,8 @@ media.create = [
 					});
 				});
 				await cleanupMedia(listingId);
-				res.sendStatus(200);
+				// res.sendStatus(200);
+				res.redirect(`/listing/item?listingId=${listingId}`); // Redirects to newly created listing
 			} else {
 				res.sendStatus(400);
 			}
