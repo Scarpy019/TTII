@@ -20,7 +20,9 @@
                     <% if (listing.status === "open") { %>
                         <% if (listing.user != undefined) { %>
                             <% if (!listing.user.banned) { %>
-                                <a href='/listing/item?listingId=<%=listing.id%>'><%- listing.title %></a>
+                                <li>
+                                    <a href='/listing/item?listingId=<%=listing.id%>'><%- listing.title %></a>
+                                </li>
                             <% } %>
                         <% } %>
                     <% } %>

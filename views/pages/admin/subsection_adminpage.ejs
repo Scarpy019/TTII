@@ -19,12 +19,14 @@
             <% } %>
             <ul id="subcategory_list">
 				<% section.subsections.forEach(subsection => { %>
-					<% if (lang.header.current_lang == 'ENG') { %>
-                        <a href='/listing/<%=subsection.id%>'><%- subsection.name %></a>
-                    <% } else if(lang.header.current_lang == 'LV') { %>
-                        <a href='/listing/<%=subsection.id%>'><%- subsection.nameLV %></a>
-                    <% } %>
-					<a href="/subsection/edit/<%=section.id%>?subsectionId=<%=subsection.id%>"><%-lang.admin.edit%></a>
+                    <li>
+                        <% if (lang.header.current_lang == 'ENG') { %>
+                            <a href='/listing/<%=subsection.id%>'><%- subsection.name %></a>
+                        <% } else if(lang.header.current_lang == 'LV') { %>
+                            <a href='/listing/<%=subsection.id%>'><%- subsection.nameLV %></a>
+                        <% } %>
+                        <a href="/subsection/edit/<%=section.id%>?subsectionId=<%=subsection.id%>"><%-lang.admin.edit%></a>
+                    </li>
 				<% }) %>
 			</ul>
         </div>

@@ -29,7 +29,9 @@ export default {
 		update: 'Saglabāt rediģējumus',
 		delete: 'Izdzēst',
 		return: 'Atgriezties pie sludinājuma',
-		add_listing: 'Pievienot sludinājumu'
+		add_listing: 'Pievienot sludinājumu',
+		yes: 'Jā',
+		no: 'Nē'
 	},
 	listing_item: {
 		startprice: 'Sākotnējā cena',

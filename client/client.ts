@@ -144,6 +144,12 @@ $((document) => {
 	if (langcookie !== undefined && langcookie !== null) {
 		$('#language').val(langcookie);
 	}
+	const defopenstatus = $('#open_status_def').val();
+	if (defopenstatus === 'open') {
+		$('#open_status').prop('checked', true);
+	} else if (defopenstatus === 'closed') {
+		$('#open_status').prop('checked', false);
+	}
 	if ($('#edit').val() === 'true') {
 		const editcategory = $('#exist_cat').val();
 		const editsubcategory = $('#exist_subcat').val();

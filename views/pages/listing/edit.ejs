@@ -19,7 +19,7 @@
 		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
 		<input type="number" id="start_price" name="startprice" value="<%=existing_startprice%>" required>
 		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
-		<input type="hidden" value="closed" id="open_status_def" name="openstatus">
+		<input type="hidden" value="<%=existing_status%>" id="open_status_def" name="openstatus">
 		<input type="checkbox" id="open_status" name="openstatus">
 		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
 		<input hidden id="exist_cat" value="<%=existing_categoryid%>">

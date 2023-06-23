@@ -29,7 +29,9 @@ export default {
 		update: 'Update',
 		delete: 'Delete',
 		return: 'Return to listing',
-		add_listing: 'Create listing'
+		add_listing: 'Create listing',
+		yes: 'Yes',
+		no: 'No'
 	},
 	listing_item: {
 		startprice: 'Starting price',
