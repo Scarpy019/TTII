@@ -424,7 +424,7 @@ export async function seedAll (): Promise<void> {
 	const motorlaivas: Subsection = (await depo.$get('subsections', { where: { nameLV: 'motorlaivas' } }))[0];
 	const motormotori: Subsection = (await depo.$get('subsections', { where: { nameLV: 'motormotori' } }))[0];
 
-	const chainsaw = await Listing.create({
+	const listing1 = await Listing.create({
 		id: uuidv4(),
 		title: 'Big chonky chainsaw',
 		body: 'Selling big chonky chainsaw :)) Get it for cheap!!!! Brand old',
@@ -432,10 +432,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motorzagi.id,
 		userId: user2.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing1.set({
+		base64id: Buffer.from((listing1.id = (listing1.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing1.save();
 
-	await Listing.create({
+	const listing2 = await Listing.create({
 		id: uuidv4(),
 		title: 'Big chonky boat motor',
 		body: 'Selling big chonky motor :(( Get it for cheap (not)!!!! Brand.',
@@ -443,10 +448,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motorlaivas.id,
 		userId: userBoi.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing2.set({
+		base64id: Buffer.from((listing2.id = (listing2.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing2.save();
 
-	await Listing.create({
+	const listing3 = await Listing.create({
 		id: uuidv4(),
 		title: 'Professional Chainsaw for Heavy-Duty Cutting',
 		body: 'Selling a professional chainsaw suitable for heavy-duty cutting tasks. Perfect for loggers and professional arborists.',
@@ -454,10 +464,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motorzagi.id,
 		userId: user2.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing3.set({
+		base64id: Buffer.from((listing3.id = (listing3.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing3.save();
 
-	await Listing.create({
+	const listing4 = await Listing.create({
 		id: uuidv4(),
 		title: 'Compact Chainsaw for Home and Garden Use',
 		body: 'Selling a compact and lightweight chainsaw ideal for home and garden use. Perfect for trimming trees and cutting firewood.',
@@ -465,10 +480,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motorzagi.id,
 		userId: user3.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing4.set({
+		base64id: Buffer.from((listing4.id = (listing4.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing4.save();
 
-	await Listing.create({
+	const listing5 = await Listing.create({
 		id: uuidv4(),
 		title: 'Speedy Motorboat with Sleek Design',
 		body: 'Selling a speedy motorboat with a sleek and modern design. Perfect for water sports enthusiasts and thrill-seekers.',
@@ -476,10 +496,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motorlaivas.id,
 		userId: user4.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing5.set({
+		base64id: Buffer.from((listing5.id = (listing5.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing5.save();
 
-	await Listing.create({
+	const listing6 = await Listing.create({
 		id: uuidv4(),
 		title: 'Reliable Fishing Boat with Outboard Engine',
 		body: 'Selling a reliable fishing boat equipped with a powerful outboard engine. Ideal for passionate anglers and fishing enthusiasts.',
@@ -487,10 +512,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motorlaivas.id,
 		userId: user5.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing6.set({
+		base64id: Buffer.from((listing6.id = (listing6.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing6.save();
 
-	await Listing.create({
+	const listing7 = await Listing.create({
 		id: uuidv4(),
 		title: 'High-Performance Engine for Industrial Applications',
 		body: 'Selling a high-performance engine suitable for various industrial applications. Designed to deliver reliable power and efficiency.',
@@ -498,10 +528,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motormotori.id,
 		userId: user6.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing7.set({
+		base64id: Buffer.from((listing7.id = (listing7.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing7.save();
 
-	await Listing.create({
+	const listing8 = await Listing.create({
 		id: uuidv4(),
 		title: 'Compact Engine for Small Machinery',
 		body: 'Selling a compact engine perfect for powering small machinery and equipment. Ideal for compact construction projects and DIY enthusiasts.',
@@ -509,8 +544,13 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motormotori.id,
 		userId: user7.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing8.set({
+		base64id: Buffer.from((listing8.id = (listing8.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing8.save();
 
 	// -------- Majlopi n ferma --------
 
@@ -520,7 +560,7 @@ export async function seedAll (): Promise<void> {
 	const seeds: Subsection = (await majlopi.$get('subsections', { where: { nameLV: 'Sēklas' } }))[0];
 	const tractors: Subsection = (await majlopi.$get('subsections', { where: { nameLV: 'Traktori' } }))[0];
 
-	await Listing.create({
+	const listing9 = await Listing.create({
 		id: uuidv4(),
 		title: 'Healthy Dairy Cows for Sale',
 		body: 'Selling healthy dairy cows bred for high milk production. Suitable for dairy farmers and milk processing facilities.',
@@ -528,10 +568,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: majlopii.id,
 		userId: user8.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing9.set({
+		base64id: Buffer.from((listing9.id = (listing9.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing9.save();
 
-	await Listing.create({
+	const listing10 = await Listing.create({
 		id: uuidv4(),
 		title: 'Pedigree Show Chickens',
 		body: 'Selling pedigree show chickens with impressive bloodlines. Perfect for poultry enthusiasts and breeders.',
@@ -539,10 +584,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: majlopii.id,
 		userId: user9.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing10.set({
+		base64id: Buffer.from((listing10.id = (listing10.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing10.save();
 
-	await Listing.create({
+	const listing11 = await Listing.create({
 		id: uuidv4(),
 		title: 'Organic Wheat Grain for Baking and Cooking',
 		body: 'Selling high-quality organic wheat grain ideal for baking and cooking purposes. Enjoy the natural goodness of freshly ground wheat.',
@@ -550,10 +600,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: grains.id,
 		userId: user10.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing11.set({
+		base64id: Buffer.from((listing11.id = (listing11.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing11.save();
 
-	await Listing.create({
+	const listing12 = await Listing.create({
 		id: uuidv4(),
 		title: 'Nutritious Barley Grain for Animal Feed',
 		body: 'Selling nutritious barley grain suitable for animal feed. Ensure your livestock receives optimal nutrition with this high-quality feed.',
@@ -561,10 +616,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: grains.id,
 		userId: user11.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing12.set({
+		base64id: Buffer.from((listing12.id = (listing12.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing12.save();
 
-	await Listing.create({
+	const listing13 = await Listing.create({
 		id: uuidv4(),
 		title: 'Colorful Macaw Parrot',
 		body: 'Selling a stunning and colorful Macaw parrot. A great companion for bird lovers and those looking for a beautiful addition to their home.',
@@ -572,10 +632,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: exoticAnimals.id,
 		userId: user2.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing13.set({
+		base64id: Buffer.from((listing13.id = (listing13.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing13.save();
 
-	await Listing.create({
+	const listing14 = await Listing.create({
 		id: uuidv4(),
 		title: 'Exotic Reptiles Collection',
 		body: 'Selling a collection of exotic reptiles including snakes, lizards, and turtles. Perfect for reptile enthusiasts and collectors.',
@@ -583,10 +648,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: exoticAnimals.id,
 		userId: user3.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing14.set({
+		base64id: Buffer.from((listing14.id = (listing14.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing14.save();
 
-	await Listing.create({
+	const listing15 = await Listing.create({
 		id: uuidv4(),
 		title: 'Organic Vegetable Seeds Pack',
 		body: 'Selling a pack of organic vegetable seeds containing a variety of nutritious and flavorful vegetables. Start your own organic garden today.',
@@ -594,10 +664,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: seeds.id,
 		userId: user4.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing15.set({
+		base64id: Buffer.from((listing15.id = (listing15.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing15.save();
 
-	await Listing.create({
+	const listing16 = await Listing.create({
 		id: uuidv4(),
 		title: 'Rare Flower Seeds Collection',
 		body: 'Selling a collection of rare flower seeds that will add beauty and uniqueness to any garden. Perfect for gardening enthusiasts and florists.',
@@ -605,10 +680,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: seeds.id,
 		userId: user5.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing16.set({
+		base64id: Buffer.from((listing16.id = (listing16.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing16.save();
 
-	await Listing.create({
+	const listing17 = await Listing.create({
 		id: uuidv4(),
 		title: 'Heavy-Duty Tractor with Front Loader',
 		body: 'Selling a heavy-duty tractor equipped with a front loader. Perfect for agricultural and construction tasks requiring robust power and versatility.',
@@ -616,10 +696,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: tractors.id,
 		userId: user6.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing17.set({
+		base64id: Buffer.from((listing17.id = (listing17.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing17.save();
 
-	await Listing.create({
+	const listing18 = await Listing.create({
 		id: uuidv4(),
 		title: 'Compact Tractor for Small-Scale Farming',
 		body: 'Selling a compact tractor ideal for small-scale farming and landscaping. Enjoy the convenience and efficiency of this versatile machine.',
@@ -627,8 +712,13 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: tractors.id,
 		userId: user7.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing18.set({
+		base64id: Buffer.from((listing18.id = (listing18.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing18.save();
 
 	// -------- Transports --------
 	const cars: Subsection = (await transport.$get('subsections', { where: { nameLV: 'Autovāģi' } }))[0];
@@ -637,7 +727,7 @@ export async function seedAll (): Promise<void> {
 	const publicTransport: Subsection = (await transport.$get('subsections', { where: { nameLV: 'Publiskais transports' } }))[0];
 	const planes: Subsection = (await transport.$get('subsections', { where: { nameLV: 'Lidmašīnas' } }))[0];
 
-	await Listing.create({
+	const listing19 = await Listing.create({
 		id: uuidv4(),
 		title: 'Luxury Sedan with Premium Features',
 		body: 'Selling a luxurious sedan with premium features and top-notch performance. Experience comfort and elegance on the road.',
@@ -645,10 +735,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: cars.id,
 		userId: user8.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing19.set({
+		base64id: Buffer.from((listing19.id = (listing19.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing19.save();
 
-	await Listing.create({
+	const listing20 = await Listing.create({
 		id: uuidv4(),
 		title: 'Compact Electric Car for Eco-Friendly Commuting',
 		body: 'Selling a compact electric car perfect for eco-friendly commuting. Save money on fuel and reduce your carbon footprint with this efficient vehicle.',
@@ -656,10 +751,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: cars.id,
 		userId: user9.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing20.set({
+		base64id: Buffer.from((listing20.id = (listing20.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing20.save();
 
-	await Listing.create({
+	const listing21 = await Listing.create({
 		id: uuidv4(),
 		title: 'Pedal-Powered Go-Kart for Kids',
 		body: 'Selling a pedal-powered go-kart designed for kids. Provide hours of outdoor fun and excitement with this safe and entertaining vehicle.',
@@ -667,10 +767,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: pedalVehicles.id,
 		userId: user10.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing21.set({
+		base64id: Buffer.from((listing21.id = (listing21.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing21.save();
 
-	await Listing.create({
+	const listing22 = await Listing.create({
 		id: uuidv4(),
 		title: 'Adult Pedal Tricycle for Fitness and Recreation',
 		body: 'Selling an adult pedal tricycle suitable for fitness and recreation purposes. Enjoy outdoor rides while getting exercise and fresh air.',
@@ -678,10 +783,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: pedalVehicles.id,
 		userId: user11.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing22.set({
+		base64id: Buffer.from((listing22.id = (listing22.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing22.save();
 
-	await Listing.create({
+	const listing23 = await Listing.create({
 		id: uuidv4(),
 		title: 'Mountain Bike for Off-Road Adventures',
 		body: 'Selling a high-performance mountain bike built for off-road adventures. Conquer challenging trails and enjoy the thrill of mountain biking.',
@@ -689,10 +799,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: wheelTransport.id,
 		userId: user2.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing23.set({
+		base64id: Buffer.from((listing23.id = (listing23.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing23.save();
 
-	await Listing.create({
+	const listing24 = await Listing.create({
 		id: uuidv4(),
 		title: 'City Commuter Bike for Urban Mobility',
 		body: 'Selling a stylish and practical city commuter bike perfect for urban mobility. Beat the traffic and enjoy a convenient and eco-friendly way of commuting.',
@@ -700,10 +815,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: wheelTransport.id,
 		userId: user3.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing24.set({
+		base64id: Buffer.from((listing24.id = (listing24.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing24.save();
 
-	await Listing.create({
+	const listing25 = await Listing.create({
 		id: uuidv4(),
 		title: 'City Bus for Public Transportation Services',
 		body: 'Selling a well-maintained city bus suitable for public transportation services. Provide reliable and comfortable rides to commuters in your city.',
@@ -711,10 +831,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: publicTransport.id,
 		userId: user4.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing25.set({
+		base64id: Buffer.from((listing25.id = (listing25.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing25.save();
 
-	await Listing.create({
+	const listing26 = await Listing.create({
 		id: uuidv4(),
 		title: 'Vintage Tram Car for Tourist Attractions',
 		body: 'Selling a vintage tram car perfect for tourist attractions and historical tours. Take your visitors on a nostalgic ride through the city.',
@@ -722,10 +847,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: publicTransport.id,
 		userId: user5.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing26.set({
+		base64id: Buffer.from((listing26.id = (listing26.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing26.save();
 
-	await Listing.create({
+	const listing27 = await Listing.create({
 		id: uuidv4(),
 		title: 'Private Jet for Luxury Air Travel',
 		body: 'Selling a private jet offering luxury air travel for business or personal use. Experience convenience, comfort, and unparalleled style in the sky.',
@@ -733,10 +863,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: planes.id,
 		userId: user4.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing27.set({
+		base64id: Buffer.from((listing27.id = (listing27.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing27.save();
 
-	await Listing.create({
+	const listing28 = await Listing.create({
 		id: uuidv4(),
 		title: 'Single-Engine Aircraft for Recreational Flying',
 		body: 'Selling a single-engine aircraft perfect for recreational flying and flight training. Take to the skies and fulfill your dreams of becoming a pilot.',
@@ -744,8 +879,13 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: planes.id,
 		userId: user5.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing28.set({
+		base64id: Buffer.from((listing28.id = (listing28.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing28.save();
 
 	// -------- Darba piedavajumi --------
 	const fullTimeWork: Subsection = (await darbs.$get('subsections', { where: { nameLV: 'Pilntermiņa darbs' } }))[0];
@@ -753,7 +893,7 @@ export async function seedAll (): Promise<void> {
 	const halfTimeWork: Subsection = (await darbs.$get('subsections', { where: { nameLV: 'Puslaika darbs' } }))[0];
 	const professionalJob: Subsection = (await darbs.$get('subsections', { where: { nameLV: 'Profesionālais darbs' } }))[0];
 
-	await Listing.create({
+	const listing29 = await Listing.create({
 		id: uuidv4(),
 		title: 'Full-Time Graphic Designer',
 		body: 'We are hiring a full-time graphic designer to join our creative team. Must have strong skills in Adobe Creative Suite.',
@@ -761,9 +901,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: fullTimeWork.id,
 		userId: user2.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
-	await Listing.create({
+	listing29.set({
+		base64id: Buffer.from((listing29.id = (listing29.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing29.save();
+
+	const listing30 = await Listing.create({
 		id: uuidv4(),
 		title: 'Senior Software Engineer',
 		body: 'We are seeking a skilled senior software engineer to join our development team. Strong expertise in JavaScript and Node.js required.',
@@ -771,10 +917,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: fullTimeWork.id,
 		userId: user8.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing30.set({
+		base64id: Buffer.from((listing30.id = (listing30.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing30.save();
 
-	await Listing.create({
+	const listing31 = await Listing.create({
 		id: uuidv4(),
 		title: 'Marketing Coordinator',
 		body: 'Looking for a marketing coordinator to assist in the planning and execution of marketing campaigns. Previous experience in digital marketing preferred.',
@@ -782,10 +933,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: fullTimeWork.id,
 		userId: user9.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing31.set({
+		base64id: Buffer.from((listing31.id = (listing31.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing31.save();
 
-	await Listing.create({
+	const listing32 = await Listing.create({
 		id: uuidv4(),
 		title: 'Contract Web Developer',
 		body: 'Looking for a skilled web developer to work on a contract basis. Must have experience with HTML, CSS, and JavaScript.',
@@ -793,9 +949,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: contractWork.id,
 		userId: user3.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
-	await Listing.create({
+	listing32.set({
+		base64id: Buffer.from((listing32.id = (listing32.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing32.save();
+
+	const listing33 = await Listing.create({
 		id: uuidv4(),
 		title: 'Freelance Graphic Designer',
 		body: 'Seeking a talented freelance graphic designer for various design projects. Proficiency in Adobe Creative Suite is a must.',
@@ -803,10 +965,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: contractWork.id,
 		userId: user10.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing33.set({
+		base64id: Buffer.from((listing33.id = (listing33.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing33.save();
 
-	await Listing.create({
+	const listing34 = await Listing.create({
 		id: uuidv4(),
 		title: 'Contract Content Writer',
 		body: 'We are hiring a contract content writer to create engaging and informative articles. Strong writing and research skills required.',
@@ -814,10 +981,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: contractWork.id,
 		userId: user11.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing34.set({
+		base64id: Buffer.from((listing34.id = (listing34.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing34.save();
 
-	await Listing.create({
+	const listing35 = await Listing.create({
 		id: uuidv4(),
 		title: 'Part-Time Administrative Assistant',
 		body: 'We are seeking a part-time administrative assistant to support our office operations. Strong organizational skills required.',
@@ -825,9 +997,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: halfTimeWork.id,
 		userId: user4.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
-	await Listing.create({
+	listing35.set({
+		base64id: Buffer.from((listing35.id = (listing35.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing35.save();
+
+	const listing36 = await Listing.create({
 		id: uuidv4(),
 		title: 'Customer Service Representative',
 		body: 'Join our team as a customer service representative, providing support and assistance to our valued customers. Excellent communication skills required.',
@@ -835,10 +1013,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: halfTimeWork.id,
 		userId: user2.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing36.set({
+		base64id: Buffer.from((listing36.id = (listing36.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing36.save();
 
-	await Listing.create({
+	const listing37 = await Listing.create({
 		id: uuidv4(),
 		title: 'Social Media Assistant',
 		body: 'We are seeking a part-time social media assistant to help manage our social media accounts. Familiarity with major social media platforms is essential.',
@@ -846,10 +1029,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: halfTimeWork.id,
 		userId: user2.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing37.set({
+		base64id: Buffer.from((listing37.id = (listing37.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing37.save();
 
-	await Listing.create({
+	const listing38 = await Listing.create({
 		id: uuidv4(),
 		title: 'Professional Marketing Manager',
 		body: 'Join our team as a professional marketing manager and drive our brand strategy. Minimum 5 years of experience required.',
@@ -857,9 +1045,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: professionalJob.id,
 		userId: user5.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
-	await Listing.create({
+	listing38.set({
+		base64id: Buffer.from((listing38.id = (listing38.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing38.save();
+
+	const listing39 = await Listing.create({
 		id: uuidv4(),
 		title: 'Senior Financial Analyst',
 		body: 'We are hiring a senior financial analyst to support our financial planning and analysis. Strong analytical and problem-solving skills required.',
@@ -867,10 +1061,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: professionalJob.id,
 		userId: user4.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing39.set({
+		base64id: Buffer.from((listing39.id = (listing39.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing39.save();
 
-	await Listing.create({
+	const listing40 = await Listing.create({
 		id: uuidv4(),
 		title: 'Human Resources Manager',
 		body: 'Join our team as a human resources manager and oversee all HR activities. Minimum 7 years of HR management experience required.',
@@ -878,12 +1077,19 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: professionalJob.id,
 		userId: userBoi.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing40.set({
+		base64id: Buffer.from((listing40.id = (listing40.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing40.save();
+
 	// -------- Ziedojamas mantas --------
 
 	const unneededItems: Subsection = (await atdosana.$get('subsections', { where: { nameLV: 'Nevajadzīgās & ziedojamās mantas' } }))[0];
-	await Listing.create({
+
+	const listing41 = await Listing.create({
 		id: uuidv4(),
 		title: 'Gently Used Sofa',
 		body: 'Giving away a gently used sofa in excellent condition. Neutral color, comfortable seating.',
@@ -891,10 +1097,15 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: unneededItems.id,
 		userId: user6.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing41.set({
+		base64id: Buffer.from((listing41.id = (listing41.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing41.save();
 
-	await Listing.create({
+	const listing42 = await Listing.create({
 		id: uuidv4(),
 		title: 'Donation: Children\'s Clothing',
 		body: 'Offering a donation of children\'s clothing in various sizes. Good condition, suitable for boys and girls.',
@@ -902,8 +1113,13 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: unneededItems.id,
 		userId: user7.id,
-		is_draft: false
+		is_draft: false,
+		base64id: ''
 	});
+	listing42.set({
+		base64id: Buffer.from((listing42.id = (listing42.id.replace(/-/g, ''))), 'hex').toString('base64url')
+	});
+	await listing42.save();
 
 	// ---------Bids--------------
 	// ---------------------------
@@ -913,7 +1129,7 @@ export async function seedAll (): Promise<void> {
 
 	await Bid.create({
 		bid_amount: 420,
-		listingId: chainsaw.id,
+		listingId: listing1.id,
 		userId: user.id
 	});
 
@@ -923,7 +1139,7 @@ export async function seedAll (): Promise<void> {
 	await Media.create({
 		uuid: '0e906ca0-d978-45c2-ad05-30bf16074e31',
 		extension: '.jpg',
-		listingId: chainsaw.id
+		listingId: listing1.id
 	});
 
 	await sequelize.sync();

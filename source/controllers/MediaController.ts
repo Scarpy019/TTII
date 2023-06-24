@@ -88,7 +88,8 @@ media.create = [
 					start_price: 100,
 					status: 'draft',
 					userId: user.id,
-					is_draft: true
+					is_draft: true,
+					base64id: '' // TODO Proper value needed possibly?
 				}
 			}));
 			const draftListing = draftListingRet[0];

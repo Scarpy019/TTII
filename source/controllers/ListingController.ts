@@ -93,8 +93,13 @@ listing.create = [
 							start_price: Number(req.body.startprice),
 							userId: res.locals.user.id,
 							subsectionId: Number(req.body.subcatid),
-							is_draft: false
+							is_draft: false,
+							base64id: ''
 						});
+						newListing.set({ // For shorter URL on listing item
+							base64id: Buffer.from((newListing.id = (newListing.id.replace(/-/g, ''))), 'hex').toString('base64url')
+						});
+						await newListing.save();
 						// find the draft's media
 						const media = (await Listing.findByPk(res.locals.user.draftListingId ?? '', {
 							include: [Media]
@@ -131,26 +136,29 @@ listing.interface('/item', async (req, res) => {
 			return;
 		}
 	}
-	const listId = (req.query.listingId) as unknown;
+	const listId = (req.query.id) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(listId, { include: [Subsection] });
-		if (isListing(listing)) {
-			const author = await User.findByPk(listing.userId);
-			if (doesUserExist(author)) {
-				if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
-					res.redirect('/section');
-				} else {
-					if (listing.status === 'open' || (listing.status === 'closed' && isLoggedOn(res.locals.user) && res.locals.user.id === author.id)) {
-						res.render('pages/main/listing_item.ejs', {
-							listing,
-							author: author.username,
-							author_profile: author.username,
-							authorid: author.id,
-							constants: headerConstants,
-							originURL: `()listing()item?listingId=${listing.id}` // For redirect purposes with login button
-						});
-					} else if (listing.status === 'closed') {
+		const prelisting = await Listing.findOne({ where: { base64id: listId } });
+		if (prelisting !== null) {
+			const listing = await Listing.findByPk(prelisting.id, { include: [Subsection] });
+			if (isListing(listing)) {
+				const author = await User.findByPk(listing.userId);
+				if (doesUserExist(author)) {
+					if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
 						res.redirect('/section');
+					} else {
+						if ((listing.base64id !== undefined && listing.status === 'open') || (listing.base64id !== undefined && listing.status === 'closed' && isLoggedOn(res.locals.user) && res.locals.user.id === author.id)) {
+							res.render('pages/main/listing_item.ejs', {
+								listing,
+								author: author.username,
+								author_profile: author.username,
+								authorid: author.id,
+								constants: headerConstants,
+								originURL: `()listing()item?id=${listing.base64id}` // For redirect purposes with login button
+							});
+						} else if (listing.status === 'closed') {
+							res.redirect('/section');
+						}
 					}
 				}
 			}
@@ -220,7 +228,9 @@ listing.update = listing.handler(
 				listinginstance.start_price = Number(req.body.startprice);
 				listinginstance.subsectionId = Number(req.body.subcatid);
 				await listinginstance.save();
-				res.redirect(`item?listingId=${listinginstance.id}`);
+				if (listinginstance.base64id !== undefined) {
+					res.redirect(`item?id=${listinginstance.base64id}`);
+				}
 			}
 		} catch (error) {
 			res.send(error);
@@ -237,7 +247,9 @@ listingstatus.update = async (req, res) => {
 		if (isListing(listinginstance)) {
 			listinginstance.status = changestatus;
 			await listinginstance.save();
-			res.redirect(`item?listingId=${listinginstance.id}`);
+			if (listinginstance.base64id !== undefined) {
+				res.redirect(`item?id=${listinginstance.base64id}`);
+			}
 		}
 	}
 };
@@ -300,6 +312,6 @@ listing.interface('/create', async (req, res) => {
 			});
 		}
 	} else {
-		res.redirect('/user/login?redirect=' + Buffer.from('/listing/create').toString('base64'));
+		res.redirect('/user/login?redirect=' + Buffer.from('()listing()create').toString('ascii'));
 	}
 });
