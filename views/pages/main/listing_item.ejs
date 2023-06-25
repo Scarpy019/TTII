@@ -22,7 +22,9 @@
                 <p><%-lang.listing_item.postdate%> <%-listing.createdAt%></p>
                 <% if (user != null) { %>
                     <% if (authorid == user.id || user.accesslevel.category_admin) { %>
-                        <a href="/listing/edit?listingId=<%=listing.id%>"><%-lang.listing_item.edit%></a> <br>
+                        <% if (authorid == user.id) { %>
+                            <a href="/listing/edit?id=<%=encodeUUID(listing.id)%>"><%-lang.listing_item.edit%></a> <br>
+                        <% } %>
                         <% if (listing.status == 'open') { %>
                             <button id="closelisting">Close listing</button>
                         <% } else { %>
@@ -32,6 +34,8 @@
                 <% } %>
 			</div>
 			<div class="listing_data"><img src='<%listing.media%>' alt='listingimage'></div>
+            <br>
+            <a href="/listing/<%=listing.subsectionId%>">Back to subsection</a>
         </div>
 
     </div>

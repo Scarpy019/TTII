@@ -43,7 +43,7 @@ login.read = (req, res) => {
 		if (typeof req.query.redirect === 'string') {
 			redirect = req.query.redirect;
 		}
-		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'utf8').toString('ascii'), constants: headerConstants });
+		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'utf8').toString('base64'), constants: headerConstants });
 	}
 };
 
@@ -129,9 +129,9 @@ login.create = login.handler(
 				let redirectURL = '/';
 				if (req.body.redirect !== undefined) {
 					// redirectURL = req.body.redirect;
-					redirectURL = Buffer.from(req.body.redirect, 'ascii').toString('utf8');
-					while (redirectURL.includes('()')) {
-						redirectURL = redirectURL.replace('()', '/');
+					redirectURL = Buffer.from(req.body.redirect, 'base64').toString('utf8');
+					while (redirectURL.includes('_')) {
+						redirectURL = redirectURL.replace('_', '/');
 					}
 				}
 				res.redirect(redirectURL);
@@ -152,7 +152,7 @@ login.create = login.handler(
 login.delete = (req, res) => {
 	if (isLoggedOn(res.locals.user)) {
 		res.clearCookie('AuthToken');
-		res.send('Logging out');
+		res.redirect('/section');
 	} else {
 		res.send('Not Logged in');
 	}
@@ -198,7 +198,7 @@ signup.create = signup.handler(
 			const hash = await bcrypt.hash(req.body.password, 12);
 			await User.create({
 				id: uuidv4(),
-				access: 'Client',
+				access: 'client',
 				email: req.body.email,
 				username: req.body.username,
 				password: hash

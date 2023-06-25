@@ -6,6 +6,8 @@ async function signout (): Promise<void> {
 	await fetchWithCSRF('/signout', {
 		method: 'DELETE',
 		body: JSON.stringify('')
+	}).then(Response => {
+		location.href = Response.url;
 	});
 	location.reload();
 }
@@ -39,7 +41,7 @@ async function editlisting (): Promise<void> {
 	const category = $('#categories').find(':selected').val();
 	const subcategory = $('#subcategories').find(':selected').val();
 	const currentlistingquery = location.search;
-	const currentlisting = currentlistingquery.substring(11);
+	const currentlisting = currentlistingquery.substring(4);
 	if (listdesc !== undefined && startprice !== undefined && openstatus !== undefined && listtitle !== undefined && category !== undefined && subcategory !== undefined && currentlisting !== undefined) {
 		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), subcatid: subcategory.toString() };
 		await fetchWithCSRF('/listing/update', {
@@ -56,7 +58,7 @@ $('#openlisting').on('click', () => { void editlistingstatus('open'); });
 
 async function editlistingstatus (openstatus: any): Promise<void> {
 	const currentlistingquery = location.search;
-	const currentlisting = currentlistingquery.substring(11);
+	const currentlisting = currentlistingquery.substring(4);
 	if (openstatus === 'open' || openstatus === 'closed') {
 		await fetchWithCSRF('/listing/statusupdate', {
 			method: 'PUT',

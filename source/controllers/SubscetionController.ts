@@ -22,7 +22,7 @@ subsection.read = async (req, res) => {
 			res.render('pages/main/subcategory_list.ejs', {
 				section,
 				constants: headerConstants,
-				originURL: `()subsection()${secId}` // For redirect purposes with login button
+				originURL: `_subsection_${secId}` // For redirect purposes with login button
 			});
 		} else {
 			res.sendStatus(404);

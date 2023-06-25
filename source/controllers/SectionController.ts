@@ -19,7 +19,7 @@ section.read = async (req, res) => {
 		sections,
 		sectionName: section.name,
 		constants: headerConstants,
-		originURL: '()section' // For redirect purposes with login button
+		originURL: '_section' // For redirect purposes with login button
 	});
 };
 

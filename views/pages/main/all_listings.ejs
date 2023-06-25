@@ -21,7 +21,7 @@
                         <% if (listing.user != undefined) { %>
                             <% if (!listing.user.banned) { %>
                                 <li>
-                                    <a href='/listing/item?id=<%=listing.base64id%>'><%- listing.title %></a>
+                                    <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><%- listing.title %></a>
                                 </li>
                             <% } %>
                         <% } %>

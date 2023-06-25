@@ -20,7 +20,6 @@ interface ListingAttributes {
 	userId: UUID;
 	subsectionId: AutoId;
 	is_draft: boolean;
-	base64id: string;
 };
 export type ListingInput = Optional<ListingAttributes, 'is_auction' | 'auction_end'>;
 export type ListingOuput = Required<ListingAttributes>;
@@ -35,9 +34,6 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
 	@IsUUID(4)
 	@Column(DataType.UUID)
     id!: UUID;
-
-	@Column
-	base64id?: string;
 
 	@Column
     title!: string;

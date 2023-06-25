@@ -15,7 +15,7 @@
 		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
 		<input type="text" id="list_title" name="listing_name" value="<%=existing_title%>" required> 
 		<label for="listing_description"><%-lang.listing_form.listing_desc%></label>
-		<input type="text" id="list_desc" name="listing_description" value="<%=existing_desc%>" required > 
+		<input type="text" id="list_desc" name="listing_description" value=<%=existing_desc %> required > 
 		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
 		<input type="number" id="start_price" name="startprice" value="<%=existing_startprice%>" required>
 		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
@@ -52,6 +52,6 @@
 	</form>
 	<button id="updatebutton" value="Up"><%-lang.listing_form.update%></button><br>
 	<button id="dangerousdeletebuttonthatdestroys"><%-lang.listing_form.delete%></button><br>
-	<a href="/listing/item?listingId=<%=listingid%>" id="returntolist"><%-lang.listing_form.return%><br><br>
+	<a href="/listing/item?id=<%=encodeUUID(listingid)%>" id="returntolist"><%-lang.listing_form.return%><br><br>
 </body>
 </html>

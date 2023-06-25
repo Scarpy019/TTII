@@ -1,5 +1,5 @@
 import BodyParser from 'body-parser';
-import express from 'express';// Create a new express app instance
+import express from 'express'; // Create a new express app instance
 import cookieParser from 'cookie-parser';
 import { sequelize } from './sequelizeSetup.js';
 import { controllerRouter } from './controllers/index.js';

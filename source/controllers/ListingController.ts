@@ -8,6 +8,7 @@ import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
 import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategory, isUserAuthor } from '../middleware/ObjectCheckingMiddleware.js';
+import { decodeUUID, encodeUUID } from '../middleware/UUIDmiddleware.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -32,7 +33,7 @@ listing.read = async (req, res) => {
 				constants: headerConstants,
 				subsec_Id: String(subsecId),
 				secId: subsection.sectionId,
-				originURL: `()listing()${String(subsecId)}` // For redirect purposes with login button
+				originURL: `_listing_${String(subsecId)}` // For redirect purposes with login button
 			});
 		}
 	} else {
@@ -93,13 +94,8 @@ listing.create = [
 							start_price: Number(req.body.startprice),
 							userId: res.locals.user.id,
 							subsectionId: Number(req.body.subcatid),
-							is_draft: false,
-							base64id: ''
+							is_draft: false
 						});
-						newListing.set({ // For shorter URL on listing item
-							base64id: Buffer.from((newListing.id = (newListing.id.replace(/-/g, ''))), 'hex').toString('base64url')
-						});
-						await newListing.save();
 						// find the draft's media
 						const media = (await Listing.findByPk(res.locals.user.draftListingId ?? '', {
 							include: [Media]
@@ -138,27 +134,24 @@ listing.interface('/item', async (req, res) => {
 	}
 	const listId = (req.query.id) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const prelisting = await Listing.findOne({ where: { base64id: listId } });
-		if (prelisting !== null) {
-			const listing = await Listing.findByPk(prelisting.id, { include: [Subsection] });
-			if (isListing(listing)) {
-				const author = await User.findByPk(listing.userId);
-				if (doesUserExist(author)) {
-					if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
+		const listing = await Listing.findByPk(decodeUUID(listId), { include: [Subsection] });
+		if (isListing(listing)) {
+			const author = await User.findByPk(listing.userId);
+			if (doesUserExist(author)) {
+				if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
+					res.redirect('/section');
+				} else {
+					if ((listing.status === 'open') || (listing.status === 'closed' && isLoggedOn(res.locals.user) && (res.locals.user.id === author.id || res.locals.user.accesslevel.category_admin))) {
+						res.render('pages/main/listing_item.ejs', {
+							listing,
+							author: author.username,
+							author_profile: author.username,
+							authorid: author.id,
+							constants: headerConstants,
+							originURL: `_listing_item?id=${encodeUUID(listing.id)}` // For redirect purposes with login button
+						});
+					} else if (listing.status === 'closed') {
 						res.redirect('/section');
-					} else {
-						if ((listing.base64id !== undefined && listing.status === 'open') || (listing.base64id !== undefined && listing.status === 'closed' && isLoggedOn(res.locals.user) && res.locals.user.id === author.id)) {
-							res.render('pages/main/listing_item.ejs', {
-								listing,
-								author: author.username,
-								author_profile: author.username,
-								authorid: author.id,
-								constants: headerConstants,
-								originURL: `()listing()item?id=${listing.base64id}` // For redirect purposes with login button
-							});
-						} else if (listing.status === 'closed') {
-							res.redirect('/section');
-						}
 					}
 				}
 			}
@@ -169,9 +162,9 @@ listing.interface('/item', async (req, res) => {
 });
 
 listing.interface('/edit', async (req, res) => {
-	const listId = (req.query.listingId) as unknown;
+	const listId = (req.query.id) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(listId);
+		const listing = await Listing.findByPk(decodeUUID(listId));
 		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
 			const accessuser = res.locals.user;
@@ -192,7 +185,7 @@ listing.interface('/edit', async (req, res) => {
 						if (isLoggedOn(accessuser) && doesUserExist(author)) {
 							if (isUserAuthor(accessuser, author) || isAdmin(accessuser)) { // Both the author and admin can edit listing
 								res.render('pages/listing/edit', { // Used for filling all the form with current listing data
-									listingid: listId,
+									listingid: decodeUUID(listId),
 									constants: headerConstants,
 									existing_title: listing.title,
 									existing_desc: listing.body,
@@ -206,6 +199,8 @@ listing.interface('/edit', async (req, res) => {
 							} else {
 								res.redirect('/section');
 							}
+						} else {
+							res.redirect('/section');
 						}
 					}
 				}
@@ -220,7 +215,7 @@ listing.update = listing.handler(
 	ValidListingUpdateForm,
 	async (req, res): Promise<void> => {
 		try {
-			const listinginstance = await Listing.findByPk(req.body.listingid);
+			const listinginstance = await Listing.findByPk(decodeUUID(req.body.listingid));
 			if (isListing(listinginstance)) {
 				listinginstance.title = req.body.listing_name;
 				listinginstance.body = req.body.listing_description;
@@ -228,9 +223,7 @@ listing.update = listing.handler(
 				listinginstance.start_price = Number(req.body.startprice);
 				listinginstance.subsectionId = Number(req.body.subcatid);
 				await listinginstance.save();
-				if (listinginstance.base64id !== undefined) {
-					res.redirect(`item?id=${listinginstance.base64id}`);
-				}
+				res.redirect(`item?id=${encodeUUID(listinginstance.id)}`);
 			}
 		} catch (error) {
 			res.send(error);
@@ -241,15 +234,13 @@ listing.update = listing.handler(
 const listingstatus = listing.subcontroller('listingstatus');
 
 listingstatus.update = async (req, res) => {
-	const listinginstance = await Listing.findByPk(req.body.listingid);
+	const listinginstance = await Listing.findByPk(decodeUUID(req.body.listingid));
 	const changestatus = req.body.newstatus;
 	if (changestatus === 'open' || changestatus === 'closed') {
 		if (isListing(listinginstance)) {
 			listinginstance.status = changestatus;
 			await listinginstance.save();
-			if (listinginstance.base64id !== undefined) {
-				res.redirect(`item?id=${listinginstance.base64id}`);
-			}
+			res.redirect(`item?id=${encodeUUID(listinginstance.id)}`);
 		}
 	}
 };
@@ -259,7 +250,7 @@ listingstatus.override('update', '/listing/statusupdate');
 listing.override('delete', '/listing/delete');
 
 listing.delete = async (req, res) => {
-	const listingid = req.body.listingId;
+	const listingid = decodeUUID(req.body.listingId);
 	if (listingid !== null && listingid !== undefined && isLoggedOn(res.locals.user)) {
 		const listingrow = await Listing.findByPk(listingid);
 		if (isListing(listingrow)) {
