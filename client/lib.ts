@@ -1,6 +1,7 @@
 /**
  * Useful functions for various client-side logic.
  */
+import $ from 'jquery';
 
 // Gets the specified cookie from document.cookie
 export function getCookie (cname: string): string {
