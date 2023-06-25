@@ -1,3 +1,6 @@
+@use '../constants';
+$a-tags: 'a, a:active, a:hover, a:visited';
+$a-tags-hover: 'a:active, a:hover';
 body {
 	margin: 0;
 }
@@ -14,22 +17,75 @@ body {
 }
 
 .nav_buttons {
-	justify-items: left;
-	padding-left: 1vw;
+	padding-left: 2vw;
 }
 
-.topbars-options {
-	justify-items: right;
-	padding-right: 1vw;
+.language_buttons {
+	padding: {
+		left: 2vw;
+		right: 2vw;
+	}
+}
+
+
+/* buttons */
+.nav_buttons, .user_status {
+	justify-items: left;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+	align-items: center;
+	height: 100%;
+	div {
+		display: block;
+		width: auto;
+		height: 100%;
+		#{$a-tags} {
+			display: block;
+			width: auto;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			text-decoration: none;
+			button {
+				transition: 0.2s;
+				width: 100%;
+				height: 100%;
+				display: block;
+				margin: auto;
+				border: 0;
+				background-color: constants.$main-color;
+				font-size: 1.2rem;
+				cursor: pointer;
+				&:hover, &:focus {
+					background-color: lighten(constants.$main-color, 20%);
+				}
+			}
+		}
+		
+	}
+	
+}
+
+#language {
+	border-radius: 0;
+	border: 0;
+	background-color: lighten(constants.$main-color, 20%);
+}
+
+#topbars-options {
+	align-items: center;
+	justify-content: flex-end;
+	&>div {
+		margin: {
+			left: 1px;
+		}
+	}
 }
 
 .nav_buttons a, .user_status a, #signoutbutton {
-	border-style: solid;
-	border-width: 2px;
-	border-radius: 2px;
 	padding: 5px;
-	align-content: left;
-
 }
 
 #page_title{
@@ -37,13 +93,12 @@ body {
 	width: 100%;
 }
 
-.user_status {
-	align-content: right;
-}
+
 
 .topbars {
 	position: sticky;
 	display: grid;
+	width: 100%;
   	grid-template-columns: 1fr 3fr 1fr;
-	background-color: aquamarine;
+	background-color: constants.$main-color;
 }

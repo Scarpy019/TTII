@@ -4,10 +4,9 @@
 	<script src="/lapa/chatting.js" defer type="module"></script>
 	<link rel="stylesheet" href="/lapa/headerstyle.css">
 	<div class="nav_buttons">
-			<a href="<%=constants.section%>" id="home_button"><%=lang.header.home_button%></a>
-			<a href='<%=constants.search%>' id="search_button"><%=lang.header.search_button%></a>
-			<a href="<%=constants.publish%>" id="publish_button"><%=lang.header.publish_button%></a>
-		
+			<div><a href="<%=constants.section%>" id="home_button"><button type="button"><%=lang.header.home_button%></button></a></div>
+			<div><a href='<%=constants.search%>' id="search_button"><button type="button"><%=lang.header.search_button%></button></a></div>
+			<div><a href="<%=constants.publish%>" id="publish_button"><button type="button"><%=lang.header.publish_button%></button></a></div>
 	</div>
 	<div>
 		<h1 id="page_title"><%-lang.header.page_title%></h1>
@@ -19,8 +18,8 @@
 				<a href="/user/profile/<%=user.username%>"><%=user.username%></a>
 				<button id="signoutbutton"><%-lang.header.signout_name%></button>
 			<% }else{ %> 
-				<a href="<%=constants.signinhref%>"><%=lang.header.login_name%></a>
-				<a href="<%=constants.signuphref%>"><%=lang.header.signup_name%></a>
+				<div><a href="<%=constants.signinhref%>"><button type="button"><%=lang.header.login_name%></button></a></div>
+				<div><a href="<%=constants.signuphref%>"><button type="button"><%=lang.header.signup_name%></button></a></div>
 			<% }%>
 		</div>
 		<div class="language_buttons">

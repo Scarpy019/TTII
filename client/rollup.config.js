@@ -52,6 +52,33 @@ export default [
 		plugins: [scss({output:'./static/lapa/image_upload.css'})].concat(plugins)
 	},
 	{
+		input: './client/listing_edit/entry_point.ts',
+		output: {
+			sourcemap: true,
+			file: './static/lapa/listing_edit.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/listing_edit.css'})].concat(plugins)
+	},
+	{
+		input: './client/listing_item/entry_point.ts',
+		output: {
+			sourcemap: true,
+			file: './static/lapa/listing_item.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/listing_item.css'})].concat(plugins)
+	},
+	{
+		input: './client/sections_mainpage/entry.ts',
+		output: {
+			sourcemap: true,
+			file: './static/lapa/mainpage.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/mainpage.css'})].concat(plugins)
+	},
+	{
 		input: './client/chatting.ts',
 		output: {
 			file: './static/lapa/chatting.js',
