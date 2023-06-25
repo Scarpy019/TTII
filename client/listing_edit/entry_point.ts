@@ -12,7 +12,7 @@ async function swapImages (a: number, b: number): Promise<void> {
 }
 
 async function removeImage (mediaId: string): Promise<void> {
-	const resp = await fetchWithCSRF('/media', {
+	await fetchWithCSRF('/media', {
 		method: 'DELETE',
 		body: JSON.stringify({ mediaId })
 	});
