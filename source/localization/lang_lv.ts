@@ -18,6 +18,7 @@ export default {
 		password_label: 'Parole'
 	},
 	listing_form: {
+		image_upload_label: 'Pievieno attēlu, max 20MiB',
 		listing_title: 'Sludinājuma virsraksts',
 		listing_desc: 'Sludinājuma apraksts',
 		start_price_label: 'Sākuma cena',

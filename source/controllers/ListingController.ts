@@ -96,19 +96,9 @@ listing.create = [
 							subsectionId: Number(req.body.subcatid),
 							is_draft: false
 						});
-						// find the draft's media
-						const media = (await Listing.findByPk(res.locals.user.draftListingId ?? '', {
-							include: [Media]
-						}))?.media;
-						if (media !== undefined) {
-							// relink all of the draft's media to the newly created listing
-							media.forEach(async mediaItem => {
-								mediaItem.listingId = newListing.id;
-								await mediaItem.save();
-							});
-						}
+						res.json({ listingId: newListing.id });
+						return;
 					};
-					res.redirect(`/listing/${req.body.subcatid}`);
 				} else {
 					logger.info('Subcategory was invalid');
 					res.sendStatus(400);
@@ -134,8 +124,14 @@ listing.interface('/item', async (req, res) => {
 	}
 	const listId = (req.query.id) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(decodeUUID(listId), { include: [Subsection] });
+		const listing = await Listing.findByPk(decodeUUID(listId), { include: [Subsection, Media] });
 		if (isListing(listing)) {
+			res.locals.media = [];
+			if (listing.media !== undefined && listing.media !== null) {
+				const arr = listing.media;
+				arr.sort((a, b) => a.orderNumber - b.orderNumber);
+				res.locals.media = arr;
+			}
 			const author = await User.findByPk(listing.userId);
 			if (doesUserExist(author)) {
 				if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
@@ -164,10 +160,11 @@ listing.interface('/item', async (req, res) => {
 listing.interface('/edit', async (req, res) => {
 	const listId = (req.query.id) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(decodeUUID(listId));
+		const listing = await Listing.findByPk(decodeUUID(listId), { include: [Media] });
 		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
 			const accessuser = res.locals.user;
+			res.locals.media = listing.media ?? [];
 			if (listing.subsectionId !== null && listing.subsectionId !== undefined) {
 				const subcategoryid = listing.subsectionId;
 				const subcategory = await Subsection.findByPk(subcategoryid);

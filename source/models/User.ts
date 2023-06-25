@@ -39,6 +39,7 @@ export class User extends Model<UserAttributes, UserInput> {
 	@Validate({
 		is: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/
 	})
+
 	@Unique('email')
 	@Column
     email!: string;
