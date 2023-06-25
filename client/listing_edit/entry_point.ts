@@ -16,7 +16,6 @@ async function removeImage (mediaId: string): Promise<void> {
 		method: 'DELETE',
 		body: JSON.stringify({ mediaId })
 	});
-	console.log(resp.status, await resp.text());
 	location.reload();
 }
 
@@ -35,11 +34,14 @@ $('.moveRight').on('click', (e) => {
 $('.deleteBtn').on('click', (e) => {
 	e.preventDefault();
 	const mediaId = $(e.currentTarget).data('mediaid');
-	console.log(mediaId);
 	void removeImage(mediaId);
 });
 
 async function addImage (file: File): Promise<void> {
+	if (file.size > 20_000_000) {
+		alert('File is too large!');
+		return;
+	}
 	const data = new FormData();
 	data.append('image[]', file);
 	const listingId = $('body').data('listing-id');
@@ -56,7 +58,6 @@ $('#imgupload').on('change', () => {
 	if (upload instanceof HTMLInputElement) {
 		if (upload.files !== null) {
 			const f = upload.files[0];
-			console.log(f);
 			void addImage(f);
 			$('#imgupload').val('');
 		}

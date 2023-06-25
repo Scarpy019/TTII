@@ -104,7 +104,6 @@ media.create = [
 	}).array('image[]'),
 	async (req, res) => {
 		const listingId: unknown = req.body.listingId;
-		console.log(req.files, listingId);
 		if (listingId !== undefined && listingId !== null && typeof listingId === 'string') {
 			// check if a user is logged in again for safe typing
 			const user = res.locals.user;
@@ -134,7 +133,6 @@ media.create = [
 					});
 				});
 				await cleanupMedia(listingId);
-				// res.sendStatus(200);
 				res.redirect(`/listing/item?listingId=${listingId}`); // Redirects to newly created listing
 			} else {
 				res.sendStatus(400);
@@ -201,7 +199,6 @@ media.update = async (req, res) => {
 media.delete = [
 	// permission check
 	async (req, res, next) => {
-		console.log(req.body);
 		if (req.body.mediaId === null || req.body.mediaId === undefined) {
 			res.status(400);
 			res.send('non-existant body data');

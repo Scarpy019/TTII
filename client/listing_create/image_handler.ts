@@ -14,16 +14,8 @@ function erase (a: number): void {
 	imageArray.splice(a, 1);
 }
 
+// regenerates all images in the page
 async function refreshImages (): Promise<void> {
-	/* const response = await fetch('/media/draft-img', {
-		method: 'GET'
-	});
-	if (response.ok) {
-		const imgDisplay = $('#imgdisplay');
-		imgDisplay.empty();
-		imgDisplay.append(await response.text());
-	} */
-
 	const display = $('#imgdisplay');
 	display.empty();
 	imageArray.forEach((file, index) => {
@@ -60,7 +52,10 @@ async function refreshImages (): Promise<void> {
 		image.appendTo(display);
 	});
 }
+
 void refreshImages();
+
+// adds an image.
 async function addImage (file: File): Promise<void> {
 	if (file.size > 20_000_000) {
 		alert('File is too large!');
@@ -68,17 +63,6 @@ async function addImage (file: File): Promise<void> {
 		imageArray.push(file);
 		void refreshImages();
 	}
-	/* const data = new FormData();
-	data.append('image', file);
-	const response = await fetchWithCSRFmultipart('/media', {
-		method: 'POST',
-		body: data
-	});
-	if (response.ok) {
-		void refreshImages();
-	} else {
-		console.log('Something went wrong...');
-	} */
 }
 
 $('#imgupload').on('change', () => {
@@ -86,7 +70,6 @@ $('#imgupload').on('change', () => {
 	if (upload instanceof HTMLInputElement) {
 		if (upload.files !== null) {
 			const f = upload.files[0];
-			console.log(f);
 			void addImage(f);
 			$('#imgupload').val('');
 		}
@@ -118,8 +101,7 @@ $('#createForm').on('submit', async (e) => {
 	await fetchWithCSRFmultipart('/media', {
 		method: 'POST',
 		body: data
-	}).then(Response => {
-		location.href = Response.url;
 	});
+	location.href = response.url;
 	return false;
 });
