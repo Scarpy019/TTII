@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * Useful functions for various client-side logic.
  */

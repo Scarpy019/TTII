@@ -1,13 +1,14 @@
 import { type Optional } from 'sequelize';
 import { type UUID } from '../sequelizeSetup.js';
-import { AllowNull, BelongsTo, Column, CreatedAt, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { AllowNull, BelongsTo, Column, CreatedAt, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table, Validate } from 'sequelize-typescript';
 import { Listing } from './Listing.js';
 
 interface MediaAttributes {
 	/** UUID must be the same as the saved file name */
+	listingId: UUID;
+	orderNumber: number;
 	uuid: UUID;
 	extension: string;
-	listingId: UUID;
 };
 
 export type MediaInput = Optional<MediaAttributes, never>;
@@ -18,6 +19,19 @@ export type MediaOutput = Required<MediaAttributes>;
 })
 export class Media extends Model<MediaAttributes, MediaInput> {
 	@PrimaryKey
+	@ForeignKey(() => Listing)
+	@Column(DataType.UUID)
+	listingId!: UUID;
+
+	@PrimaryKey
+	@Validate({
+		max: 6,
+		min: 1
+	})
+	@Column
+	orderNumber!: number;
+
+	@AllowNull(false)
 	@IsUUID(4)
 	@Column(DataType.UUID)
     uuid!: string;
@@ -25,11 +39,6 @@ export class Media extends Model<MediaAttributes, MediaInput> {
 	@AllowNull(false)
 	@Column
     extension!: string;
-
-	@AllowNull(false)
-	@ForeignKey(() => Listing)
-	@Column(DataType.UUID)
-	listingId!: UUID;
 
 	@BelongsTo(() => Listing, 'listingId')
 	listings?: ReturnType<() => Listing>;

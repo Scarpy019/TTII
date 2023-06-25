@@ -17,6 +17,7 @@ export default {
 		password_label: 'Password'
 	},
 	listing_form: {
+		image_upload_label: 'Add image, max 20MiB',
 		listing_title: 'Listing title',
 		listing_desc: 'Listing description',
 		start_price_label: 'Starting price',

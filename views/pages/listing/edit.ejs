@@ -5,12 +5,24 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="/lapa/client.js", type="module"></script>
+	<link rel="stylesheet" href="/lapa/listing_edit.css">
 	<title>Create Listing</title>
 </head>
-<body>
+<body data-listing-id="<%= listingid %>">
+	<script type="module" defer src="/lapa/listing_edit.js"></script>
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
+	<div id="imagelist">
+		<% media.forEach((item, index) => { %>
+			<% if(index !== 0) { %> <button data-index="<%= index+1 %>" type="button" class="moveLeft">&lt;</button> <% } %>
+			<img src="/files/<%= item.uuid + item.extension %>" alt="" srcset="">
+			<button data-mediaid="<%= item.uuid %>" type="button" class="deleteBtn">X</button>
+			<% if(index !== media.length-1) { %> <button data-index="<%= index+1 %>" type="button" class="moveRight">&gt;</button> <% } %>
+		<% }); %>
+	</div>
+	<%-lang.listing_form.image_upload_label%>
+	<input type="file" name="" id="imgupload">
 	<form>
 		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
 		<input type="text" id="list_title" name="listing_name" value="<%=existing_title%>" required> 

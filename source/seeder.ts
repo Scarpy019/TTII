@@ -219,6 +219,7 @@ export async function seedAll (): Promise<void> {
 
 	await Media.create({
 		uuid: '0e906ca0-d978-45c2-ad05-30bf16074e31',
+		orderNumber: 1,
 		extension: '.jpg',
 		listingId: chainsaw.id
 	});
