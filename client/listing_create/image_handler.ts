@@ -101,7 +101,9 @@ $('#createForm').on('submit', async (e) => {
 	await fetchWithCSRFmultipart('/media', {
 		method: 'POST',
 		body: data
+	}).then(Response => {
+		location.href = Response.url;
 	});
-	location.href = response.url;
+	// location.href = response.url;
 	return false;
 });
