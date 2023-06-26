@@ -3,6 +3,7 @@ import { Listing, Media, type User } from '../models/index.js';
 import { Controller } from './BaseController.js';
 import { v4 as uuid } from 'uuid';
 import { isLoggedOn } from '../middleware/ObjectCheckingMiddleware.js';
+import { decodeUUID, encodeUUID } from '../middleware/UUIDmiddleware.js';
 
 const media = new Controller('media');
 
@@ -36,7 +37,7 @@ async function userOwnsListing (user: User, listingId: string): Promise<boolean>
 media.read = async (req, res) => {
 	const listingId = req.query.listingId;
 	if (listingId !== undefined && typeof listingId === 'string') {
-		const listing = await Listing.findByPk(listingId, { include: [Media] });
+		const listing = await Listing.findByPk(decodeUUID(listingId), { include: [Media] });
 		const media = listing?.media;
 		if (media !== undefined) {
 			res.render('pages/misc/listing_media_embed', { media });
@@ -133,7 +134,7 @@ media.create = [
 					});
 				});
 				await cleanupMedia(listingId);
-				res.redirect(`/listing/item?listingId=${listingId}`); // Redirects to newly created listing
+				res.redirect(`/listing/item?id=${encodeUUID(listingId)}`); // Redirects to newly created listing
 			} else {
 				res.sendStatus(400);
 			}

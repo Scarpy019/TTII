@@ -15,8 +15,14 @@
 	<form id="updateSubsection">
 		<label for="subsection_name"><%-lang.admin.subsec_name%></label>
 		<input type="text" id="subsection_name" name="subsection_name" value="<%=oldsubsectionname%>" required>
+		<label for="lv_subsection_name"><%-lang.admin.lv_subsec_name%></label>
+		<input type="text" id="lv_subsection_name" name="lv_subsection_name" value="<%=oldlvsubsectionname%>" required>	
 		<label for="section_name"><%-lang.admin.sec_name%></label>
-		<input type="text" id="section_name" value="<%=sectionname%>" readonly>
+		<% if (lang.header.current_lang == 'ENG') { %>
+			<input type="text" id="section_name" value="<%=sectionname%>" readonly>
+		<% } else if(lang.header.current_lang == 'LV') { %>
+			<input type="text" id="section_name" value="<%=lvsectionname%>" readonly>
+		<% } %>
 		<input type="text" id="sectionId" value="<%=secId%>" hidden readonly>
 	</form>
 	<button id="updatesubsection" value="Up"><%-lang.admin.update%></button><br>

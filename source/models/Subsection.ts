@@ -7,6 +7,7 @@ import { AutoId } from '../sequelizeSetup.js';
 export interface SubsectionAttributes {
 	id: AutoId;
 	name: string;
+	nameLV: string;
 	sectionId: AutoId;
 };
 type SubsectionInput = Optional<SubsectionAttributes, 'id'>;
@@ -25,6 +26,9 @@ export class Subsection extends Model<SubsectionAttributes, SubsectionInput> {
 
 	@Column
     name!: string;
+
+	@Column
+    nameLV!: string;
 
 	@ForeignKey(() => Section)
 	@AllowNull(false)

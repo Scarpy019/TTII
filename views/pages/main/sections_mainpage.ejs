@@ -14,7 +14,13 @@
         <div class="categories">
             <ul id="category_list">
                 <% sections.forEach(element => { %>
-                    <a href='/subsection/<%= element.id %>'><%- element.name %></a>
+                    <li>>
+                        <% if (lang.header.current_lang == "ENG") { %>
+                            <a href='/subsection/<%= element.id %>'><%- element.name %></a>
+                        <% } else if(lang.header.current_lang == "LV") { %>
+                            <a href='/subsection/<%= element.id %>'><%- element.nameLV %></a>
+                        <% } %>
+                    </li>
                 <% }) %>
             
             </ul>

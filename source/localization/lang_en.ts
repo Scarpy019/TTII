@@ -8,7 +8,8 @@ export default {
 		page_title: 'Generic page title',
 		login_name: 'Login',
 		signup_name: 'Sign up',
-		signout_name: 'Log out'
+		signout_name: 'Log out',
+		current_lang: 'ENG'
 	},
 	forms: {
 		username_label: 'Username',
@@ -29,7 +30,9 @@ export default {
 		update: 'Update',
 		delete: 'Delete',
 		return: 'Return to listing',
-		add_listing: 'Create listing'
+		add_listing: 'Create listing',
+		yes: 'Yes',
+		no: 'No'
 	},
 	listing_item: {
 		startprice: 'Starting price',
@@ -52,7 +55,9 @@ export default {
 		update: 'Update',
 		delete: 'Delete',
 		sec_name: 'Section name',
+		lv_sec_name: 'Latvian section name',
 		subsec_name: 'Subsection name',
+		lv_subsec_name: 'Latvian subsection name',
 		edit: 'Edit',
 		in_sect: 'In section - '
 	}
