@@ -39,6 +39,7 @@ export class User extends Model<UserAttributes, UserInput> {
 	@Validate({
 		is: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/
 	})
+
 	@Unique('email')
 	@Column
     email!: string;
@@ -49,6 +50,10 @@ export class User extends Model<UserAttributes, UserInput> {
 	@ForeignKey(() => UserAccess)
 	@Column
 	access!: string;
+
+	@Default(false)
+	@Column
+	banned!: boolean;
 
 	@BelongsTo(() => UserAccess, 'access')
 	accesslevel!: ReturnType<() => UserAccess>;

@@ -8,26 +8,37 @@ import { logger } from '../lib/Logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
 import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategory, isUserAuthor } from '../middleware/ObjectCheckingMiddleware.js';
+import { decodeUUID, encodeUUID } from '../middleware/UUIDmiddleware.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
 listing.read = async (req, res) => {
-	const subsecId = Number(req.params.subsectionId);
-	if (!isNaN(subsecId)) {
-		const subsection = await Subsection.findByPk(subsecId, { include: [Listing] });
-		if (isSubcategory(subsection)) {
-			res.render('pages/main/all_listings.ejs', {
-				subsection,
-				subsecId,
-				constants: headerConstants,
-				subsec_Id: String(subsecId),
-				secId: subsection.sectionId
-			});
+	if (isLoggedOn(res.locals.user)) {
+		if (res.locals.user.banned) {
+			res.clearCookie('AuthToken');
+			res.redirect('/section');
 			return;
 		}
 	}
-	// TODO: proper redirect
-	res.sendStatus(404);
+	const subsecId = Number(req.params.subsectionId);
+	if (!isNaN(subsecId)) {
+		const listings = await Listing.findAll({ where: { subsectionId: subsecId }, limit: 5000, include: [{ model: User, as: 'user' }] });
+		const subsection = await Subsection.findByPk(subsecId);
+		if (isSubcategory(subsection)) {
+			res.render('pages/main/all_listings.ejs', {
+				subsec_name: subsection.name,
+				listings,
+				subsecId,
+				constants: headerConstants,
+				subsec_Id: String(subsecId),
+				secId: subsection.sectionId,
+				originURL: `_listing_${String(subsecId)}` // For redirect purposes with login button
+			});
+		}
+	} else {
+		// TODO: proper redirect
+		res.sendStatus(404);
+	}
 };
 
 interface ListingCreationForm {
@@ -84,19 +95,9 @@ listing.create = [
 							subsectionId: Number(req.body.subcatid),
 							is_draft: false
 						});
-						// find the draft's media
-						const media = (await Listing.findByPk(res.locals.user.draftListingId ?? '', {
-							include: [Media]
-						}))?.media;
-						if (media !== undefined) {
-							// relink all of the draft's media to the newly created listing
-							media.forEach(async mediaItem => {
-								mediaItem.listingId = newListing.id;
-								await mediaItem.save();
-							});
-						}
+						res.json({ listingId: newListing.id });
+						return;
 					};
-					res.redirect(`/listing/${req.body.subcatid}`);
 				} else {
 					logger.info('Subcategory was invalid');
 					res.sendStatus(400);
@@ -113,19 +114,46 @@ listing.create = [
 ];
 
 listing.interface('/item', async (req, res) => {
-	const listId = (req.query.listingId) as unknown;
+	if (isLoggedOn(res.locals.user)) {
+		if (res.locals.user.banned) {
+			res.clearCookie('AuthToken');
+			res.redirect('/section');
+			return;
+		}
+	}
+	const listId = (req.query.id) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(listId, { include: [Subsection] });
+		const listing = await Listing.findByPk(decodeUUID(listId), { include: [Subsection, Media] });
 		if (isListing(listing)) {
+			res.locals.media = [];
+			if (listing.media !== undefined && listing.media !== null) {
+				const arr = listing.media;
+				arr.sort((a, b) => a.orderNumber - b.orderNumber);
+				res.locals.media = arr;
+			}
 			const author = await User.findByPk(listing.userId);
 			if (doesUserExist(author)) {
-				res.render('pages/main/listing_item.ejs', {
-					listing,
-					author: author.username,
-					author_profile: author.username,
-					authorid: author.id,
-					constants: headerConstants
-				});
+				if (
+					(author.banned &&
+					(isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) ||
+					(author.banned &&
+					(res.locals.user === null || res.locals.user === undefined))
+				) { // Forces redirect to section if accesed listing author is banned unless you have admin privileges
+					res.redirect('/section');
+				} else {
+					if ((listing.status === 'open') || (listing.status === 'closed' && isLoggedOn(res.locals.user) && (res.locals.user.id === author.id || res.locals.user.accesslevel.category_admin))) {
+						res.render('pages/main/listing_item.ejs', {
+							listing,
+							author: author.username,
+							author_profile: author.username,
+							authorid: author.id,
+							constants: headerConstants,
+							originURL: `_listing_item?id=${encodeUUID(listing.id)}` // For redirect purposes with login button
+						});
+					} else if (listing.status === 'closed') {
+						res.redirect('/section');
+					}
+				}
 			}
 		}
 	} else {
@@ -134,12 +162,13 @@ listing.interface('/item', async (req, res) => {
 });
 
 listing.interface('/edit', async (req, res) => {
-	const listId = (req.query.listingId) as unknown;
+	const listId = (req.query.id) as unknown;
 	if ((listId) !== null && typeof listId === 'string') {
-		const listing = await Listing.findByPk(listId);
+		const listing = await Listing.findByPk(decodeUUID(listId), { include: [Media] });
 		if (isListing(listing)) {
 			const author = await User.findByPk(listing.userId);
 			const accessuser = res.locals.user;
+			res.locals.media = listing.media ?? [];
 			if (listing.subsectionId !== null && listing.subsectionId !== undefined) {
 				const subcategoryid = listing.subsectionId;
 				const subcategory = await Subsection.findByPk(subcategoryid);
@@ -157,7 +186,7 @@ listing.interface('/edit', async (req, res) => {
 						if (isLoggedOn(accessuser) && doesUserExist(author)) {
 							if (isUserAuthor(accessuser, author) || isAdmin(accessuser)) { // Both the author and admin can edit listing
 								res.render('pages/listing/edit', { // Used for filling all the form with current listing data
-									listingid: listId,
+									listingid: decodeUUID(listId),
 									constants: headerConstants,
 									existing_title: listing.title,
 									existing_desc: listing.body,
@@ -171,6 +200,8 @@ listing.interface('/edit', async (req, res) => {
 							} else {
 								res.redirect('/section');
 							}
+						} else {
+							res.redirect('/section');
 						}
 					}
 				}
@@ -185,7 +216,7 @@ listing.update = listing.handler(
 	ValidListingUpdateForm,
 	async (req, res): Promise<void> => {
 		try {
-			const listinginstance = await Listing.findByPk(req.body.listingid);
+			const listinginstance = await Listing.findByPk(decodeUUID(req.body.listingid));
 			if (isListing(listinginstance)) {
 				listinginstance.title = req.body.listing_name;
 				listinginstance.body = req.body.listing_description;
@@ -193,7 +224,7 @@ listing.update = listing.handler(
 				listinginstance.start_price = Number(req.body.startprice);
 				listinginstance.subsectionId = Number(req.body.subcatid);
 				await listinginstance.save();
-				res.redirect(`item?listingId=${listinginstance.id}`);
+				res.redirect(`item?id=${encodeUUID(listinginstance.id)}`);
 			}
 		} catch (error) {
 			res.send(error);
@@ -201,10 +232,26 @@ listing.update = listing.handler(
 	}
 );
 
+const listingstatus = listing.subcontroller('listingstatus');
+
+listingstatus.update = async (req, res) => {
+	const listinginstance = await Listing.findByPk(decodeUUID(req.body.listingid));
+	const changestatus = req.body.newstatus;
+	if (changestatus === 'open' || changestatus === 'closed') {
+		if (isListing(listinginstance)) {
+			listinginstance.status = changestatus;
+			await listinginstance.save();
+			res.redirect(`item?id=${encodeUUID(listinginstance.id)}`);
+		}
+	}
+};
+
+listingstatus.override('update', '/listing/statusupdate');
+
 listing.override('delete', '/listing/delete');
 
 listing.delete = async (req, res) => {
-	const listingid = req.body.listingId;
+	const listingid = decodeUUID(req.body.listingId);
 	if (listingid !== null && listingid !== undefined && isLoggedOn(res.locals.user)) {
 		const listingrow = await Listing.findByPk(listingid);
 		if (isListing(listingrow)) {
@@ -257,6 +304,6 @@ listing.interface('/create', async (req, res) => {
 			});
 		}
 	} else {
-		res.redirect('/user/login?redirect=' + Buffer.from('/listing/create').toString('base64'));
+		res.redirect('/user/login?redirect=' + Buffer.from('_listing_create').toString('ascii'));
 	}
 });

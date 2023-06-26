@@ -7,6 +7,7 @@ export default interface locale {
 		login_name: string;
 		signup_name: string;
 		signout_name: string;
+		current_lang: string;
 	};
 	forms: {
 		username_label: string;
@@ -15,6 +16,7 @@ export default interface locale {
 		password_label: string;
 	};
 	listing_form: {
+		image_upload_label: string;
 		listing_title: string;
 		listing_desc: string;
 		start_price_label: string;
@@ -27,6 +29,8 @@ export default interface locale {
 		delete: string;
 		return: string;
 		add_listing: string;
+		yes: string;
+		no: string;
 	};
 	listing_item: {
 		startprice: string;
@@ -50,6 +54,8 @@ export default interface locale {
 		delete: string;
 		sec_name: string;
 		subsec_name: string;
+		lv_sec_name: string;
+		lv_subsec_name: string;
 		edit: string;
 		in_sect: string;
 	};

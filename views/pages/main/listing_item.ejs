@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/listing_item.css">
     <title></title>
 </head>
 <body>
@@ -15,6 +16,9 @@
 
         <div class="listing">
             <h1 id="listing_name"><%- listing.title %></h1>
+			<% media.forEach((item, index) => { %>
+				<img src="/files/<%= item.uuid + item.extension %>" alt="descripting image">
+			<% });%>
             <div class="description">
                 <p><%-listing.body%></p>
                 <p><%-lang.listing_item.startprice%> - <%-listing.start_price%>$</p>
@@ -22,13 +26,21 @@
                 <p><%-lang.listing_item.postdate%> <%-listing.createdAt%></p>
                 <% if (user != null) { %>
                     <% if (authorid == user.id || user.accesslevel.category_admin) { %>
-                        <a href="/listing/edit?listingId=<%=listing.id%>"><%-lang.listing_item.edit%></a>
+                        <% if (authorid == user.id) { %>
+                            <a href="/listing/edit?id=<%=encodeUUID(listing.id)%>"><%-lang.listing_item.edit%></a> <br>
+                        <% } %>
+                        <% if (listing.status == 'open') { %>
+                            <button id="closelisting">Close listing</button>
+                        <% } else { %>
+                            <button id="openlisting">Open listing</button>
+                        <% } %>
                     <% } %>
                 <% } %>
 			</div>
 			<div class="listing_data"><img src='<%listing.media%>' alt='listingimage'></div>
+            <br>
+            <a href="/listing/<%=listing.subsectionId%>">Back to subsection</a>
         </div>
-
     </div>
 </body>
 </html>

@@ -13,10 +13,16 @@
     </div>
     <div class="main_container">
         <div class="categories">
-			<% sections.forEach(element => { %>
+			<%_ sections.forEach(element => { _%>
 				<a href='/subsection/<%= element.id %>'>
-					<button type="button"><%- element.name %></button></a>
-			<% }) %>
+					<button type="button">
+						<%_ if (lang.header.current_lang == "ENG") { _%>
+							<%- element.name _%>
+						<%_ } else if(lang.header.current_lang == "LV") { _%>
+							<%- element.nameLV _%>
+						<%_ } _%>
+						</button></a>
+			<%_ }) _%>
         </div>
         <% if (user != null) { %>
             <% if (user.accesslevel.category_admin) { %>

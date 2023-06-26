@@ -7,30 +7,50 @@ import { headerConstants } from './config.js';
 const section = new Controller('section');
 
 section.read = async (req, res) => {
+	if (isLoggedOn(res.locals.user)) {
+		if (res.locals.user.banned) {
+			res.clearCookie('AuthToken');
+			res.redirect('/section');
+			return;
+		}
+	}
 	const sections = await Section.findAll();
 	res.render('pages/main/sections_mainpage.ejs', {
 		sections,
 		sectionName: section.name,
-		constants: headerConstants
+		constants: headerConstants,
+		originURL: '_section' // For redirect purposes with login button
 	});
 };
 
 interface SectionCreateForm {
 	section_name: string;
+	lv_section_name: string;
 };
 
 interface SectionEditForm {
 	section_name: string;
+	lv_section_name: string;
 	section_id: string;
 };
 
 function ValidSectionCreateForm (obj: any): obj is SectionCreateForm {
-	const valid = ('section_name' in obj) && typeof obj.section_name === 'string';
+	const valid =
+	('section_name' in obj) &&
+	typeof obj.section_name === 'string' &&
+	('lv_section_name' in obj) &&
+	typeof obj.lv_section_name === 'string';
 	return valid;
 };
 
 function ValidSectionUpdateForm (obj: any): obj is SectionEditForm {
-	const valid = ('section_name' in obj) && typeof obj.section_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string';
+	const valid =
+	('section_name' in obj) &&
+	typeof obj.section_name === 'string' &&
+	('section_id' in obj) &&
+	typeof obj.section_id === 'string' &&
+	('lv_section_name' in obj) &&
+	typeof obj.lv_section_name === 'string';
 	return valid;
 };
 
@@ -41,7 +61,8 @@ section.create = [
 				if (isLoggedOn(res.locals.user)) {
 					if (isAdmin(res.locals.user)) {
 						await Section.create({
-							name: req.body.section_name
+							name: req.body.section_name,
+							nameLV: req.body.lv_section_name
 						});
 					}
 				};
@@ -65,6 +86,7 @@ section.update = section.handler(
 					const sectioninstance = await Section.findByPk(req.body.section_id);
 					if (isCategory(sectioninstance)) {
 						sectioninstance.name = req.body.section_name;
+						sectioninstance.nameLV = req.body.lv_section_name;
 						await sectioninstance.save();
 						res.redirect('/section');
 					} else {
@@ -111,6 +133,7 @@ section.interface('/edit', async (req, res) => {
 		if (isAdmin(res.locals.user)) {
 			res.render('pages/admin/section_edit.ejs', {
 				oldsectionname: sections.name,
+				oldlvsectionname: sections.nameLV,
 				constants: headerConstants
 			});
 		} else {

@@ -1,35 +1,67 @@
 import $ from 'jquery';
 import './image_input.scss';
 import { fetchWithCSRF, fetchWithCSRFmultipart } from '../hardening.js';
-import { logger } from '../../node_modules/yatsl/dist/index.js';
 
-// const imageArray: File[] = [];
+const imageArray: File[] = [];
 
-async function refreshImages (): Promise<void> {
-	const response = await fetch('/media/draft-img', {
-		method: 'GET'
-	});
-	if (response.ok) {
-		const imgDisplay = $('#imgdisplay');
-		imgDisplay.empty();
-		imgDisplay.append(await response.text());
-	}
+function swap (a: number, b: number): void {
+	const temp = imageArray[a];
+	imageArray[a] = imageArray[b];
+	imageArray[b] = temp;
 }
-void refreshImages();
-async function addImage (file: File): Promise<void> {
-	// const display = $('#imgdisplay');
-	// display.append(`<img src="${URL.createObjectURL(file)}">`);
-	// imageArray.push(file);
-	const data = new FormData();
-	data.append('image', file);
-	const response = await fetchWithCSRFmultipart('/media', {
-		method: 'POST',
-		body: data
+
+function erase (a: number): void {
+	imageArray.splice(a, 1);
+}
+
+// regenerates all images in the page
+async function refreshImages (): Promise<void> {
+	const display = $('#imgdisplay');
+	display.empty();
+	imageArray.forEach((file, index) => {
+		const image = $('<div></div>');
+		if (index !== 0) {
+			$(
+				`<button type="button">
+					&lt;
+				</button>
+			`).appendTo(image).on('click', () => {
+				swap(index, index - 1);
+				void refreshImages();
+			});
+		}
+		$(
+			`<button type="button">
+				X
+			</button>
+		`).appendTo(image).on('click', () => {
+			erase(index);
+			void refreshImages();
+		});
+		image.append(`<img src="${URL.createObjectURL(file)}">`);
+		if (index !== imageArray.length - 1) {
+			$(
+				`<button type="button">
+					&gt;
+				</button>
+			`).appendTo(image).on('click', () => {
+				swap(index, index + 1);
+				void refreshImages();
+			});
+		}
+		image.appendTo(display);
 	});
-	if (response.ok) {
-		void refreshImages();
+}
+
+void refreshImages();
+
+// adds an image.
+async function addImage (file: File): Promise<void> {
+	if (file.size > 20_000_000) {
+		alert('File is too large!');
 	} else {
-		logger.log('Something went wrong...');
+		imageArray.push(file);
+		void refreshImages();
 	}
 }
 
@@ -38,7 +70,6 @@ $('#imgupload').on('change', () => {
 	if (upload instanceof HTMLInputElement) {
 		if (upload.files !== null) {
 			const f = upload.files[0];
-			console.log(f);
 			void addImage(f);
 			$('#imgupload').val('');
 		}
@@ -59,9 +90,19 @@ $('#createForm').on('submit', async (e) => {
 	const form: JQuery<HTMLFormElement> = $('#createForm');
 	const response = await fetchWithCSRF('/listing', {
 		method: 'POST',
-		body: JSON.stringify(convertFormToJSON(form))
+		body: JSON.stringify({ openstatus: 'closed', ...convertFormToJSON(form) })
 	});
-	location.href = response.url;
+	const data = new FormData();
+	imageArray.forEach(file => {
+		data.append('image[]', file);
+	});
+	const respJSON = await response.json();
+	data.append('listingId', respJSON.listingId);
+	await fetchWithCSRFmultipart('/media', {
+		method: 'POST',
+		body: data
+	}).then(Response => {
+		location.href = Response.url;
+	});
 	return false;
-	// return false;
 });

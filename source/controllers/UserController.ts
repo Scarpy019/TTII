@@ -33,11 +33,6 @@ function isUserSigninForm (obj: any): obj is UserSigninForm {
 
 const user = new Controller('user');
 
-user.read = (req, res) => {
-	const user = res.locals.user;
-	res.send(`User main page. Hello, ${user?.username ?? 'unknown'}!`); // TODO possibly delete?
-};
-
 const login = user.subcontroller('login');
 
 login.read = (req, res) => {
@@ -48,7 +43,24 @@ login.read = (req, res) => {
 		if (typeof req.query.redirect === 'string') {
 			redirect = req.query.redirect;
 		}
-		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'base64').toString('ascii'), constants: headerConstants });
+		res.render('pages/user/login', { redirect: Buffer.from(redirect, 'utf8').toString('base64'), constants: headerConstants });
+	}
+};
+
+user.override('update', '/user/ban_or_unban');
+
+user.update = async (req, res) => {
+	const newstatus = req.body.status;
+	const targetuserid = req.body.targetuser;
+	const target = await User.findByPk(targetuserid);
+	if (doesUserExist(target) && isLoggedOn(res.locals.user) && res.locals.user.accesslevel.ban_user) {
+		if (newstatus === 'ban') {
+			target.banned = true;
+		} else if (newstatus === 'unban') {
+			target.banned = false;
+		}
+		await target.save();
+		res.redirect(`/user/profile/${target.username}`);
 	}
 };
 
@@ -60,15 +72,30 @@ userpage.read = async (req, res) => {
 		const usernameVar = await User.findOne({ where: { username: URLusername } });
 		if (doesUserExist(usernameVar)) {
 			const userlistings = await Listing.findAll({ where: { userId: usernameVar.id } });
-			res.render('pages/user/userpage.ejs', { // Sends all userpage information which gets compared with local user in the ejs file for personal userpage display
-				username: usernameVar.username,
-				constants: headerConstants,
-				userlistings,
-				authorid: usernameVar.id
-			});
+			if (usernameVar.banned) {
+				if (isLoggedOn(res.locals.user) && res.locals.user.accesslevel.ban_user) { // User is logged on and has ban user permissions || Only admins can access baned userpages
+					res.render('pages/user/userpage.ejs', {
+						username: usernameVar.username,
+						constants: headerConstants,
+						userlistings,
+						authorid: usernameVar.id,
+						authorbanstatus: usernameVar.banned
+					});
+				} else { // Non admins get redirected to section
+					res.redirect('/section');
+				}
+			} else {
+				res.render('pages/user/userpage.ejs', { // Sends all userpage information which gets compared with local user in the ejs file for personal userpage display
+					username: usernameVar.username,
+					constants: headerConstants,
+					userlistings,
+					authorid: usernameVar.id,
+					authorbanstatus: usernameVar.banned
+				});
+			}
+		} else {
+			res.sendStatus(404);
 		}
-	} else {
-		res.sendStatus(404);
 	}
 };
 
@@ -89,6 +116,8 @@ login.create = login.handler(
 			});
 			if (user == null) {
 				res.send('User not found');
+			} else if (user.banned) { // Checks if attempted login user is banned
+				res.send('User is banned');
 			} else if (await bcrypt.compare(req.body.password, user.password)) {
 				// successful login
 				const payload: object = {
@@ -99,7 +128,11 @@ login.create = login.handler(
 
 				let redirectURL = '/';
 				if (req.body.redirect !== undefined) {
-					redirectURL = req.body.redirect;
+					// redirectURL = req.body.redirect;
+					redirectURL = Buffer.from(req.body.redirect, 'base64').toString('utf8');
+					while (redirectURL.includes('_')) {
+						redirectURL = redirectURL.replace('_', '/');
+					}
 				}
 				res.redirect(redirectURL);
 				// res.send('Logged in successfully');
@@ -119,7 +152,7 @@ login.create = login.handler(
 login.delete = (req, res) => {
 	if (isLoggedOn(res.locals.user)) {
 		res.clearCookie('AuthToken');
-		res.send('Logging out');
+		res.redirect('/section');
 	} else {
 		res.send('Not Logged in');
 	}
@@ -165,7 +198,7 @@ signup.create = signup.handler(
 			const hash = await bcrypt.hash(req.body.password, 12);
 			await User.create({
 				id: uuidv4(),
-				access: 'Client',
+				access: 'client',
 				email: req.body.email,
 				username: req.body.username,
 				password: hash

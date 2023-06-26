@@ -1,0 +1,6 @@
+<%
+encodeUUID = function(id) {
+	const base64id = Buffer.from((id = (id.replace(/-/g, ''))), 'hex').toString('base64url');
+	return base64id;
+}
+%>

@@ -1,4 +1,5 @@
 <%- include('../misc/hardening.ejs') %>
+<%- include('./uuid_coding.ejs') %>
 <header class ="topbars">
 	<script src="/lapa/client.js" defer type="module"></script>
 	<script src="/lapa/chatting.js" defer type="module"></script>
@@ -18,7 +19,7 @@
 				<a href="/user/profile/<%=user.username%>"><%=user.username%></a>
 				<button id="signoutbutton"><%-lang.header.signout_name%></button>
 			<% }else{ %> 
-				<div><a href="<%=constants.signinhref%>"><button type="button"><%=lang.header.login_name%></button></a></div>
+				<div><a href="<%=constants.signinhref%>?redirect=<%=originURL%>"><button type="button"><%=lang.header.login_name%></button></a></div>
 				<div><a href="<%=constants.signuphref%>"><button type="button"><%=lang.header.signup_name%></button></a></div>
 			<% }%>
 		</div>

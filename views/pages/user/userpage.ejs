@@ -22,16 +22,31 @@
         <% }%>
         <ul>
 		<% userlistings.forEach(element => { %>
-			<li><a href='/listing/item?listingId=<%=element.id%>'><%- element.title %></a>
+			<li>
+            <% if (element.status == 'open' || user.id == authorid) { %>
+                <a href='/listing/item?id=<%=encodeUUID(element.id)%>'><%- element.title %></a>
+            <% } %> 
+            
             <% if (user != null) { %>
                 <% if (authorid == user.id) { %>
-                    <a href="/listing/edit?listingId=<%=element.id%>"><%-lang.listing_item.edit%></a>
+                    <a href="/listing/edit?id=<%=encodeUUID(element.id)%>"><%-lang.listing_item.edit%></a>
                 <% } %> 
             <% } %> 
             </li>
 		<% }) %>
         
         </ul>
+        <div class="admin_button">
+            <% if (user != null) { %>
+                <% if (user.accesslevel.ban_user && user.id != authorid) { %>
+                    <% if(authorbanstatus) { %>
+                        <button id="unbanbutton" value="<%=authorid%>">Unban user</button>
+                    <% } else { %> 
+                        <button id="banbutton" value="<%=authorid%>">Ban user</button>
+                    <% } %>
+                <% } %>
+            <% } %>
+        </div>
     </div>
 </body>
 </html>
