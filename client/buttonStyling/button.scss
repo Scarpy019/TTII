@@ -48,22 +48,21 @@ body {
 			margin: 0;
 			padding: 0;
 			text-decoration: none;
-			button {
-				transition: 0.2s;
-				width: 100%;
-				height: 100%;
-				display: block;
-				margin: auto;
-				border: 0;
-				background-color: constants.$main-color;
-				font-size: 1.2rem;
-				cursor: pointer;
-				&:hover, &:focus {
-					background-color: lighten(constants.$main-color, 20%);
-				}
+		}
+		button {
+			transition: 0.2s;
+			width: 100%;
+			height: 100%;
+			display: block;
+			margin: auto;
+			border: 0;
+			background-color: constants.$main-color;
+			font-size: 1.2rem;
+			cursor: pointer;
+			&:hover, &:focus {
+				background-color: lighten(constants.$main-color, 20%);
 			}
 		}
-		
 	}
 	
 }

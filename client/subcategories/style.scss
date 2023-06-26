@@ -1,16 +1,20 @@
 @use '../constants';
 
+
 .main_container {
-	margin: auto;
 	width: 80%;
+	margin: {
+		left: auto;
+		right: auto;
+	}
+	text-align: center;
 }
 
-.categories {
+#subcategory_list {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
 }
 
-.categories button {
+#subcategory_list button {
 	width: 100%;
 	border-radius: 0;
 	border: 0;
@@ -18,12 +22,14 @@
 	transition: 0.2s;
 	cursor: pointer;
 	height: 4rem;
+	font-size: 2rem;
 }
-.categories{
+
+#subcategory_list {
 	:focus, :hover{
 		background-color: lighten(constants.$main-color, 10%);
 	}
 }
-.categories a {
+#subcategory_list a {
 	margin: 1px;
 }

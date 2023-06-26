@@ -74,6 +74,24 @@ export default [
 		plugins: [scss({output:'./static/lapa/listing_item.css'})].concat(plugins)
 	},
 	{
+		input: './client/listings/entry.ts',
+		output: {
+			sourcemap: true,
+			file: './static/lapa/listings.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/listings.css'})].concat(plugins)
+	},
+	{
+		input: './client/subcategories/entry.ts',
+		output: {
+			sourcemap: true,
+			file: './static/lapa/subcategories.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/subcategories.css'})].concat(plugins)
+	},
+	{
 		input: './client/sections_mainpage/entry.ts',
 		output: {
 			sourcemap: true,

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/subcategories.css">
     <title></title>
 </head>
 <body>
@@ -17,17 +18,19 @@
             <% } else if(lang.header.current_lang == "LV") { %>
                 <h1 id="category_name"><%- section.nameLV %></h1>
             <% } %>
-            <ul id="subcategory_list">
+            <div id="subcategory_list">
 				<% section.subsections.forEach(subsection => { %>
-                    <li>
-                        <% if (lang.header.current_lang == 'ENG') { %>
-                            <a href='/listing/<%=subsection.id%>'><%- subsection.name %></a>
-                        <% } else if(lang.header.current_lang == 'LV') { %>
-                            <a href='/listing/<%=subsection.id%>'><%- subsection.nameLV %></a>
-                        <% } %>
-                    </li>
+                    <div>
+						<a href='/listing/<%=subsection.id%>'><button type="button">
+							<% if (lang.header.current_lang == 'ENG') { %>
+								<%- subsection.name %>
+							<% } else if(lang.header.current_lang == 'LV') { %>
+								<%- subsection.nameLV %>
+							<% } %>
+						</button></a>
+					</div>
 				<% }) %>
-			</ul>
+			</div>
         </div>
         <% if (user != null) { %>
             <% if (user.accesslevel.category_admin) { %>

@@ -15,9 +15,8 @@
 	<div id="topbars-options">
 		<div class="user_status">
 			<% if (user!==null && user!==undefined) { %>
-				<div hidden id="user_id"><%-user.id%></div>
-				<a href="/user/profile/<%=user.username%>"><%=user.username%></a>
-				<button id="signoutbutton"><%-lang.header.signout_name%></button>
+				<div><a href="/user/profile/<%=user.username%>"><button type="button"><%=user.username%></button></a></div>
+				<div><button id="signoutbutton"><%-lang.header.signout_name%></button></div>
 			<% }else{ %> 
 				<div><a href="<%=constants.signinhref%>?redirect=<%=originURL%>"><button type="button"><%=lang.header.login_name%></button></a></div>
 				<div><a href="<%=constants.signuphref%>"><button type="button"><%=lang.header.signup_name%></button></a></div>
