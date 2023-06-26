@@ -41,7 +41,7 @@ async function editlisting (): Promise<void> {
 	const category = $('#categories').find(':selected').val();
 	const subcategory = $('#subcategories').find(':selected').val();
 	const currentlistingquery = location.search;
-	const currentlisting = currentlistingquery.substring(4);
+	const currentlisting = currentlistingquery.substring(4); // Currently removes ?id= from location search to leave the listing id
 	if (listdesc !== undefined && startprice !== undefined && openstatus !== undefined && listtitle !== undefined && category !== undefined && subcategory !== undefined && currentlisting !== undefined) {
 		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), subcatid: subcategory.toString() };
 		await fetchWithCSRF('/listing/update', {
@@ -73,7 +73,7 @@ async function editSection (): Promise<void> {
 	const sectionTitle = $('#section_name').val();
 	const LVsectionTitle = $('#lv_section_name').val();
 	const sectionidquery = location.search;
-	const sectionId = sectionidquery.substring(11);
+	const sectionId = sectionidquery.substring(11); // Removes ?sectionId= from the location search
 	if (sectionTitle !== null && sectionTitle !== undefined && sectionId !== null && sectionId !== undefined) {
 		await fetchWithCSRF('/section/update', {
 			method: 'PUT',
@@ -89,7 +89,7 @@ async function editSubsection (): Promise<void> {
 	const sectionId = $('#sectionId').val();
 	const LVsubsectionTitle = $('#lv_subsection_name').val();
 	const subsectionidquery = location.search;
-	const subsectionId = subsectionidquery.substring(14);
+	const subsectionId = subsectionidquery.substring(14); // Removes ?subsectionId= from the location search
 	if (subsectionTitle !== null && subsectionTitle !== undefined && subsectionId !== null && subsectionId !== undefined && sectionId !== null && sectionId !== undefined) {
 		await fetchWithCSRF('/subsection/update', {
 			method: 'PUT',
@@ -106,7 +106,7 @@ $('#updatesubsection').on('click', editSubsection);
 
 async function deletelisting (): Promise<void> {
 	const currentlistingquery = location.search;
-	const currentlisting = currentlistingquery.substring(11);
+	const currentlisting = currentlistingquery.substring(4); // removes ?id= from location search
 	await fetchWithCSRF('/listing/delete', {
 		method: 'DELETE',
 		body: JSON.stringify({ listingId: currentlisting })
@@ -117,7 +117,7 @@ async function deletelisting (): Promise<void> {
 
 async function deleteSection (): Promise<void> {
 	const currentSectionQuery = location.search;
-	const currentSection = currentSectionQuery.substring(11);
+	const currentSection = currentSectionQuery.substring(11); // Removes ?sectionId= from location search
 	await fetchWithCSRF('/section/delete', {
 		method: 'DELETE',
 		body: JSON.stringify({ sectionId: currentSection })
@@ -128,7 +128,7 @@ async function deleteSection (): Promise<void> {
 
 async function deleteSubsection (): Promise<void> {
 	const currentSubsectionQuery = location.search;
-	const currentSubsection = currentSubsectionQuery.substring(14);
+	const currentSubsection = currentSubsectionQuery.substring(14); // Removes ?subsectionId= from location search
 	await fetchWithCSRF('/subsection/delete', {
 		method: 'DELETE',
 		body: JSON.stringify({ subsec_id: currentSubsection })

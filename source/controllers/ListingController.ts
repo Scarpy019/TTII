@@ -22,7 +22,6 @@ listing.read = async (req, res) => {
 	}
 	const subsecId = Number(req.params.subsectionId);
 	if (!isNaN(subsecId)) {
-		// const subsection = await Subsection.findByPk(subsecId, { include: [Listing, { include: [User] }] });
 		const listings = await Listing.findAll({ where: { subsectionId: subsecId }, limit: 5000, include: [{ model: User, as: 'user' }] });
 		const subsection = await Subsection.findByPk(subsecId);
 		if (isSubcategory(subsection)) {
@@ -134,7 +133,12 @@ listing.interface('/item', async (req, res) => {
 			}
 			const author = await User.findByPk(listing.userId);
 			if (doesUserExist(author)) {
-				if ((author.banned && (isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) || (author.banned && (res.locals.user === null || res.locals.user === undefined))) {
+				if (
+					(author.banned &&
+					(isLoggedOn(res.locals.user) && !res.locals.user.accesslevel.category_admin && author.id !== res.locals.user.id)) ||
+					(author.banned &&
+					(res.locals.user === null || res.locals.user === undefined))
+				) { // Forces redirect to section if accesed listing author is banned unless you have admin privileges
 					res.redirect('/section');
 				} else {
 					if ((listing.status === 'open') || (listing.status === 'closed' && isLoggedOn(res.locals.user) && (res.locals.user.id === author.id || res.locals.user.accesslevel.category_admin))) {
@@ -300,6 +304,6 @@ listing.interface('/create', async (req, res) => {
 			});
 		}
 	} else {
-		res.redirect('/user/login?redirect=' + Buffer.from('()listing()create').toString('ascii'));
+		res.redirect('/user/login?redirect=' + Buffer.from('_listing_create').toString('ascii'));
 	}
 });

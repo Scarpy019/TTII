@@ -35,12 +35,22 @@ interface SectionEditForm {
 };
 
 function ValidSectionCreateForm (obj: any): obj is SectionCreateForm {
-	const valid = ('section_name' in obj) && typeof obj.section_name === 'string' && ('lv_section_name' in obj) && typeof obj.lv_section_name === 'string';
+	const valid =
+	('section_name' in obj) &&
+	typeof obj.section_name === 'string' &&
+	('lv_section_name' in obj) &&
+	typeof obj.lv_section_name === 'string';
 	return valid;
 };
 
 function ValidSectionUpdateForm (obj: any): obj is SectionEditForm {
-	const valid = ('section_name' in obj) && typeof obj.section_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string' && ('lv_section_name' in obj) && typeof obj.lv_section_name === 'string';
+	const valid =
+	('section_name' in obj) &&
+	typeof obj.section_name === 'string' &&
+	('section_id' in obj) &&
+	typeof obj.section_id === 'string' &&
+	('lv_section_name' in obj) &&
+	typeof obj.lv_section_name === 'string';
 	return valid;
 };
 

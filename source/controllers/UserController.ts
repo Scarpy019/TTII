@@ -54,9 +54,9 @@ user.update = async (req, res) => {
 	const targetuserid = req.body.targetuser;
 	const target = await User.findByPk(targetuserid);
 	if (doesUserExist(target) && isLoggedOn(res.locals.user) && res.locals.user.accesslevel.ban_user) {
-		if (newstatus === 'ban' && doesUserExist(target)) {
+		if (newstatus === 'ban') {
 			target.banned = true;
-		} else if (newstatus === 'unban' && doesUserExist(target)) {
+		} else if (newstatus === 'unban') {
 			target.banned = false;
 		}
 		await target.save();

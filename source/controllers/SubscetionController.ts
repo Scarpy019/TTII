@@ -44,12 +44,28 @@ interface SubectionEditForm {
 };
 
 function ValidsubsectionCreateForm (obj: any): obj is SubsectionCreateForm {
-	const valid = ('subsection_name' in obj) && typeof obj.subsection_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string' && !isNaN(Number(obj.section_id)) && ('lv_subsection_name' in obj) && typeof obj.lv_subsection_name === 'string';
+	const valid =
+	('subsection_name' in obj) &&
+	typeof obj.subsection_name === 'string' &&
+	('section_id' in obj) &&
+	typeof obj.section_id === 'string' &&
+	!isNaN(Number(obj.section_id)) &&
+	('lv_subsection_name' in obj) &&
+	typeof obj.lv_subsection_name === 'string';
 	return valid;
 };
 
 function ValidsubsectionUpdateForm (obj: any): obj is SubectionEditForm {
-	const valid = ('subsection_name' in obj) && typeof obj.subsection_name === 'string' && ('section_id' in obj) && typeof obj.section_id === 'string' && ('subsection_id' in obj) && typeof obj.subsection_id === 'string' && !isNaN(Number(obj.section_id)) && !isNaN(Number(obj.subsection_id)) && ('lv_subsection_name' in obj) && typeof obj.lv_subsection_name === 'string';
+	const valid =
+	('subsection_name' in obj) &&
+	typeof obj.subsection_name === 'string' &&
+	('section_id' in obj) && typeof obj.section_id === 'string' &&
+	('subsection_id' in obj) &&
+	typeof obj.subsection_id === 'string' &&
+	!isNaN(Number(obj.section_id)) &&
+	!isNaN(Number(obj.subsection_id)) &&
+	('lv_subsection_name' in obj) &&
+	typeof obj.lv_subsection_name === 'string';
 	return valid;
 };
 

@@ -104,6 +104,5 @@ $('#createForm').on('submit', async (e) => {
 	}).then(Response => {
 		location.href = Response.url;
 	});
-	// location.href = response.url;
 	return false;
 });
