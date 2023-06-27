@@ -38,7 +38,8 @@ export default {
 		startprice: 'Sākotnējā cena',
 		author: 'Autors',
 		postdate: 'Izveidots',
-		edit: 'Rediģēt'
+		edit: 'Rediģēt',
+		nopicture: 'Bilžu nav'
 	},
 	userpage: {
 		welcome: 'Sveicināts'

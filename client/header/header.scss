@@ -37,7 +37,7 @@ body {
     display: flex;
 	align-items: center;
 	height: 100%;
-	div {
+	&>div {
 		display: block;
 		width: auto;
 		height: 100%;
@@ -56,6 +56,10 @@ body {
 			display: block;
 			margin: auto;
 			border: 0;
+			padding: {
+				right: 1.5vw;
+				left: 1.5vw;
+			}
 			background-color: constants.$main-color;
 			font-size: 1.2rem;
 			cursor: pointer;
@@ -63,8 +67,12 @@ body {
 				background-color: lighten(constants.$main-color, 20%);
 			}
 		}
+		&.seperator {
+			width: 2px;
+			height: 80%;
+			background-color: lighten(constants.$main-color, 20%);
+		}
 	}
-	
 }
 
 #language {
@@ -98,6 +106,12 @@ body {
 	position: sticky;
 	display: grid;
 	width: 100%;
-  	grid-template-columns: 1fr 3fr 1fr;
+  	grid-template-columns: 1fr auto 1fr;
 	background-color: constants.$main-color;
+}
+.header {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	border-bottom: 1px solid black;
 }

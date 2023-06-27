@@ -37,6 +37,7 @@ export default interface locale {
 		author: string;
 		postdate: string;
 		edit: string;
+		nopicture: string;
 	};
 	userpage: {
 		welcome: string;

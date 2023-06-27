@@ -38,7 +38,8 @@ export default {
 		startprice: 'Starting price',
 		author: 'Author',
 		postdate: 'Posted on',
-		edit: 'Edit'
+		edit: 'Edit',
+		nopicture: 'No pictures'
 	},
 	userpage: {
 		welcome: 'Welcome'

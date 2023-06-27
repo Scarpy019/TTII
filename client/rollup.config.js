@@ -20,7 +20,7 @@ const plugins=[
 
 export default [
 	{
-		input: './client/buttonStyling/entry.ts',
+		input: './client/header/entry.ts',
 		output: {
 			sourcemap: true,
 			file: './static/lapa/headerstyle.js',
