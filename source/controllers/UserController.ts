@@ -90,7 +90,8 @@ userpage.read = async (req, res) => {
 					constants: headerConstants,
 					userlistings,
 					authorid: usernameVar.id,
-					authorbanstatus: usernameVar.banned
+					authorbanstatus: usernameVar.banned,
+					originURL: `_user_profile_${usernameVar.username}`
 				});
 			}
 		} else {
