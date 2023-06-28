@@ -60,5 +60,15 @@ export default {
 		lv_subsec_name: 'Latviskais apakšsadaļas nosaukums',
 		edit: 'Rediģēt',
 		in_sect: 'Iekšā kategorijā - '
+	},
+	search: {
+		searchfield: 'Ievadi atslēgvārdu',
+		searchbutton: 'Meklēt'
+	},
+	listingfiltering: {
+		price_asc: 'Augoša cena',
+		price_desc: 'Dilstoša cena',
+		oldest: 'Vecākais',
+		newest: 'Jaunākais'
 	}
 } satisfies locale;

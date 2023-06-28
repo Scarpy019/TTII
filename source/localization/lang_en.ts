@@ -60,5 +60,15 @@ export default {
 		lv_subsec_name: 'Latvian subsection name',
 		edit: 'Edit',
 		in_sect: 'In section - '
+	},
+	search: {
+		searchfield: 'Enter a keyword',
+		searchbutton: 'Search'
+	},
+	listingfiltering: {
+		price_asc: 'Price ascending',
+		price_desc: 'Price descending',
+		oldest: 'Oldest',
+		newest: 'Newest'
 	}
 } satisfies locale;

@@ -15,13 +15,26 @@
 
         <div class="listings">
             <h1 id="subcategory_name"><%- subsec_name %></h1>
+            <div class="filterbar">
+                <button id="price_asc"><%-lang.listingfiltering.price_asc%></button>
+                <button id="price_desc"><%-lang.listingfiltering.price_desc%></button>
+                <button id="oldest"><%-lang.listingfiltering.oldest%></button>
+                <button id="newest"><%-lang.listingfiltering.newest%></button>
+            </div>
             <ul id="subcategory_list">
 				<% listings.forEach(listing => { %>
                     <% if (listing.status === "open") { %>
                         <% if (listing.user != undefined) { %>
                             <% if (!listing.user.banned) { %>
-                                <li>
-                                    <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><%- listing.title %></a>
+                                <li class="listingitem" data-price="<%=listing.start_price%>" data-date="<%=transformDatewithhours(listing.createdAt)%>">
+                                        <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><%- listing.title %></a>
+                                        <div class="listingprice"><%-lang.listing_item.startprice%> - <div class="price"><%=listing.start_price%></div>$</div>
+                                        <div class="createdat"><%-lang.listing_item.postdate%> <%=transformDate(listing.createdAt)%></div>
+                                        <div class="listingimage">
+                                            <% if(listing.media[0] !== undefined && listing.media[0] !== null) { %>
+                                                <img src="/files/<%= listing.media[0].uuid + listing.media[0].extension %>" alt="descripting image">
+                                            <% }%>
+                                        </div>
                                 </li>
                             <% } %>
                         <% } %>

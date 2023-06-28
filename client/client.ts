@@ -204,3 +204,130 @@ $('#language').on('change', function () {
 	Cookies.set('lang', currentlang);
 	location.reload();
 });
+
+function listingsToArray (): any[] {
+	const array: any[] = [];
+	let i = 0;
+	$('li').each(function () {
+		const listitem = $('.listingitem')[i];
+		const price = $(this).data('price');
+		const date = $(this).data('date');
+		array.push({ listitem, price, date });
+		i++;
+	});
+	return array;
+}
+
+function listingSortPriceAsc (): void {
+	const listings = listingsToArray();
+	const temp = [1];
+	let i = 0;
+	while (i <= listings.length) {
+		if (listings[i + 1] === undefined) {
+			break;
+		}
+		if (listings[i].price > listings[i + 1].price) {
+			temp[0] = listings[i + 1];
+			listings[i + 1] = listings[i];
+			listings[i] = temp[0];
+			i = 0;
+		} else {
+			i++;
+		}
+	}
+	i = 0;
+	while (i < listings.length) {
+		$('#subcategory_list').append(listings[i].listitem);
+		i++;
+	}
+}
+
+$('#price_asc').on('click', listingSortPriceAsc);
+
+function listingSortPriceDesc (): void {
+	const listings = listingsToArray();
+	const temp = [1];
+	let i = 0;
+	while (i <= listings.length) {
+		if (listings[i + 1] === undefined) {
+			break;
+		}
+		if (listings[i].price < listings[i + 1].price) {
+			temp[0] = listings[i + 1];
+			listings[i + 1] = listings[i];
+			listings[i] = temp[0];
+			i = 0;
+		} else {
+			i++;
+		}
+	}
+	i = 0;
+	while (i < listings.length) {
+		$('#subcategory_list').append($(listings[i].listitem));
+		i++;
+	}
+}
+
+function listingSortDateNewest (): void {
+	const listings = listingsToArray();
+	const temp = [1];
+	let date1, date2;
+	let i = 0;
+	while (i < listings.length) {
+		if (listings[i + 1] === undefined) {
+			break;
+		}
+		date1 = new Date(listings[i].date);
+		date2 = new Date(listings[i + 1].date);
+		if ((date2.getTime()) > (date1.getTime())) {
+			temp[0] = listings[i + 1];
+			listings[i + 1] = listings[i];
+			listings[i] = temp[0];
+			i = 0;
+		} else {
+			i++;
+		}
+	}
+	i = 0;
+	while (i < listings.length) {
+		$('#subcategory_list').append($(listings[i].listitem));
+		i++;
+	}
+}
+
+function listingSortDateOldest (): void {
+	const listings = listingsToArray();
+	const temp = [1];
+	let date1, date2;
+	let i = 0;
+	while (i < listings.length) {
+		if (listings[i + 1] === undefined) {
+			break;
+		}
+		date1 = new Date(listings[i].date);
+		date2 = new Date(listings[i + 1].date);
+		if ((date2.getTime()) < (date1.getTime())) {
+			temp[0] = listings[i + 1];
+			listings[i + 1] = listings[i];
+			listings[i] = temp[0];
+			i = 0;
+		} else {
+			i++;
+		}
+	}
+	i = 0;
+	while (i < listings.length) {
+		$('#subcategory_list').append($(listings[i].listitem));
+		i++;
+	}
+}
+
+$('#price_desc').on('click', listingSortPriceDesc);
+$('#oldest').on('click', listingSortDateOldest);
+$('#newest').on('click', listingSortDateNewest);
+
+function searchforkeyword (keyword: string): void {
+	location.href = `/search/result?keyword=${keyword}`;
+}
+
+$('#keyword_button').on('click', () => { searchforkeyword(String($('#keyword_search').val())); });

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <div class="header">
+        <%- include('../misc/header.ejs') %>
+    </div>
+    <div class="main_container">
+        <div class="searchbar">
+			<label for="keyword"><%-lang.search.searchfield%></label>
+			<input type="text" id="keyword_search" name="keyword" required>
+			<button id="keyword_button"><%-lang.search.searchbutton%></button>
+		</div>
+		<div class="searchedlistings">
+			<ul>
+				<% listings.forEach(listing => { %>
+					<% if (listing.status === "open") { %>
+						<% if (listing.user != undefined) { %>
+							<% if (!listing.user.banned) { %>
+								<%if (hidenbydefault === 'yes') { %>
+								<% } else { %>
+									<li class="listingitem" id="listing=<%=listing.id%>">
+										<a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><%- listing.title %></a>
+										<div class="listingprice"><%-lang.listing_item.startprice%> - <div class="pricenum"><%-listing.start_price%></div>$</div>
+										<div class="createdat"><%-lang.listing_item.postdate%> <%=transformDate(listing.createdAt)%></div>
+										<div class="listingimage">
+											<% if(listing.media[0] !== undefined && listing.media[0] !== null) { %>
+												<img src="/files/<%= listing.media[0].uuid + listing.media[0].extension %>" alt="descripting image">
+											<% }%>
+										</div>
+									</li>
+								<% } %>
+							<% } %>
+						<% } %>
+					<% } %>
+				<% }) %>
+			</ul>
+		</div>
+    </div>
+</body>
+</html>
