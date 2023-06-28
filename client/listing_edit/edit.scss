@@ -1,7 +1,64 @@
+@use '../constants';
+
+$size: min(50vh, 50vw);
 
 #imagelist {
-	img {
-		width: 15vw;
-		height: 15vw;
+	display: flex;
+	overflow:scroll;
+	&>div {
+		display: flex;
+		margin-right: 5vw;
+		margin-bottom: 1vh;
+		&>div {
+			background-color: lighten(constants.$main-color, 40%);
+			position: relative;
+			height: $size;
+			width: $size;
+			overflow: hidden;
+			border-radius: 6px;
+			img {
+				transition: 1s;
+				max-width:100%;
+				max-height: 100%;
+				object-fit: scale-down;
+				position:absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+		}
+		
 	}
+	
 }
+
+@mixin galBtns {
+	border: 0 solid black;
+	border-radius: 6px;
+	font-size: 2rem;
+}
+
+.deleteBtn {
+	@include galBtns;
+	height: 3rem;
+	width: 3rem;
+	position: absolute;
+	top:0;
+	right:0;
+}
+
+label {
+	margin-top: 0.5rem;
+}
+
+#edit-form>div {
+	margin-top: 1.5rem;
+}
+
+
+.moveRight, .moveLeft {
+	@include galBtns;
+	margin-left: 1vw;
+	margin-right: 1vw;
+}
+
