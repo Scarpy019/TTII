@@ -11,7 +11,7 @@ export default interface locale {
 	};
 	forms: {
 		username_label: string;
-		user_or_email: string;
+		username_or_email: string;
 		email_label: string;
 		password_label: string;
 	};
