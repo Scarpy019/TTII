@@ -8,17 +8,25 @@
     <title></title>
 </head>
 <body>
+	<script type="module" defer src="/lapa/listing_item.js"></script>
     <div class="header">
         <%- include('../misc/header') %>
         
     </div>
     <div class="main_container">
-
         <div class="listing">
             <h1 id="listing_name"><%- listing.title %></h1>
-			<% media.forEach((item, index) => { %>
-				<img src="/files/<%= item.uuid + item.extension %>" alt="descripting image">
-			<% });%>
+			<% if(media.length > 0) { %>
+				<div id="gallery-shell">
+					<button class="navbtn" id="prvgal" type="button">&lt;</button>
+					<div id="gallery">
+						<% media.forEach((item, index) => { %>
+							<img src="/files/<%= item.uuid + item.extension %>" <% if (index !== 0) { %>class="rightimg"<% } %> alt="descripting image">
+						<% });%>
+					</div>
+					<button class="navbtn" id="nxtgal" type="button">&gt;</button>
+				</div>
+			<% } %>
             <div class="description">
                 <p><%-listing.body%></p>
                 <p><%-lang.listing_item.startprice%> - <%-listing.start_price%>$</p>
@@ -37,7 +45,6 @@
                     <% } %>
                 <% } %>
 			</div>
-			<div class="listing_data"><img src='<%listing.media%>' alt='listingimage'></div>
             <br>
             <a href="/listing/<%=listing.subsectionId%>">Back to subsection</a>
         </div>

@@ -105,14 +105,16 @@ $('#updatesection').on('click', editSection);
 $('#updatesubsection').on('click', editSubsection);
 
 async function deletelisting (): Promise<void> {
-	const currentlistingquery = location.search;
-	const currentlisting = currentlistingquery.substring(4); // removes ?id= from location search
-	await fetchWithCSRF('/listing/delete', {
-		method: 'DELETE',
-		body: JSON.stringify({ listingId: currentlisting })
-	}).then(Response => {
-		location.href = Response.url;
-	});
+	if (confirm('Are you sure you wish to delete this? This cannot be undone.')) {
+		const currentlistingquery = location.search;
+		const currentlisting = currentlistingquery.substring(4); // removes ?id= from location search
+		await fetchWithCSRF('/listing/delete', {
+			method: 'DELETE',
+			body: JSON.stringify({ listingId: currentlisting })
+		}).then(Response => {
+			location.href = Response.url;
+		});
+	}
 }
 
 async function deleteSection (): Promise<void> {

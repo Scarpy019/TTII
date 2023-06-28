@@ -6,7 +6,7 @@ import scss from 'rollup-plugin-scss';
 import json from "@rollup/plugin-json";
 import polyfills from "rollup-plugin-node-polyfills";
 const plugins=[
-	typescript({ tsconfig: "./client/tsconfig.json", sourceMap: true }),
+	typescript({ tsconfig: "./client/tsconfig.json", sourceMap: false }),
 	commonJS({
 
 	}),
@@ -14,15 +14,14 @@ const plugins=[
 		browser:true
 	}),
 	json(),
-	polyfills()
-	// terser()
+	polyfills(),
+	terser()
 ];
 
 export default [
 	{
-		input: './client/buttonStyling/entry.ts',
+		input: './client/header/entry.ts', 
 		output: {
-			sourcemap: true,
 			file: './static/lapa/headerstyle.js',
 			format: 'es'
 		},
@@ -31,7 +30,6 @@ export default [
 	{
 		input: './client/client.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/client.js',
 			format: 'es'
 		},
@@ -40,7 +38,6 @@ export default [
 	{
 		input: './client/hardening.ts',
 		output: {
-			sourcemap: true,
 			file: './static/js/hardening.js',
 			format: 'es'
 		},
@@ -49,7 +46,6 @@ export default [
 	{
 		input: './client/listing_create/image_handler.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/listing_create.js',
 			format: 'es'
 		},
@@ -58,7 +54,6 @@ export default [
 	{
 		input: './client/listing_edit/entry_point.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/listing_edit.js',
 			format: 'es'
 		},
@@ -67,11 +62,34 @@ export default [
 	{
 		input: './client/listing_item/entry_point.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/listing_item.js',
 			format: 'es'
 		},
 		plugins: [scss({output:'./static/lapa/listing_item.css'})].concat(plugins)
+	},
+	{
+		input: './client/listings/entry.ts',
+		output: {
+			file: './static/lapa/listings.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/listings.css'})].concat(plugins)
+	},
+	{
+		input: './client/subcategories/entry.ts',
+		output: {
+			file: './static/lapa/subcategories.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/subcategories.css'})].concat(plugins)
+	},
+	{
+		input: './client/sections_mainpage/entry.ts',
+		output: {
+			file: './static/lapa/mainpage.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/mainpage.css'})].concat(plugins)
 	},
 	{
 		input: './client/chatting.ts',
@@ -80,5 +98,13 @@ export default [
 			format: 'es'
 		},
 		plugins: plugins
+	},
+	{
+		input: './client/user/entry.ts',
+		output: {
+			file: './static/lapa/userpage.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/userpage.css'})].concat(plugins)
 	}
 ];

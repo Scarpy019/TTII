@@ -1,0 +1,36 @@
+@use '../constants';
+
+.listing-item {
+	display: flex;
+	justify-items: stretch;
+	align-items: stretch;
+	margin-top: 1vh;
+	height: 12vh;
+}
+
+.edit-button {
+	width: 10vw;
+	height: 100%;
+}
+
+.to-listing {
+	flex:auto;
+	margin-right:1vw;
+	height: 100%;
+	button {
+		height: 100%;
+		width:100%;
+	}
+}
+
+button {
+	border: 0;
+	border-radius: 6px;
+	background-color: lighten(constants.$main-color, 40%);
+	&:focus, &:hover{
+		background-color: lighten(constants.$main-color, 10%);
+	}
+	&:active {
+		background-color: lighten(constants.$main-color, 30%);
+	}
+}

@@ -5,27 +5,39 @@
 	<script src="/lapa/chatting.js" defer type="module"></script>
 	<link rel="stylesheet" href="/lapa/headerstyle.css">
 	<div class="nav_buttons">
-		<a href="<%=constants.section%>" id="home_button"><%=lang.header.home_button%></a>
-		<a href='<%=constants.search%>' id="search_button"><%=lang.header.search_button%></a>
-		<a href="<%=constants.publish%>" id="publish_button"><%=lang.header.publish_button%></a>
+		<div><a href="<%=constants.section%>" id="home_button"><button type="button"><%=lang.header.home_button%></button></a></div>
+		<div class="seperator"></div>
+		<div><a href='<%=constants.search%>' id="search_button"><button type="button"><%=lang.header.search_button%></button></a></div>
+		<div class="seperator"></div>
+		<div><a href="<%=constants.publish%>" id="publish_button"><button type="button"><%=lang.header.publish_button%></button></a></div>
+		<div class="seperator"></div>
 	</div>
-	<h1 id="page_title"><%-lang.header.page_title%></h1>
-	<div class="user_status">
-		<% if (user!==null && user!==undefined) { %>
-			<div hidden id="user_id"><%-user.id%></div>
-			<a href="/user/profile/<%=user.username%>"><%=user.username%></a>
-			<button id="signoutbutton"><%-lang.header.signout_name%></button>
-		<% }else{ %> 
-			<a href="<%=constants.signinhref%>?redirect=<%=originURL%>"><%=lang.header.login_name%></a>
-			<a href="<%=constants.signuphref%>"><%=lang.header.signup_name%></a>
-		<% }%>
+	<div>
+		<h1 id="page_title"><%-lang.header.page_title%></h1>
 	</div>
-	<div class="language_buttons">
-		<form>
-			<select id="language">
-				<option id="LV_lang">LV</option>
-				<option id="EN_lang">ENG</option>
-			</select>
-		</form>
+	<div id="topbars-options">
+		<div class="user_status">
+			<div class="seperator"></div>
+			<% if (user!==null && user!==undefined) { %>
+				<div><a href="/user/profile/<%=user.username%>"><button type="button"><%=user.username%></button></a></div>
+				<div class="seperator"></div>
+				<div><button id="signoutbutton"><%-lang.header.signout_name%></button></div>
+				<div class="seperator"></div>
+			<% }else{ %> 
+				<div><a href="<%=constants.signinhref%>?redirect=<%=originURL%>"><button type="button"><%=lang.header.login_name%></button></a></div>
+				<div class="seperator"></div>
+				<div><a href="<%=constants.signuphref%>"><button type="button"><%=lang.header.signup_name%></button></a></div>
+				<div class="seperator"></div>
+			<% }%>
+		</div>
+		<div class="language_buttons">
+			<form>
+				<select id="language">
+					<option id="LV_lang">LV</option>
+					<option id="EN_lang">ENG</option>
+				</select>
+			</form>
+		</div>
 	</div>
+	
 </header>

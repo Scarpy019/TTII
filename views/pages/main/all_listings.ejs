@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/listings.css">
     <title></title>
 </head>
 <body>
@@ -12,25 +13,28 @@
         
     </div>
     <div class="main_container">
-
         <div class="listings">
             <h1 id="subcategory_name"><%- subsec_name %></h1>
-            <ul id="subcategory_list">
+            <div id="subcategory_list">
 				<% listings.forEach(listing => { %>
                     <% if (listing.status === "open") { %>
                         <% if (listing.user != undefined) { %>
                             <% if (!listing.user.banned) { %>
-                                <li>
-                                    <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><%- listing.title %></a>
-                                </li>
+                                <div>
+                                    <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'>
+										<button type="button">
+											<%- listing.title %>
+										</button>
+									</a>
+								</div>
                             <% } %>
                         <% } %>
                     <% } %>
 				<% }) %>
-			</ul>
+			</div>
         </div>
         <% if (user !== null){ %>
-            <a href="/listing/create?sectionId=<%=secId%>&subsectionId=<%=subsec_Id%>"><%-lang.listing_form.add_listing%></a>
+            <a href="/listing/create?sectionId=<%=secId%>&subsectionId=<%=subsec_Id%>"><button type="button"><%-lang.listing_form.add_listing%></button></a>
         <% } %>
     </div>
 </body>

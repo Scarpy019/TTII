@@ -1,0 +1,130 @@
+@use '../constants';
+$a-tags: 'a, a:active, a:hover, a:visited';
+$a-tags-hover: 'a:active, a:hover';
+
+body {
+	margin: 0;
+	@include constants.font;
+}
+
+.main_container {
+	margin: {
+		left: auto;
+		right: auto;
+	}
+	padding-top: 4vh;
+	width:80vw;
+	padding-bottom: 20vh;
+}
+
+.topbars>div {
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.nav_buttons {
+	padding-left: 2vw;
+}
+
+.language_buttons {
+	padding: {
+		left: 2vw;
+		right: 2vw;
+	}
+}
+
+
+/* buttons */
+.nav_buttons, .user_status {
+	justify-items: left;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+	align-items: center;
+	height: 100%;
+	&>div {
+		display: block;
+		width: auto;
+		height: 100%;
+		#{$a-tags} {
+			display: block;
+			width: auto;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			text-decoration: none;
+		}
+		button {
+			transition: 0.2s;
+			width: 100%;
+			height: 100%;
+			display: block;
+			margin: auto;
+			border: 0;
+			padding: {
+				right: 1.5vw;
+				left: 1.5vw;
+			}
+			background-color: constants.$main-color;
+			font-size: 1.2rem;
+			cursor: pointer;
+			&:hover, &:focus {
+				background-color: lighten(constants.$main-color, 20%);
+			}
+		}
+		&.seperator {
+			width: 2px;
+			height: 80%;
+			background-color: lighten(constants.$main-color, 20%);
+		}
+	}
+}
+
+#language {
+	border-radius: 0;
+	border: 0;
+	background-color: lighten(constants.$main-color, 20%);
+}
+
+#topbars-options {
+	align-items: center;
+	justify-content: flex-end;
+	&>div {
+		margin: {
+			left: 1px;
+		}
+	}
+}
+
+.nav_buttons a, .user_status a, #signoutbutton {
+	padding: 5px;
+}
+
+#page_title{
+	text-align: center;
+	width: 100%;
+	@include constants.title;
+}
+
+
+
+.topbars {
+	position: sticky;
+	display: grid;
+	width: 100%;
+  	grid-template-columns: 1fr auto 1fr;
+	background-color: constants.$main-color;
+}
+.header {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	border-bottom: 1px solid black;
+}

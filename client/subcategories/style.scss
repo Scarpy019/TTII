@@ -1,0 +1,35 @@
+@use '../constants';
+
+
+.main_container {
+	width: 80%;
+	margin: {
+		left: auto;
+		right: auto;
+	}
+	text-align: center;
+}
+
+#subcategory_list {
+	display: grid;
+}
+
+#subcategory_list button {
+	width: 100%;
+	border-radius: 0;
+	border: 0;
+	background-color: lighten(constants.$main-color, 40%);
+	transition: 0.2s;
+	cursor: pointer;
+	height: 4rem;
+	font-size: 2rem;
+}
+
+#subcategory_list {
+	:focus, :hover{
+		background-color: lighten(constants.$main-color, 10%);
+	}
+}
+#subcategory_list a {
+	margin: 1px;
+}
