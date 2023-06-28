@@ -1,9 +1,9 @@
 
 $main-color: rgb(226, 121, 0);
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@700&family=Ubuntu&display=swap');
 @mixin font {
 	font-family: 'Ubuntu', sans-serif;
 }
 @mixin title {
-	font-family: 'Bebas Neue', sans-serif;
+	font-family: 'Open Sans', sans-serif;
 }

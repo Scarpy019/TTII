@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
+	<link rel="stylesheet" href="/lapa/userpage.css">
 </head>
 <body>
     <div class="header">
@@ -13,29 +14,28 @@
     <div class="main_container">
         <% if (user != null) { %>
             <% if (authorid == user.id) { %>
-		        <p><%=lang.userpage.welcome%>, <%=username%></p>
+		        <h2><%=lang.userpage.welcome%>, <%=username%></h2>
             <% } else { %> 
-                <%=username%>
+                <h2><%=username%></h2>
             <% } %> 
         <% } else { %> 
-            <%=username%>
+            <h2><%=username%></h2>
         <% }%>
-        <ul>
+        <div>
 		<% userlistings.forEach(element => { %>
-			<li>
-            <% if (element.status == 'open' || user.id == authorid) { %>
-                <a href='/listing/item?id=<%=encodeUUID(element.id)%>'><%- element.title %></a>
-            <% } %> 
-            
-            <% if (user != null) { %>
-                <% if (authorid == user.id) { %>
-                    <a href="/listing/edit?id=<%=encodeUUID(element.id)%>"><%-lang.listing_item.edit%></a>
-                <% } %> 
-            <% } %> 
-            </li>
+			<div class="listing-item">
+				<% if (element.status == 'open' || user.id == authorid) { %>
+					<a class="to-listing" href='/listing/item?id=<%=encodeUUID(element.id)%>'><button  type="button"><%- element.title %></button></a>
+				<% } %>
+				<% if (user != null) { %>
+					<% if (authorid == user.id) { %>
+						<a href="/listing/edit?id=<%=encodeUUID(element.id)%>"><button class="edit-button" type="button"><%-lang.listing_item.edit%></button></a>
+					<% } %> 
+				<% } %> 
+			</div>
 		<% }) %>
         
-        </ul>
+        </div>
         <div class="admin_button">
             <% if (user != null) { %>
                 <% if (user.accesslevel.ban_user && user.id != authorid) { %>

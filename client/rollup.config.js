@@ -107,5 +107,13 @@ export default [
 			format: 'es'
 		},
 		plugins: plugins
+	},
+	{
+		input: './client/user/entry.ts',
+		output: {
+			file: './static/lapa/userpage.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/userpage.css'})].concat(plugins)
 	}
 ];
