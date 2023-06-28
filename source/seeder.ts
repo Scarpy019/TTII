@@ -1,4 +1,4 @@
-import { Bid, Listing, type Log, Section, Subsection, User, Media, UserAccess } from './models/index.js';
+import { Bid, Listing, type Log, Section, Subsection, User, UserAccess } from './models/index.js';
 import ts from 'typescript';
 import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -903,16 +903,6 @@ export async function seedAll (): Promise<void> {
 		bid_amount: 420,
 		listingId: test1.id,
 		userId: user.id
-	});
-
-	// -------Media----------
-	// ----------------------
-
-	await Media.create({
-		uuid: '0e906ca0-d978-45c2-ad05-30bf16074e31',
-		orderNumber: 1,
-		extension: '.jpg',
-		listingId: test1.id
 	});
 
 	await sequelize.sync();
