@@ -16,15 +16,17 @@
     <div class="main_container">
         <div class="listing">
             <h1 id="listing_name"><%- listing.title %></h1>
-			<div id="gallery-shell">
-				<button class="navbtn" id="prvgal" type="button">&lt;</button>
-				<div id="gallery">
-					<% media.forEach((item, index) => { %>
-						<img src="/files/<%= item.uuid + item.extension %>" <% if (index !== 0) { %>class="rightimg"<% } %> alt="descripting image">
-					<% });%>
+			<% if(media.length > 0) { %>
+				<div id="gallery-shell">
+					<button class="navbtn" id="prvgal" type="button">&lt;</button>
+					<div id="gallery">
+						<% media.forEach((item, index) => { %>
+							<img src="/files/<%= item.uuid + item.extension %>" <% if (index !== 0) { %>class="rightimg"<% } %> alt="descripting image">
+						<% });%>
+					</div>
+					<button class="navbtn" id="nxtgal" type="button">&gt;</button>
 				</div>
-				<button class="navbtn" id="nxtgal" type="button">&gt;</button>
-			</div>
+			<% } %>
             <div class="description">
                 <p><%-listing.body%></p>
                 <p><%-lang.listing_item.startprice%> - <%-listing.start_price%>$</p>
