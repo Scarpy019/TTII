@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/listings.css">
     <title></title>
 </head>
 <body>
@@ -12,7 +13,6 @@
         
     </div>
     <div class="main_container">
-
         <div class="listings">
             <h1 id="subcategory_name"><%- subsec_name %></h1>
             <div class="filterbar">
@@ -21,13 +21,17 @@
                 <button id="oldest"><%-lang.listingfiltering.oldest%></button>
                 <button id="newest"><%-lang.listingfiltering.newest%></button>
             </div>
-            <ul id="subcategory_list">
+            <div id="subcategory_list">
 				<% listings.forEach(listing => { %>
                     <% if (listing.status === "open") { %>
                         <% if (listing.user != undefined) { %>
                             <% if (!listing.user.banned) { %>
-                                <li class="listingitem" data-price="<%=listing.start_price%>" data-date="<%=transformDatewithhours(listing.createdAt)%>">
-                                        <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><%- listing.title %></a>
+                                <div class="listingitem" data-price="<%=listing.start_price%>" data-date="<%=transformDatewithhours(listing.createdAt)%>">
+                                        <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'>
+										<button type="button">
+											<%- listing.title %>
+										</button>
+									</a>
                                         <div class="listingprice"><%-lang.listing_item.startprice%> - <div class="price"><%=listing.start_price%></div>$</div>
                                         <div class="createdat"><%-lang.listing_item.postdate%> <%=transformDate(listing.createdAt)%></div>
                                         <div class="listingimage">
@@ -35,15 +39,15 @@
                                                 <img src="/files/<%= listing.media[0].uuid + listing.media[0].extension %>" alt="descripting image">
                                             <% }%>
                                         </div>
-                                </li>
+								</div>
                             <% } %>
                         <% } %>
                     <% } %>
 				<% }) %>
-			</ul>
+			</div>
         </div>
         <% if (user !== null){ %>
-            <a href="/listing/create?sectionId=<%=secId%>&subsectionId=<%=subsec_Id%>"><%-lang.listing_form.add_listing%></a>
+            <a href="/listing/create?sectionId=<%=secId%>&subsectionId=<%=subsec_Id%>"><button type="button"><%-lang.listing_form.add_listing%></button></a>
         <% } %>
     </div>
 </body>

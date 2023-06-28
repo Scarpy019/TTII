@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
+	<link rel="stylesheet" href="/lapa/mainpage.css">
 </head>
 <body>
     <div class="header">
@@ -12,18 +13,16 @@
     </div>
     <div class="main_container">
         <div class="categories">
-            <ul id="category_list">
-                <% sections.forEach(element => { %>
-                    <li>>
-                        <% if (lang.header.current_lang == "ENG") { %>
-                            <a href='/subsection/<%= element.id %>'><%- element.name %></a>
-                        <% } else if(lang.header.current_lang == "LV") { %>
-                            <a href='/subsection/<%= element.id %>'><%- element.nameLV %></a>
-                        <% } %>
-                    </li>
-                <% }) %>
-            
-            </ul>
+			<%_ sections.forEach(element => { _%>
+				<a href='/subsection/<%= element.id %>'>
+					<button type="button">
+						<%_ if (lang.header.current_lang == "ENG") { _%>
+							<%- element.name _%>
+						<%_ } else if(lang.header.current_lang == "LV") { _%>
+							<%- element.nameLV _%>
+						<%_ } _%>
+						</button></a>
+			<%_ }) _%>
         </div>
         <% if (user != null) { %>
             <% if (user.accesslevel.category_admin) { %>
@@ -31,5 +30,5 @@
             <% } %>
         <% } %>
     </div>
-</body>
+</body> 
 </html>

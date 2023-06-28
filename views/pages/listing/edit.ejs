@@ -13,57 +13,77 @@
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
-	<div id="imagelist">
-		<% media.forEach((item, index) => { %>
-			<% if(index !== 0) { %> <button data-index="<%= index+1 %>" type="button" class="moveLeft">&lt;</button> <% } %>
-			<img src="/files/<%= item.uuid + item.extension %>" alt="" srcset="">
-			<button data-mediaid="<%= item.uuid %>" type="button" class="deleteBtn">X</button>
-			<% if(index !== media.length-1) { %> <button data-index="<%= index+1 %>" type="button" class="moveRight">&gt;</button> <% } %>
-		<% }); %>
-	</div>
-	<%-lang.listing_form.image_upload_label%>
-	<input type="file" name="" id="imgupload">
-	<form>
-		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
-		<input type="text" id="list_title" name="listing_name" value="<%=existing_title%>" required> 
-		<label for="listing_description"><%-lang.listing_form.listing_desc%></label>
-		<input type="text" id="list_desc" name="listing_description" value=<%=existing_desc %> required > 
-		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
-		<input type="number" id="start_price" name="startprice" value="<%=existing_startprice%>" required>
-		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
-		<input type="hidden" value="<%=existing_status%>" id="open_status_def" name="openstatus">
-		<input type="checkbox" id="open_status" name="openstatus">
-		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
-		<input hidden id="exist_cat" value="<%=existing_categoryid%>">
-		<input hidden id="exist_subcat" value="<%=existing_subcategoryid%>">
-		<select id="categories" required>
-		<option id="deffcat" value="default"><%-lang.listing_form.category_def_val%></option>
-		<% sections.forEach(element => { %>
-			<% if (lang.header.current_lang == "ENG") { %>
-				<option id="category" value="<%-element.id%>"><%-element.name%></option>
-			<% } else if(lang.header.current_lang == "LV") { %>
-				<option id="category" value="<%-element.id%>"><%-element.nameLV%></option>
-			<% } %>
-		<% }) %>
-		<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
-		</select>
-		<label for="subcatid"><%-lang.listing_form.subcategory_select_label%></label>
-		<select id="subcategories" name="subcatid" required>
-		<option id="deffsub" value="default"><%-lang.listing_form.subcategory_def_val%></option>
-			<% sections.forEach(elem => { %>
-				<% elem.subsections.forEach(element => { %>
+	<div class="main_container">
+		<div id="imagelist">
+				<% media.forEach((item, index) => { %>
+					<div>
+					<% if(index !== 0) { %> <button data-index="<%= index+1 %>" type="button" class="moveLeft">&lt;</button> <% } %>
+						<div>
+							<img src="/files/<%= item.uuid + item.extension %>" alt="" srcset="">
+							<button data-mediaid="<%= item.uuid %>" type="button" class="deleteBtn">X</button>
+						</div>
+						<% if(index !== media.length-1) { %> <button data-index="<%= index+1 %>" type="button" class="moveRight">&gt;</button> <% } %>
+					</div>
+				<% }); %>
+		</div>
+		<%-lang.listing_form.image_upload_label%>
+		<input accept="image/png, image/jpeg"  type="file" name="" id="imgupload">
+		<form id="edit-form">
+			<div>
+				<label for="listing_name"><%-lang.listing_form.listing_title%></label>
+				<input type="text" id="list_title" name="listing_name" value="<%=existing_title%>" required><br>
+			</div>
+			<div>
+				<label for="listing_description"><%-lang.listing_form.listing_desc%></label><br>
+				<textarea type="text" id="list_desc" name="listing_description" required ><%=existing_desc %></textarea> <br>
+			</div>
+			<div>
+				<label for="startprice"><%-lang.listing_form.start_price_label%></label>
+				<input type="number" id="start_price" name="startprice" value="<%=existing_startprice%>" required> <br>
+			</div>
+			<div>
+				<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
+				<input type="hidden" value="<%=existing_status%>" id="open_status_def" name="openstatus">
+				<input type="checkbox" id="open_status" name="openstatus"><br>	
+			</div>
+			<div>
+				<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
+				<input hidden id="exist_cat" value="<%=existing_categoryid%>">
+				<input hidden id="exist_subcat" value="<%=existing_subcategoryid%>">
+				<select id="categories" required>
+				<option id="deffcat" value="default"><%-lang.listing_form.category_def_val%></option>
+				<% sections.forEach(element => { %>
 					<% if (lang.header.current_lang == "ENG") { %>
-						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+						<option id="category" value="<%-element.id%>"><%-element.name%></option>
 					<% } else if(lang.header.current_lang == "LV") { %>
-						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.nameLV%></option>
+						<option id="category" value="<%-element.id%>"><%-element.nameLV%></option>
 					<% } %>
 				<% }) %>
-			<% }) %>
-		</select> 
-		<input hidden id="edit" value="true">
-	</form>
-	<button id="updatebutton" value="Up"><%-lang.listing_form.update%></button><br>
-	<button id="dangerousdeletebuttonthatdestroys"><%-lang.listing_form.delete%></button><br>
-	<a href="/listing/item?id=<%=encodeUUID(listingid)%>" id="returntolist"><%-lang.listing_form.return%><br><br>
+				<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
+				</select><br>	
+			</div>
+			<div>
+				<label for="subcatid"><%-lang.listing_form.subcategory_select_label%></label>
+				<select id="subcategories" name="subcatid" required><br>
+				<option id="deffsub" value="default"><%-lang.listing_form.subcategory_def_val%></option>
+					<% sections.forEach(elem => { %>
+						<% elem.subsections.forEach(element => { %>
+							<% if (lang.header.current_lang == "ENG") { %>
+								<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+							<% } else if(lang.header.current_lang == "LV") { %>
+								<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.nameLV%></option>
+							<% } %>
+						<% }) %>
+					<% }) %>
+				</select> 
+				<input hidden id="edit" value="true"><br>
+			</div>
+		</form>
+		<button id="updatebutton" value="Up"><%-lang.listing_form.update%></button><br>
+		<br>
+		<button id="dangerousdeletebuttonthatdestroys"><%-lang.listing_form.delete%></button><br>
+		<br><br>
+		<a href="/listing/item?id=<%=encodeUUID(listingid)%>" id="returntolist"><%-lang.listing_form.return%>
+	</div>
 </body>
 </html>

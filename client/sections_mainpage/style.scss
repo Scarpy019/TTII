@@ -1,0 +1,29 @@
+@use '../constants';
+
+.main_container {
+	margin: auto;
+	width: 80%;
+}
+
+.categories {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+}
+
+.categories button {
+	width: 100%;
+	border-radius: 0;
+	border: 0;
+	background-color: lighten(constants.$main-color, 40%);
+	transition: 0.2s;
+	cursor: pointer;
+	height: 4rem;
+}
+.categories{
+	:focus, :hover{
+		background-color: lighten(constants.$main-color, 10%);
+	}
+}
+.categories a {
+	margin: 1px;
+}

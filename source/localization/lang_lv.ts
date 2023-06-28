@@ -13,7 +13,7 @@ export default {
 	},
 	forms: {
 		username_label: 'Lietotājvārds',
-		user_or_email: 'Lietotājvārds vai epasts',
+		username_or_email: 'Lietotājvārds vai epasts',
 		email_label: 'Epasts',
 		password_label: 'Parole'
 	},
@@ -38,10 +38,11 @@ export default {
 		startprice: 'Sākotnējā cena',
 		author: 'Autors',
 		postdate: 'Izveidots',
-		edit: 'Rediģēt'
+		edit: 'Rediģēt',
+		nopicture: 'Bilžu nav'
 	},
 	userpage: {
-		welcome: 'Sveicināts'
+		welcome: 'Sveicināts/a'
 	},
 	chat: {
 		send_message: 'Ievadiet ziņu:',

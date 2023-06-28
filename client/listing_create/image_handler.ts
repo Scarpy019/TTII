@@ -22,7 +22,7 @@ async function refreshImages (): Promise<void> {
 		const image = $('<div></div>');
 		if (index !== 0) {
 			$(
-				`<button type="button">
+				`<button type="button" class="moveLeft">
 					&lt;
 				</button>
 			`).appendTo(image).on('click', () => {
@@ -30,18 +30,19 @@ async function refreshImages (): Promise<void> {
 				void refreshImages();
 			});
 		}
+		const subdiv = $('<div></div>').appendTo(image);
+		subdiv.append(`<img src="${URL.createObjectURL(file)}">`);
 		$(
-			`<button type="button">
+			`<button type="button" class="deleteBtn">
 				X
 			</button>
-		`).appendTo(image).on('click', () => {
+		`).appendTo(subdiv).on('click', () => {
 			erase(index);
 			void refreshImages();
 		});
-		image.append(`<img src="${URL.createObjectURL(file)}">`);
 		if (index !== imageArray.length - 1) {
 			$(
-				`<button type="button">
+				`<button type="button" class="moveRight">
 					&gt;
 				</button>
 			`).appendTo(image).on('click', () => {
