@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=timeklis_2
+      - MYSQL_HOST=mysqldb
+    ports:
+      - "3307:3306"
+    volumes:
+      - db:/usr/dir/app/lib/mysql
+  app:
+    depends_on:
+      - mysqldb
+    build: ./
+    restart: unless-stopped
+    environment:
+      - DB_HOST=mysqldb
+volumes: 
+  db:
