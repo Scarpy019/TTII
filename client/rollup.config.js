@@ -6,7 +6,7 @@ import scss from 'rollup-plugin-scss';
 import json from "@rollup/plugin-json";
 import polyfills from "rollup-plugin-node-polyfills";
 const plugins=[
-	typescript({ tsconfig: "./client/tsconfig.json", sourceMap: true }),
+	typescript({ tsconfig: "./client/tsconfig.json", sourceMap: false }),
 	commonJS({
 
 	}),
@@ -14,15 +14,14 @@ const plugins=[
 		browser:true
 	}),
 	json(),
-	polyfills()
-	// terser()
+	polyfills(),
+	terser()
 ];
 
 export default [
 	{
-		input: './client/header/entry.ts',
+		input: './client/header/entry.ts', 
 		output: {
-			sourcemap: true,
 			file: './static/lapa/headerstyle.js',
 			format: 'es'
 		},
@@ -31,7 +30,6 @@ export default [
 	{
 		input: './client/client.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/client.js',
 			format: 'es'
 		},
@@ -40,7 +38,6 @@ export default [
 	{
 		input: './client/hardening.ts',
 		output: {
-			sourcemap: true,
 			file: './static/js/hardening.js',
 			format: 'es'
 		},
@@ -49,7 +46,6 @@ export default [
 	{
 		input: './client/listing_create/image_handler.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/listing_create.js',
 			format: 'es'
 		},
@@ -58,7 +54,6 @@ export default [
 	{
 		input: './client/listing_edit/entry_point.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/listing_edit.js',
 			format: 'es'
 		},
@@ -67,7 +62,6 @@ export default [
 	{
 		input: './client/listing_item/entry_point.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/listing_item.js',
 			format: 'es'
 		},
@@ -76,7 +70,6 @@ export default [
 	{
 		input: './client/listings/entry.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/listings.js',
 			format: 'es'
 		},
@@ -85,7 +78,6 @@ export default [
 	{
 		input: './client/subcategories/entry.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/subcategories.js',
 			format: 'es'
 		},
@@ -94,7 +86,6 @@ export default [
 	{
 		input: './client/sections_mainpage/entry.ts',
 		output: {
-			sourcemap: true,
 			file: './static/lapa/mainpage.js',
 			format: 'es'
 		},
