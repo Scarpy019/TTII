@@ -26,20 +26,20 @@
                     <% if (listing.status === "open") { %>
                         <% if (listing.user != undefined) { %>
                             <% if (!listing.user.banned) { %>
-                                <div class="listingitem" data-price="<%=listing.start_price%>" data-date="<%=transformDatewithhours(listing.createdAt)%>">
-                                        <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'>
-										<button type="button">
-											<%- listing.title %>
-										</button>
-									</a>
-                                        <div class="listingprice"><%-lang.listing_item.startprice%> - <div class="price"><%=listing.start_price%></div>$</div>
-                                        <div class="createdat"><%-lang.listing_item.postdate%> <%=transformDate(listing.createdAt)%></div>
-                                        <div class="listingimage">
-                                            <% if(listing.media[0] !== undefined && listing.media[0] !== null) { %>
-                                                <img src="/files/<%= listing.media[0].uuid + listing.media[0].extension %>" alt="descripting image">
-                                            <% }%>
-                                        </div>
-								</div>
+                                    <div class="listingitem" data-price="<%=listing.start_price%>" data-date="<%=transformDatewithhours(listing.createdAt)%>">
+                                            <a href='/listing/item?id=<%=encodeUUID(listing.id)%>'>
+                                                <button type="button">
+                                                    <%- listing.title %>
+                                                </button>
+                                            </a>
+                                            <div class="listingprice"><%-lang.listing_item.startprice%> - <div class="price"><%=listing.start_price%></div>$</div>
+                                            <div class="createdat"><%-lang.listing_item.postdate%> <%=transformDate(listing.createdAt)%></div>
+                                            <div class="listingimage">
+                                                <% if(listing.media[0] !== undefined && listing.media[0] !== null) { %>
+                                                    <img src="/files/<%= listing.media[0].uuid + listing.media[0].extension %>" alt="descripting image">
+                                                <% } %>
+                                            </div>
+                                    </div>
                             <% } %>
                         <% } %>
                     <% } %>

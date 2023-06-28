@@ -210,7 +210,7 @@ $('#language').on('change', function () {
 function listingsToArray (): any[] {
 	const array: any[] = [];
 	let i = 0;
-	$('li').each(function () {
+	$('.listingitem').each(function () {
 		const listitem = $('.listingitem')[i];
 		const price = $(this).data('price');
 		const date = $(this).data('date');
