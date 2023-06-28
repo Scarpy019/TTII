@@ -12,11 +12,13 @@
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
-	<form id="createSection" action="/section" method="post">
-		<label for="section_name"><%-lang.admin.sec_name%></label>
-		<input type="text" id="section_name" name="section_name" required>
-		<label for="lv_section_name"><%-lang.admin.lv_sec_name%></label>
-		<input type="text" id="lv_section_name" name="lv_section_name" required>
-		<input type="submit" value="Submit"> 
-	</form>
+	<div class="main_container">
+		<form id="createSection" action="/section" method="post">
+			<label for="section_name"><%-lang.admin.sec_name%></label>
+			<input type="text" id="section_name" name="section_name" required>
+			<label for="lv_section_name"><%-lang.admin.lv_sec_name%></label>
+			<input type="text" id="lv_section_name" name="lv_section_name" required>
+			<input type="submit" value="Submit"> 
+		</form>
+	</div>
 </body>
