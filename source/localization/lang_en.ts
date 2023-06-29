@@ -22,7 +22,8 @@ export default {
 		listing_title: 'Listing title',
 		listing_desc: 'Listing description',
 		start_price_label: 'Starting price',
-		auction_status_label: 'Open the auction now?',
+		auction_status_label: 'Is an auction?',
+		auction_end_label: 'Auction ends',
 		category_select_label: 'Select a category',
 		category_def_val: 'Category selection',
 		subcategory_select_label: 'Select a subcategory',
@@ -46,7 +47,8 @@ export default {
 	},
 	chat: {
 		send_message: 'Enter message:',
-		awaiting_decrypt: 'Decrypting message, please wait...'
+		awaiting_decrypt: 'Decrypting message, please wait...',
+		chat_with: 'Chat with'
 	},
 	admin: {
 		add_sect: 'Add section',
@@ -61,6 +63,17 @@ export default {
 		lv_subsec_name: 'Latvian subsection name',
 		edit: 'Edit',
 		in_sect: 'In section - '
+	},
+	bid: {
+		current_bid: 'Current bid:',
+		generatePlaceText: (arg0: string) => `Your bid is currently ${arg0}. of all bids.`,
+		create: 'Add a bid',
+		edit: 'Edit your bid',
+		bid_amount: 'Bid amount:',
+		update: 'Update Bid',
+		delete: 'Delete Bid',
+		bids: 'bids',
+		bid_list: 'Bids:'
 	},
 	search: {
 		searchfield: 'Enter a keyword',

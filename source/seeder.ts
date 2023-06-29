@@ -435,6 +435,7 @@ export async function seedAll (): Promise<void> {
 		status: 'open',
 		subsectionId: motorlaivas.id,
 		userId: userBoi.id,
+		is_auction: true,
 		is_draft: false
 	});
 

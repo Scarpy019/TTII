@@ -17,6 +17,7 @@
 		        <h2><%=lang.userpage.welcome%>, <%=username%></h2>
             <% } else { %> 
                 <h2><%=username%></h2>
+				<a href="/chat/conversation/<%=username%>"><%-lang.chat.chat_with%> <%=username%></a>
             <% } %> 
         <% } else { %> 
             <h2><%=username%></h2>
