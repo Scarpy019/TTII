@@ -36,3 +36,7 @@ export const server = {
 	/** HTTPS cert location */
 	certLocation: 'server.cert'
 };
+export const seeder = {
+	/* Admin password for the seeder */
+	adminPass: 'sample_password'
+};

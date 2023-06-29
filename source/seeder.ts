@@ -4,7 +4,10 @@ import { sequelize } from './sequelizeSetup.js';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { logger } from './lib/Logger.js';
+import { readFileSync } from 'fs';
+import { seeder as config } from './config.js';
 const sys = ts.sys;
+const pass = process.env.APP_ADMIN_PASSWORD_FILE !== undefined ? readFileSync(process.env.APP_ADMIN_PASSWORD_FILE).toString() : config.adminPass;
 export async function seedAll (): Promise<void> {
 	// -------User and UserLog-------
 	// ------------------------------
@@ -87,7 +90,7 @@ export async function seedAll (): Promise<void> {
 		id: uuidv4(),
 		username: 'administrators',
 		email: 'admin@admin.user',
-		password: await bcrypt.hash('neuzlauzisietmani', 12),
+		password: await bcrypt.hash(pass, 12),
 		access: 'admin'
 	});
 	await user3.$create('log', {
