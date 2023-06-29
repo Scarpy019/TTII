@@ -1,7 +1,7 @@
 FROM node:18
 WORKDIR /usr/dir/app
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 COPY . .
 RUN npm run build
 RUN npx rollup --config ./client/rollup.config.js
