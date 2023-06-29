@@ -6,7 +6,7 @@ import { logUserAction } from './middleware/LoggingMiddleware.js';
 import { validateAuthToken } from './middleware/AuthTokenMiddleware.js';
 import { headerConstants } from './controllers/config.js';
 import { localization } from './middleware/LocalizationMiddleware.js';
-import { identifySession, obfuscateServerInfo, validateCSRF } from './middleware/HardeningMiddleware.js';
+import { identifySession, obfuscateServerInfo, upgradeToHTTPS, validateCSRF } from './middleware/HardeningMiddleware.js';
 import { logger } from './lib/Logger.js';
 import cors from 'cors';
 import { server as config } from './config.js';
@@ -31,6 +31,7 @@ app.use(BodyParser.json()); // to support JSON-encoded bodies
 app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
+app.use(upgradeToHTTPS);
 app.use(originURLMiddleware);
 app.use(validateAuthToken); // To parse authentification tokens
 app.use(logUserAction); // To log actions on endpoints

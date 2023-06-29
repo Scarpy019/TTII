@@ -66,6 +66,12 @@ export async function validateCSRF (req: Request, res: Response, next: NextFunct
 	}
 }
 
+export async function upgradeToHTTPS (req: Request, res: Response, next: NextFunction): Promise<void> {
+	let host = req.headers.host as string;
+	host = host?.replace('3000', '3001'); // On debug, change port
+	req.secure ? next() : res.redirect(`https://${host}${req.url}`);
+}
+
 export async function obfuscateServerInfo (req: Request, res: Response, next: NextFunction): Promise<void> {
 	res.removeHeader('X-Powered-By');
 	next();
