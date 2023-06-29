@@ -197,13 +197,19 @@ signup.create = signup.handler(
 	async (req, res): Promise<void> => {
 		try {
 			const hash = await bcrypt.hash(req.body.password, 12);
-			await User.create({
+			const user = await User.create({
 				id: uuidv4(),
 				access: 'client',
 				email: req.body.email,
 				username: req.body.username,
 				password: hash
 			});
+			// successful signup
+			const payload: object = {
+				sub: user.id
+			};
+			const token = jwt.sign(payload, config.secret, { expiresIn: config.tokenLifeBrowser });
+			res.cookie('AuthToken', token, { maxAge: config.tokenLifeBrowser * 1000, sameSite: 'strict', secure: true });
 			res.redirect('../');
 		} catch (error) {
 			res.send(error);

@@ -1,0 +1,32 @@
+@use '../constants';
+
+
+.listingitem button {
+	position: relative;
+	width: 100%;
+	border-radius: 0;
+	border: 0;
+	background-color: lighten(constants.$main-color, 40%);
+	transition: 0.2s;
+	cursor: pointer;
+	height: 4rem;
+	&:focus, &:hover{
+		background-color: lighten(constants.$main-color, 10%);
+	}
+
+	&:active{
+		background-color: lighten(constants.$main-color, 20%);
+	}
+	.listingprice {
+		position: absolute;
+		left: 2%;
+		bottom: 5%;
+	}
+	
+	.createdat {
+		position: absolute;
+		right: 2%;
+		bottom: 5%;
+	}
+	margin-top: 4vh;
+}
