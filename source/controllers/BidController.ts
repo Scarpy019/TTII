@@ -29,6 +29,7 @@ bid.create = bid.handler(ValidBidCreationForm,
 		const listing = await Listing.findByPk(listId);
 		if(listing === null) return res.sendStatus(404);
 		if(!listing.is_auction || (listing.auction_end && listing.auction_end.getTime() < Date.now())) return res.sendStatus(400);
+		if(listing.start_price && req.body.bid_amount < listing.start_price) return res.sendStatus(400);
 
 		const bidCheck = await Bid.findOne({
 			where: {
@@ -58,6 +59,7 @@ bid.update = bid.handler(ValidBidCreationForm,
 		const listing = await Listing.findByPk(listId);
 		if(listing === null) return res.sendStatus(404);
 		if(!listing.is_auction || (listing.auction_end && listing.auction_end.getTime() < Date.now())) return res.sendStatus(400);
+		if(listing.start_price && req.body.bid_amount < listing.start_price) return res.sendStatus(400);
 
 		const bid = await Bid.findOne({
 			where: {
