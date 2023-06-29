@@ -23,7 +23,7 @@ listing.read = async (req, res) => {
 	}
 	const subsecId = Number(req.params.subsectionId);
 	if (!isNaN(subsecId)) {
-		const listings = await Listing.findAll({ where: { subsectionId: subsecId }, limit: 5000, include: [{ model: User, as: 'user' }] });
+		const listings = await Listing.findAll({ where: { subsectionId: subsecId }, limit: 5000, include: [{ model: User, as: 'user' }, Media] });
 		const subsection = await Subsection.findByPk(subsecId);
 		if (isSubcategory(subsection)) {
 			res.render('pages/main/all_listings.ejs', {

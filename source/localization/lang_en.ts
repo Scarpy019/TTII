@@ -74,5 +74,15 @@ export default {
 		delete: 'Delete Bid',
 		bids: 'bids',
 		bid_list: 'Bids:'
+	},
+	search: {
+		searchfield: 'Enter a keyword',
+		searchbutton: 'Search'
+	},
+	listingfiltering: {
+		price_asc: 'Price ascending',
+		price_desc: 'Price descending',
+		oldest: 'Oldest',
+		newest: 'Newest'
 	}
 } satisfies locale;

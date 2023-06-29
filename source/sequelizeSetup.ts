@@ -9,6 +9,7 @@ export const sequelize = new Sequelize({
 	username: config.user,
 	password: config.pass,
 	host: config.host,
+	port: 3306,
 	models: [UserAccess, User, UserLog, Section, Subsection, Listing, Bid, Media, ChatMessage, MessageComponent],
 	define: {
 		freezeTableName: true

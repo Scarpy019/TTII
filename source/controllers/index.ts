@@ -6,4 +6,5 @@ import './ListingController.js';
 import './MediaController.js';
 import './ChatController.js';
 import './BidController.js';
+import './SearchController.js';
 export { controllerRouter } from './BaseController.js';
