@@ -5,7 +5,7 @@ export default {
 		home_button: 'Home',
 		publish_button: 'Create listing',
 		search_button: 'Search',
-		page_title: 'Generic page title',
+		page_title: 'EsEsElve',
 		login_name: 'Login',
 		signup_name: 'Sign up',
 		signout_name: 'Log out',

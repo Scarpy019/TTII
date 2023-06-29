@@ -19,6 +19,7 @@
 		<div class="user_status">
 			<div class="seperator"></div>
 			<% if (user!==null && user!==undefined) { %>
+				<div id="user_id" style="display:none"><%-user.id%></div>
 				<div><a href="/user/profile/<%=user.username%>"><button type="button"><%=user.username%></button></a></div>
 				<div class="seperator"></div>
 				<div><button id="signoutbutton"><%-lang.header.signout_name%></button></div>

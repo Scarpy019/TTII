@@ -6,7 +6,7 @@ async function checkAllAuctions (): Promise<void> {
 	const listings = await Listing.findAll();
 
 	listings.forEach(async listing => {
-		if (listing.is_auction !== null && (listing.auction_end != null) && listing.auction_end.getTime() >= Date.now()) {
+		if (listing.is_auction !== null && (listing.auction_end != null) && listing.auction_end.getTime() <= Date.now()) {
 			listing.status = 'closed';
 			await listing.save();
 		}

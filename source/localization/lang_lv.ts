@@ -5,7 +5,7 @@ export default {
 		home_button: 'Sākums',
 		publish_button: 'Veidot sludinājumu',
 		search_button: 'Meklēt',
-		page_title: 'Kkāda lapa',
+		page_title: 'EsEsElve',
 		login_name: 'Ielogoties',
 		signup_name: 'Reģistrējies',
 		signout_name: 'Pamest reģistrāciju',
