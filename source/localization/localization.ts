@@ -14,6 +14,7 @@ export default interface locale {
 		username_or_email: string;
 		email_label: string;
 		password_label: string;
+		field_must_be: string;
 	};
 	listing_form: {
 		image_upload_label: string;

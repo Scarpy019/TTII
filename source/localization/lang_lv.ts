@@ -15,7 +15,8 @@ export default {
 		username_label: 'Lietotājvārds',
 		username_or_email: 'Lietotājvārds vai epasts',
 		email_label: 'Epasts',
-		password_label: 'Parole'
+		password_label: 'Parole',
+		field_must_be: 'Laukam jābūt'
 	},
 	listing_form: {
 		image_upload_label: 'Pievieno attēlu, max 20MiB',

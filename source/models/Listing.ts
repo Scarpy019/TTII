@@ -38,7 +38,7 @@ export class Listing extends Model<ListingAttributes, ListingInput> {
 	@Column
     title!: string;
 
-	@Column
+	@Column(DataType.TEXT('medium'))
     body!: string;
 
 	@Column

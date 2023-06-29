@@ -22,15 +22,18 @@
 		<form id="createForm" action="/listing" method="post">
 			<div>
 				<label for="listing_name"><%-lang.listing_form.listing_title%></label>
-				<input type="text" id="list_title" name="listing_name" required> 
+				<input type="text" id="list_title" name="listing_name" maxlength="254" required><br>
+				<span id="listing_name_err" class="err-msg"></span>
 			</div>
 			<div>
 				<label for="listing_description"><%-lang.listing_form.listing_desc%></label><br>
-				<textarea type="text" id="list_desc" name="listing_description" required></textarea>
+				<textarea type="text" id="list_desc" name="listing_description" maxlength="16000000" required></textarea><br>
+				<span id="listing_description_err" class="err-msg"></span>
 			</div>
 			<div>
 				<label for="startprice"><%-lang.listing_form.start_price_label%></label>
-				<input type="number" id="start_price" name="startprice" required>
+				<input type="number" id="start_price" name="startprice" min="1" max="9999" required><br>
+				<span id="startprice_err" class="err-msg"></span>
 			</div>
 			<div>
 				<label for="openstatus"><%-lang.listing_form.auction_status_label%></label><br>
@@ -38,6 +41,7 @@
 				<input type="radio" value="open" id="open_status" name="openstatus"><br>
 				<label for="openstatus"><%-lang.listing_form.no%></label>
 				<input type="radio" value="closed" id="open_status" name="openstatus"><br>
+				<span id="openstatus_err" class="err-msg"></span>
 			</div>
 			<div>
 				<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
@@ -51,7 +55,8 @@
 					<% } %>
 				<% }) %>
 				<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
-				</select>
+				</select><br>
+				<span id="category_err" class="err-msg"></span>
 			</div>
 			<div>
 				<label for="subcatid"><%-lang.listing_form.subcategory_select_label%></label>
@@ -66,7 +71,8 @@
 							<% } %>
 						<% }) %>
 					<% }) %>
-				</select><br>	
+				</select><br>
+				<span id="subcatid_err" class="err-msg"></span>
 			</div>
 			<input type="text" id="createfromexistsubcat" value="<%=createfromexistsubcat%>" hidden readonly>
 			<input type="text" id="oldcategory" value="<%=currentsection%>" hidden readonly>

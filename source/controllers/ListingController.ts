@@ -34,6 +34,8 @@ listing.read = async (req, res) => {
 				secId: subsection.sectionId,
 				originURL: `_listing_${String(subsecId)}` // For redirect purposes with login button
 			});
+		} else {
+			res.sendStatus(404);
 		}
 	} else {
 		// TODO: proper redirect
@@ -71,8 +73,8 @@ interface ListingUpdateForm {
 function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
 	const valid =
 		('startprice' in obj) && typeof obj.startprice === 'string' && !isNaN(Number(obj.startprice)) && Number(obj.startprice) > 0 && Number(obj.startprice) < 10_000 &&
-		('listing_name' in obj) && typeof obj.listing_name === 'string' &&
-		('listing_description' in obj) && typeof obj.listing_description === 'string' &&
+		('listing_name' in obj) && typeof obj.listing_name === 'string' && obj.listing_name.length < 255 &&
+		('listing_description' in obj) && typeof obj.listing_description === 'string' && obj.listing_description.length < 16_000_000 &&
 		('subcatid' in obj) && typeof obj.subcatid === 'string' && !isNaN(Number(obj.subcatid)) &&
 		('openstatus' in obj) && typeof obj.openstatus === 'string' && ('listingid' in obj) && typeof obj.listingid === 'string';
 	return valid;
@@ -80,6 +82,7 @@ function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
 
 listing.create = [
 	async (req, res): Promise<void> => {
+		const errParams: Record<string, string> = { };
 		if (ValidListingCreationForm(req.body)) {
 			try {
 				if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
@@ -100,16 +103,29 @@ listing.create = [
 					};
 				} else {
 					logger.info('Subcategory was invalid');
-					res.sendStatus(400);
+					errParams['err-subcat'] = 'select subcategory';
 				}
 			} catch (error) {
-				res.status(500);
-				res.send(error);
+				logger.info(error);
+				// res.status(500);
+				// res.send(error);
 			};
-		} else {
-			logger.info('Body did not match', req.body);
-			res.sendStatus(400);
 		}
+		const body = req.body;
+		logger.info('Body did not match', req.body);
+		if ('startprice' in body) {
+			if (isNaN(Number(body.startprice))) {
+				errParams['err-startprice'] = 'Start price is not a number';
+			} else if (!(Number(body.startprice) > 0 && Number(body.startprice) < 10_000)) {
+				errParams['err-startprice'] = 'Start price is not between 1 and 9999';
+			}
+		}
+		if ('subcatid' in body) {
+			if (isNaN(Number(body.subcatid))) {
+				errParams['err-subcat'] = 'Subcategory is invalid';
+			}
+		}
+		res.json({ error: true, ...errParams });
 	}
 ];
 

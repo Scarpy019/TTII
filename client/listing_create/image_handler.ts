@@ -86,18 +86,37 @@ function convertFormToJSON (form: JQuery<HTMLFormElement>): any {
 	return json;
 }
 
+function setErrs (errs: Map<string, string>): void {
+	$('[id$=_err]').text('');
+	errs.forEach((val, key) => {
+		if (key.startsWith('err-')) {
+			const id = key.substring('err-'.length) + '_err';
+			$(`#${id}`).text(val);
+		}
+	});
+}
+
 $('#createForm').on('submit', async (e) => {
 	e.preventDefault();
 	const form: JQuery<HTMLFormElement> = $('#createForm');
+	const formdata = convertFormToJSON(form);
+	if (formdata.subcatid === 'defsub') {
+		$('#subcatid_err').text('Please select category and subcategory');
+		return;
+	}
 	const response = await fetchWithCSRF('/listing', {
 		method: 'POST',
-		body: JSON.stringify({ openstatus: 'closed', ...convertFormToJSON(form) })
+		body: JSON.stringify({ openstatus: 'closed', ...formdata })
 	});
 	const data = new FormData();
 	imageArray.forEach(file => {
 		data.append('image[]', file);
 	});
 	const respJSON = await response.json();
+	if (respJSON.error !== undefined) {
+		setErrs(new Map(Object.entries(respJSON)));
+		return false;
+	}
 	data.append('listingId', respJSON.listingId);
 	await fetchWithCSRFmultipart('/media', {
 		method: 'POST',

@@ -15,7 +15,8 @@ export default {
 		username_label: 'Username',
 		username_or_email: 'Username or email',
 		email_label: 'Email',
-		password_label: 'Password'
+		password_label: 'Password',
+		field_must_be: 'Field must be'
 	},
 	listing_form: {
 		image_upload_label: 'Add image, max 20MiB',
