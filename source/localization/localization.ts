@@ -21,6 +21,7 @@ export default interface locale {
 		listing_desc: string;
 		start_price_label: string;
 		auction_status_label: string;
+		auction_end_label: string;
 		category_select_label: string;
 		category_def_val: string;
 		subcategory_select_label: string;
@@ -55,6 +56,7 @@ export default interface locale {
 	chat: {
 		send_message: string;
 		awaiting_decrypt: string;
+		chat_with: string;
 	};
 	admin: {
 		add_sect: string;
@@ -69,5 +71,16 @@ export default interface locale {
 		lv_subsec_name: string;
 		edit: string;
 		in_sect: string;
+	};
+	bid: {
+		current_bid: string;
+		generatePlaceText: (arg0: string) => string;
+		create: string;
+		edit: string;
+		bid_amount: string;
+		update: string;
+		delete: string;
+		bids: string;
+		bid_list: string;
 	};
 };
