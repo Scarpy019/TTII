@@ -46,7 +46,8 @@ export default {
 	},
 	chat: {
 		send_message: 'Enter message:',
-		awaiting_decrypt: 'Decrypting message, please wait...'
+		awaiting_decrypt: 'Decrypting message, please wait...',
+		chat_with: "Chat with"
 	},
 	admin: {
 		add_sect: 'Add section',

@@ -46,7 +46,8 @@ export default {
 	},
 	chat: {
 		send_message: 'Ievadiet ziņu:',
-		awaiting_decrypt: 'Atšifrē ziņu, lūdzam uzgaidīt...'
+		awaiting_decrypt: 'Atšifrē ziņu, lūdzam uzgaidīt...',
+		chat_with: "Sarunājies ar"
 	},
 	admin: {
 		add_sect: 'Pievienot sadaļu',

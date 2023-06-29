@@ -174,7 +174,7 @@ message.read = async (req, res) => {
 	}
 };
 
-const conversation = chat.subcontroller('conversation', ['id']);
+const conversation = chat.subcontroller('conversation', ['username']);
 
 conversation.read = async (req, res) => {
 	// Verify that the request comes from someone who's actually logged in
@@ -184,9 +184,15 @@ conversation.read = async (req, res) => {
 		return;
 	}
 	// Retrieve all messages sent to that user
-	const secondParty = req.params.id;
+	const secondPartyName = req.params.username;
+	const secondParty = await User.findOne({
+		where: {
+			username: secondPartyName
+		}
+	});
+	if (secondParty === null) return res.send(404);
 	const messages = await ChatMessage.findAll({
-		where: Sequelize.or({ senderId: user.id, receiverId: secondParty }, { senderId: secondParty, receiverId: user.id })
+		where: Sequelize.or({ senderId: user.id, receiverId: secondParty?.id }, { senderId: secondParty?.id, receiverId: user.id })
 	});
 	const sortedMessages = messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); // Sort them by timestamp
 	// Condense these messages into a simpler structure of id and author, the content will be retrieved individually by the client
@@ -198,5 +204,5 @@ conversation.read = async (req, res) => {
 		const returnObj = { id: msg.id, author: user.username };
 		messageData.push(returnObj);
 	}
-	res.render('pages/chat/view.ejs', { constants: headerConstants, userstatus_name: user.username, userstatus_page: `/user/profile/${user.id}`, messages: messageData, recipient: req.params.id });
+	res.render('pages/chat/view.ejs', { constants: headerConstants, messages: messageData, recipient: secondParty.id, recipientName: secondParty.username });
 };

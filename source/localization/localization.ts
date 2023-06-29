@@ -45,6 +45,7 @@ export default interface locale {
 	chat: {
 		send_message: string;
 		awaiting_decrypt: string;
+		chat_with: string;
 	};
 	admin: {
 		add_sect: string;
