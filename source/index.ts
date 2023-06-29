@@ -16,6 +16,7 @@ import { sequelize } from './sequelizeSetup.js';
 import * as http from 'http';
 import { io } from './sockets/Socket.js';
 import { startAuctionCheckInterval } from './lib/ListingHelpers.js';
+import { originURLMiddleware } from './middleware/OriginMiddleware.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -31,6 +32,7 @@ app.use(BodyParser.json()); // to support JSON-encoded bodies
 app.use(BodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true
 }));
+app.use(originURLMiddleware);
 app.use(validateAuthToken); // To parse authentification tokens
 app.use(logUserAction); // To log actions on endpoints
 app.use(identifySession); // To fingerprint the session

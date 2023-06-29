@@ -4,28 +4,25 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign up form</title>
+    <title><%- lang.header.signup_name %></title>
 </head>
 <body>
-    <%- include('../misc/hardening.ejs') %>
-    <link rel="stylesheet" href="/lapa/headerstyle.css">
-	<div class="nav_buttons">
-		<a href="<%=constants.section%>" id="home_button"><%=lang.header.home_button%></a>
-		<a href='<%=constants.search%>' id="search_button"><%=lang.header.search_button%></a>
-		<a href="<%=constants.publish%>" id="publish_button"><%=lang.header.publish_button%></a>
+    <%- include('../misc/header.ejs') %>
+	<div class="main_container">
+		<h1><%- lang.header.signup_name %></h1>
+		<form action="" method="post">
+			<label for="username"><%-lang.forms.username_label%></label>
+			<input type="text" name="username" id=""><br>
+			<label for="email"><%-lang.forms.email_label%></label>
+			<input type="email" name="email" id=""><br>
+			<label for="password"><%-lang.forms.password_label%></label>
+			<input type="password" name="password" id=""><br>
+			<input type="submit" value="<%-lang.header.signup_name%>">
+		</form>
+		<br>
+		<form action="/user/login">
+			<input type="submit" value="<%-lang.header.login_name%>">
+		</form>
 	</div>
-	<h1 id="page_title"><%-lang.header.page_title%></h1>
-    <form action="" method="post">
-        <label for="username"><%-lang.forms.username_label%></label>
-        <input type="text" name="username" id="">
-        <label for="email"><%-lang.forms.email_label%></label>
-        <input type="email" name="email" id="">
-        <label for="password"><%-lang.forms.password_label%></label>
-        <input type="password" name="password" id="">
-        <input type="submit" value="<%-lang.header.signup_name%>">
-    </form>
-    <form action="/user/login">
-        <input type="submit" value="<%-lang.header.login_name%>">
-    </form>
 </body>
 </html>

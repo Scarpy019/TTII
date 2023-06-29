@@ -13,54 +13,67 @@
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
-	<div id = "imgdisplay">
-		
-	</div>
-	<div><%-lang.listing_form.image_upload_label%></div>
-	<input accept="image/png, image/jpeg" type="file" name="imgupload" title="Upload image" id="imgupload"><br>
-	<form id="createForm" action="/listing" method="post">
-		<label for="listing_name"><%-lang.listing_form.listing_title%></label>
-		<input type="text" id="list_title" name="listing_name" required> 
-		<label for="listing_description"><%-lang.listing_form.listing_desc%></label>
-		<input type="text" id="list_desc" name="listing_description" required> 
-		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
-		<input type="number" id="start_price" name="startprice" required>
-		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
-		<input type="checkbox" onchange="showHideAuctionInfo()" id="open_status" name="openstatus">
-		<div id="auction_info">
-			<label for="auctionend"><%-lang.listing_form.auction_end_label%></label>
-			<input type="date" id="auction_end_date" name="auctionend">
-			<input type="time" id="auction_end_time" name="auctionend">
+	<div class="main_container">
+		<div id = "imgdisplay">
 		</div>
-		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
-		<select id="categories" required>
-		<option value="defcat"><%-lang.listing_form.category_def_val%></option>
-		<% sections.forEach(element => { %>
-			<% if (lang.header.current_lang == "ENG") { %>
-				<option id="category" value="<%-element.id%>"><%-element.name%></option>
-			<% } else if(lang.header.current_lang == "LV") { %>
-				<option id="category" value="<%-element.id%>"><%-element.nameLV%></option>
-			<% } %>
-		<% }) %>
-		<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
-		</select>
-		<label for="subcatid"><%-lang.listing_form.subcategory_select_label%></label>
-		<select id="subcategories" name="subcatid" required>
-		<option id="deffsub" value="defsub"><%-lang.listing_form.subcategory_def_val%></option>
-			<% sections.forEach(elem => { %>
-				<% elem.subsections.forEach(element => { %>
+		<div><%-lang.listing_form.image_upload_label%></div>
+		<input accept="image/png, image/jpeg" type="file" name="imgupload" title="Upload image" id="imgupload"><br>
+		<form id="createForm" action="/listing" method="post">
+			<div>
+				<label for="listing_name"><%-lang.listing_form.listing_title%></label>
+				<input type="text" id="list_title" name="listing_name" required> 
+			</div>
+			<div>
+				<label for="listing_description"><%-lang.listing_form.listing_desc%></label><br>
+				<textarea type="text" id="list_desc" name="listing_description" required></textarea>
+			</div>
+			<div>
+				<label for="startprice"><%-lang.listing_form.start_price_label%></label>
+				<input type="number" id="start_price" name="startprice" required>
+			</div>
+			<div>
+				<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
+				<input type="checkbox" onchange="showHideAuctionInfo()" id="open_status" name="openstatus"><br>
+				<div id="auction_info">
+					<label for="auctionend"><%-lang.listing_form.auction_end_label%></label>
+					<input type="date" id="auction_end_date" name="auctionend">
+					<input type="time" id="auction_end_time" name="auctionend">
+				</div><br>
+			</div>
+			<div>
+				<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
+				<select id="categories" required>
+				<option value="defcat"><%-lang.listing_form.category_def_val%></option>
+				<% sections.forEach(element => { %>
 					<% if (lang.header.current_lang == "ENG") { %>
-						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+						<option id="category" value="<%-element.id%>"><%-element.name%></option>
 					<% } else if(lang.header.current_lang == "LV") { %>
-						<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.nameLV%></option>
+						<option id="category" value="<%-element.id%>"><%-element.nameLV%></option>
 					<% } %>
 				<% }) %>
-			<% }) %>
-		</select><br>
-		<input type="text" id="createfromexistsubcat" value="<%=createfromexistsubcat%>" hidden readonly>
-		<input type="text" id="oldcategory" value="<%=currentsection%>" hidden readonly>
-		<input type="text" id="oldsubcategory" value="<%=currentsubsection%>" hidden readonly>
-		<input type="submit" value="Submit">
-	</form>
+				<option id="sectioncount" value="<%=sectioncount%>" hidden></option>
+				</select>
+			</div>
+			<div>
+				<label for="subcatid"><%-lang.listing_form.subcategory_select_label%></label>
+				<select id="subcategories" name="subcatid" required>
+				<option id="deffsub" value="defsub"><%-lang.listing_form.subcategory_def_val%></option>
+					<% sections.forEach(elem => { %>
+						<% elem.subsections.forEach(element => { %>
+							<% if (lang.header.current_lang == "ENG") { %>
+								<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.name%></option>
+							<% } else if(lang.header.current_lang == "LV") { %>
+								<option class="category_<%=elem.id%>" value="<%-element.id%>"><%-element.nameLV%></option>
+							<% } %>
+						<% }) %>
+					<% }) %>
+				</select><br>	
+			</div>
+			<input type="text" id="createfromexistsubcat" value="<%=createfromexistsubcat%>" hidden readonly>
+			<input type="text" id="oldcategory" value="<%=currentsection%>" hidden readonly>
+			<input type="text" id="oldsubcategory" value="<%=currentsubsection%>" hidden readonly>
+			<input type="submit" value="Submit">
+		</form>
+	</div>
 </body>
 </html>

@@ -12,13 +12,15 @@
 	<div class="header">
         <%- include('../misc/header') %>
     </div>
-	<form id="updateSection">
-		<label for="section_name"><%-lang.admin.sec_name%></label>
-		<input type="text" id="section_name" name="section_name" value="<%=oldsectionname%>" required>
-		<label for="lv_section_name"><%-lang.admin.lv_sec_name%></label>
-		<input type="text" id="lv_section_name" name="lv_section_name" value="<%=oldlvsectionname%>" required>
-	</form>
-	<button id="updatesection" value="Up"><%-lang.admin.update%></button><br>
-	<button id="delete_section"><%-lang.admin.delete%></button><br>
-	<a href="/section" id="returntosection"><%-lang.admin.return_sect%></button><br><br>
+	<div class="main_container">
+		<form id="updateSection">
+			<label for="section_name"><%-lang.admin.sec_name%></label>
+			<input type="text" id="section_name" name="section_name" value="<%=oldsectionname%>" required>
+			<label for="lv_section_name"><%-lang.admin.lv_sec_name%></label>
+			<input type="text" id="lv_section_name" name="lv_section_name" value="<%=oldlvsectionname%>" required>
+		</form>
+		<button id="updatesection" value="Up"><%-lang.admin.update%></button><br>
+		<button id="delete_section"><%-lang.admin.delete%></button><br>
+		<a href="/section" id="returntosection"><%-lang.admin.return_sect%></button><br><br>
+	</div>
 </body>

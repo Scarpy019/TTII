@@ -13,7 +13,7 @@ export default {
 	},
 	forms: {
 		username_label: 'Username',
-		user_or_email: 'Username or email',
+		username_or_email: 'Username or email',
 		email_label: 'Email',
 		password_label: 'Password'
 	},
@@ -39,7 +39,8 @@ export default {
 		startprice: 'Starting price',
 		author: 'Author',
 		postdate: 'Posted on',
-		edit: 'Edit'
+		edit: 'Edit',
+		nopicture: 'No pictures'
 	},
 	userpage: {
 		welcome: 'Welcome'
