@@ -56,6 +56,13 @@ button {
 	background-color: lighten(constants.$main-color, 10%);
 	border: 0px;
 	border-radius: 6px;
+	&:focus, &:hover{
+		background-color: lighten(constants.$main-color, 20%);
+	}
+
+	&:active{
+		background-color: lighten(constants.$main-color, 40%);
+	}
 }
 
 .filterbar {
