@@ -59,4 +59,13 @@ export default interface locale {
 		edit: string;
 		in_sect: string;
 	};
+	bid: {
+		current_bid: string;
+		generatePlaceText: (arg0: string) => string;
+		create: string;
+		edit: string;
+		bid_amount: string;
+		update: string;
+		delete: string;
+	};
 };

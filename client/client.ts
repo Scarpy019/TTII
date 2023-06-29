@@ -204,3 +204,19 @@ $('#language').on('change', function () {
 	Cookies.set('lang', currentlang);
 	location.reload();
 });
+
+async function editbid (): Promise<void> {
+	const bidamount = $('#bid_amount').val();
+	const listingid = $('#listing_id').val();
+	if (bidamount !== undefined) {
+		const formobject = { bid_amount: bidamount.toString(), listingid };
+		await fetchWithCSRF(`/bid`, {
+			method: 'PUT',
+			body: JSON.stringify(formobject)
+		}).then(Response => {
+			location.href = Response.url;
+		});
+	}
+}
+
+$('#update_bid').on('click', editbid);

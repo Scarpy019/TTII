@@ -60,5 +60,14 @@ export default {
 		lv_subsec_name: 'Latvian subsection name',
 		edit: 'Edit',
 		in_sect: 'In section - '
+	},
+	bid: {
+		current_bid: "Current bid:",
+		generatePlaceText: (arg0: string) => `Your bid is currently ${arg0}. of all bids.`,
+		create: "Add a bid",
+		edit: "Edit your bid",
+		bid_amount: "Bid amount:",
+		update: "Update Bid",
+		delete: "Delete Bid"
 	}
 } satisfies locale;

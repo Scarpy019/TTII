@@ -34,7 +34,15 @@
                         <% } else { %>
                             <button id="openlisting">Open listing</button>
                         <% } %>
-                    <% } %>
+                    <% } else if (listing.is_auction) { %>
+						<% if (bid.bid_place !== undefined) { %>
+							<p><%- lang.bid.current_bid %> <%- bid.current_bid %></p>
+							<p><%- lang.bid.generatePlaceText(bid.bid_place) %></p>
+							<a href="/bid/edit?id=<%=encodeUUID(listing.id)%>"><%-lang.bid.edit%></a>
+						<% } else { %>
+							<a href="/bid/create?id=<%=encodeUUID(listing.id)%>"><%-lang.bid.create%></a>
+						<% } %>
+					<% } %>
                 <% } %>
 			</div>
 			<div class="listing_data"><img src='<%listing.media%>' alt='listingimage'></div>

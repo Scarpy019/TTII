@@ -60,5 +60,14 @@ export default {
 		lv_subsec_name: 'Latviskais apakšsadaļas nosaukums',
 		edit: 'Rediģēt',
 		in_sect: 'Iekšā kategorijā - '
+	},
+	bid: {
+		current_bid: "Pašreiz solītā cena:",
+		generatePlaceText: (arg0: string) => `Tavs solījums pašlaik ir ${arg0}. no visiem solījumiem.`,
+		create: "Pievienot solījumu",
+		edit: "Mainīt savu solījumu",
+		bid_amount: "Solītā cena:",
+		update: "Rediģēt solījumu",
+		delete: "Dzēst solījumu"
 	}
 } satisfies locale;

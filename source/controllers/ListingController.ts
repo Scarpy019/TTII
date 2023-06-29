@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Media } from '../models/Media.js';
 import { doesUserExist, isAdmin, isCategory, isListing, isLoggedOn, isSubcategory, isUserAuthor } from '../middleware/ObjectCheckingMiddleware.js';
 import { decodeUUID, encodeUUID } from '../middleware/UUIDmiddleware.js';
+import { Bid } from '../models/Bid.js';
 
 const listing = new Controller('listing', [], ['subsectionId']);
 
@@ -89,7 +90,8 @@ listing.create = [
 							id: uuidv4(),
 							title: req.body.listing_name,
 							body: req.body.listing_description,
-							status: req.body.openstatus,
+							status: 'open',
+							is_auction: req.body.openstatus === 'open' ? true : false,
 							start_price: Number(req.body.startprice),
 							userId: res.locals.user.id,
 							subsectionId: Number(req.body.subcatid),
@@ -142,12 +144,31 @@ listing.interface('/item', async (req, res) => {
 					res.redirect('/section');
 				} else {
 					if ((listing.status === 'open') || (listing.status === 'closed' && isLoggedOn(res.locals.user) && (res.locals.user.id === author.id || res.locals.user.accesslevel.category_admin))) {
+						let bid : Bid | null = null;
+						let bindex;
+						if (res.locals.user) {
+							bid = await Bid.findOne({
+								where: {
+									listingId: listing.id,
+									userId: res.locals.user!.id
+								}
+							});
+							if(bid) {
+								let bids = await Bid.findAll({where: {listingId: listing.id}});
+								bids = bids.sort((a, b) => a.bid_amount - b.bid_amount).reverse();
+								bindex = bids.findIndex(x => x.userId === res.locals.user?.id) + 1;
+							}
+						}
 						res.render('pages/main/listing_item.ejs', {
 							listing,
 							author: author.username,
 							author_profile: author.username,
 							authorid: author.id,
 							constants: headerConstants,
+							bid: {
+								current_bid: bid?.bid_amount,
+								bid_place: bindex
+							},
 							originURL: `_listing_item?id=${encodeUUID(listing.id)}` // For redirect purposes with login button
 						});
 					} else if (listing.status === 'closed') {
@@ -220,7 +241,7 @@ listing.update = listing.handler(
 			if (isListing(listinginstance)) {
 				listinginstance.title = req.body.listing_name;
 				listinginstance.body = req.body.listing_description;
-				listinginstance.status = req.body.openstatus;
+				listinginstance.is_auction = req.body.openstatus === 'open' ? true : false;
 				listinginstance.start_price = Number(req.body.startprice);
 				listinginstance.subsectionId = Number(req.body.subcatid);
 				await listinginstance.save();
