@@ -15,7 +15,7 @@ export const authorization = {
 	tokenLifeBrowser: 172_800,
 
 	/** secret used to sign JWTs and HMACs */
-	secret: 'noslepums_noslepums'
+	secret: 'noslepums'
 };
 export const session = {
 	/** lifetime of the session id token in the browser */
