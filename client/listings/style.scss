@@ -15,7 +15,8 @@
 		background-color: lighten(constants.$main-color, 40%);
 		transition: 0.2s;
 		cursor: pointer;
-		height: 4rem;
+		height: 12rem;
+		font-size: 3rem;
 		&:focus, &:hover{
 			background-color: lighten(constants.$main-color, 10%);
 		}
@@ -28,12 +29,22 @@
 			position: absolute;
 			left: 2%;
 			bottom: 5%;
+			font-size: 1rem;
 		}
 		
 		.createdat {
 			position: absolute;
 			right: 2%;
 			bottom: 5%;
+			font-size: 1rem;
+		}
+
+		.listingimage img {
+			position: absolute;
+			top:4%;
+			left: 1%;
+			max-height: 70%;
+			max-width: 20%;
 		}
 	}
 	a {
@@ -45,6 +56,13 @@ button {
 	background-color: lighten(constants.$main-color, 10%);
 	border: 0px;
 	border-radius: 6px;
+	&:focus, &:hover{
+		background-color: lighten(constants.$main-color, 20%);
+	}
+
+	&:active{
+		background-color: lighten(constants.$main-color, 40%);
+	}
 }
 
 .filterbar {
