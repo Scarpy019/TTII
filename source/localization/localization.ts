@@ -21,6 +21,7 @@ export default interface locale {
 		listing_desc: string;
 		start_price_label: string;
 		auction_status_label: string;
+		auction_end_label: string;
 		category_select_label: string;
 		category_def_val: string;
 		subcategory_select_label: string;
@@ -67,5 +68,6 @@ export default interface locale {
 		bid_amount: string;
 		update: string;
 		delete: string;
+		bids: string;
 	};
 };

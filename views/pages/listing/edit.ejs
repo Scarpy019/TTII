@@ -31,8 +31,13 @@
 		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
 		<input type="number" id="start_price" name="startprice" value="<%=existing_startprice%>" required>
 		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
-		<input type="hidden" value="<%=existing_status%>" id="open_status_def" name="openstatus">
-		<input type="checkbox" id="open_status" name="openstatus">
+		<input type="hidden" value="<%= existing_status %>" id="open_status_def" name="openstatus">
+		<input type="checkbox" <%= existing_status ? "checked" : "" %> id="open_status" name="openstatus">
+		<div <%= existing_status ? "" : "hidden" %> id="auction_info">
+			<label for="auctionend"><%-lang.listing_form.auction_end_label%></label>
+			<input type="date" id="auction_end_date" name="auctionend">
+			<input type="time" id="auction_end_time" name="auctionend">
+		</div>
 		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
 		<input hidden id="exist_cat" value="<%=existing_categoryid%>">
 		<input hidden id="exist_subcat" value="<%=existing_subcategoryid%>">

@@ -26,7 +26,12 @@
 		<label for="startprice"><%-lang.listing_form.start_price_label%></label>
 		<input type="number" id="start_price" name="startprice" required>
 		<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
-		<input type="checkbox" id="open_status" name="openstatus">
+		<input type="checkbox" onchange="showHideAuctionInfo()" id="open_status" name="openstatus">
+		<div id="auction_info">
+			<label for="auctionend"><%-lang.listing_form.auction_end_label%></label>
+			<input type="date" id="auction_end_date" name="auctionend">
+			<input type="time" id="auction_end_time" name="auctionend">
+		</div>
 		<label for="categoryname"><%-lang.listing_form.category_select_label%></label>
 		<select id="categories" required>
 		<option value="defcat"><%-lang.listing_form.category_def_val%></option>

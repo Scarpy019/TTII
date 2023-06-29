@@ -15,6 +15,7 @@ import { createServer } from 'https';
 import { sequelize } from './sequelizeSetup.js';
 import * as http from 'http';
 import { io } from './sockets/Socket.js';
+import { startAuctionCheckInterval } from './lib/ListingHelpers.js';
 // import { type AuthenticatedRequest, authenticator, router as userRouter } from './routes/UserController';
 
 const app: express.Application = express();
@@ -94,4 +95,8 @@ server.listen(HTTPport, async function () {
 	HTTPSserver.listen(HTTPSport, async function () {
 		logger.info(`App is listening for HTTPS on ${HTTPSport}`);
 	});
+
+	// Successful boot, it's auction checking time
+	logger.info('Starting auction checking interval...');
+	startAuctionCheckInterval();
 });

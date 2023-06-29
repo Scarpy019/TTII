@@ -1,8 +1,6 @@
 import { logger } from 'yatsl';
 import { isLoggedOn } from '../middleware/ObjectCheckingMiddleware.js';
-import { Bid } from '../models/Bid.js';
-import { Listing } from '../models/Listing.js';
-import { User } from '../models/User.js';
+import { Bid, Listing, User } from '../models/index.js';
 import { Controller } from './BaseController.js';
 import { headerConstants } from './config.js';
 import { decodeUUID, encodeUUID } from '../middleware/UUIDmiddleware.js';
@@ -82,7 +80,7 @@ bid.delete = bid.handler(ValidBidCreationForm,
 		if (res.locals.user === null) return res.sendStatus(403); // User is not logged in!
 
 		const listId = req.body.listingid as string;
-		const listing = await Listing.findByPk(decodeUUID(listId));
+		const listing = await Listing.findByPk(listId);
 		if(listing === null) return res.sendStatus(404);
 		if(!listing.is_auction) return res.sendStatus(400); // Should be able to delete it even after it ends
 

@@ -38,12 +38,14 @@ async function editlisting (): Promise<void> {
 	} else {
 		openstatus = 'closed';
 	}
+	const auctionEndDate = $('#auction_end_date').val();
+	const auctionEndTime = $('#auction_end_time').val();
 	const category = $('#categories').find(':selected').val();
 	const subcategory = $('#subcategories').find(':selected').val();
 	const currentlistingquery = location.search;
 	const currentlisting = currentlistingquery.substring(4); // Currently removes ?id= from location search to leave the listing id
 	if (listdesc !== undefined && startprice !== undefined && openstatus !== undefined && listtitle !== undefined && category !== undefined && subcategory !== undefined && currentlisting !== undefined) {
-		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), subcatid: subcategory.toString() };
+		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), auction_end_date: (auctionEndDate ?? "N/A").toString(), auction_end_time: (auctionEndTime ?? "N/A").toString(), subcatid: subcategory.toString() };
 		await fetchWithCSRF('/listing/update', {
 			method: 'PUT',
 			body: JSON.stringify(formobject)
@@ -220,3 +222,30 @@ async function editbid (): Promise<void> {
 }
 
 $('#update_bid').on('click', editbid);
+
+async function deletebid (): Promise<void> {
+	const listingid = $('#listing_id').val();
+	const formobject = { bid_amount: '1', listingid }; // Truly does not matter what I mark down as bid_amount here
+	await fetchWithCSRF(`/bid`, {
+		method: 'DELETE',
+		body: JSON.stringify(formobject)
+	}).then(Response => {
+		location.href = Response.url;
+	});
+}
+
+$('#delete_bid').on('click', deletebid);
+
+function showHideAuctionInfo() {
+	const checkbox = <HTMLInputElement> document.getElementById('open_status');
+	const checkboxVal = checkbox.checked;
+	const auctionDataDiv = $('#auction_info').get()[0];
+
+	if (checkboxVal) {
+		auctionDataDiv.hidden = false;
+	} else {
+		auctionDataDiv.hidden = true;
+	}
+}
+
+$('#open_status').on('change', showHideAuctionInfo);

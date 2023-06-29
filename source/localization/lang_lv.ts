@@ -22,7 +22,8 @@ export default {
 		listing_title: 'Sludinājuma virsraksts',
 		listing_desc: 'Sludinājuma apraksts',
 		start_price_label: 'Sākuma cena',
-		auction_status_label: 'Vai pasludināt uzreiz?',
+		auction_status_label: 'Vai ir izsole?',
+		auction_end_label: 'Izsoles beidzas',
 		category_select_label: 'Izvēlies sadaļu',
 		category_def_val: 'Sadaļas izvēle',
 		subcategory_select_label: 'Izvēlies apakšsadaļu',
@@ -68,6 +69,7 @@ export default {
 		edit: "Mainīt savu solījumu",
 		bid_amount: "Solītā cena:",
 		update: "Rediģēt solījumu",
-		delete: "Dzēst solījumu"
+		delete: "Dzēst solījumu",
+		bids: "sola"
 	}
 } satisfies locale;

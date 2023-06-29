@@ -22,7 +22,8 @@ export default {
 		listing_title: 'Listing title',
 		listing_desc: 'Listing description',
 		start_price_label: 'Starting price',
-		auction_status_label: 'Open the auction now?',
+		auction_status_label: 'Is an auction?',
+		auction_end_label: 'Auction ends',
 		category_select_label: 'Select a category',
 		category_def_val: 'Category selection',
 		subcategory_select_label: 'Select a subcategory',
@@ -68,6 +69,7 @@ export default {
 		edit: "Edit your bid",
 		bid_amount: "Bid amount:",
 		update: "Update Bid",
-		delete: "Delete Bid"
+		delete: "Delete Bid",
+		bids: "bids"
 	}
 } satisfies locale;
