@@ -36,3 +36,7 @@ export const server = {
 	/** HTTPS cert location */
 	certLocation: 'server.cert'
 };
+export const auctions = {
+	/* How often to check whether an auction has ended */
+	auctionResolution: 30_000
+};

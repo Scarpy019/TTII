@@ -15,7 +15,6 @@
     </div>
 	<div class="main_container">
 		<div id = "imgdisplay">
-		
 		</div>
 		<div><%-lang.listing_form.image_upload_label%></div>
 		<input accept="image/png, image/jpeg" type="file" name="imgupload" title="Upload image" id="imgupload"><br>
@@ -33,11 +32,13 @@
 				<input type="number" id="start_price" name="startprice" required>
 			</div>
 			<div>
-				<label for="openstatus"><%-lang.listing_form.auction_status_label%></label><br>
-				<label for="openstatus"><%-lang.listing_form.yes%></label>
-				<input type="radio" value="open" id="open_status" name="openstatus"><br>
-				<label for="openstatus"><%-lang.listing_form.no%></label>
-				<input type="radio" value="closed" id="open_status" name="openstatus"><br>
+				<label for="openstatus"><%-lang.listing_form.auction_status_label%></label>
+				<input type="checkbox" onchange="showHideAuctionInfo()" id="open_status" name="openstatus"><br>
+				<div id="auction_info">
+					<label for="auctionend"><%-lang.listing_form.auction_end_label%></label>
+					<input type="date" id="auction_end_date" name="auctionend">
+					<input type="time" id="auction_end_time" name="auctionend">
+				</div><br>
 			</div>
 			<div>
 				<label for="categoryname"><%-lang.listing_form.category_select_label%></label>

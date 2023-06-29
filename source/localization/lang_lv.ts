@@ -22,7 +22,8 @@ export default {
 		listing_title: 'Sludinājuma virsraksts',
 		listing_desc: 'Sludinājuma apraksts',
 		start_price_label: 'Sākuma cena',
-		auction_status_label: 'Vai pasludināt uzreiz?',
+		auction_status_label: 'Vai ir izsole?',
+		auction_end_label: 'Izsoles beidzas',
 		category_select_label: 'Izvēlies sadaļu',
 		category_def_val: 'Sadaļas izvēle',
 		subcategory_select_label: 'Izvēlies apakšsadaļu',
@@ -46,7 +47,8 @@ export default {
 	},
 	chat: {
 		send_message: 'Ievadiet ziņu:',
-		awaiting_decrypt: 'Atšifrē ziņu, lūdzam uzgaidīt...'
+		awaiting_decrypt: 'Atšifrē ziņu, lūdzam uzgaidīt...',
+		chat_with: 'Sarunājies ar'
 	},
 	admin: {
 		add_sect: 'Pievienot sadaļu',
@@ -61,6 +63,17 @@ export default {
 		lv_subsec_name: 'Latviskais apakšsadaļas nosaukums',
 		edit: 'Rediģēt',
 		in_sect: 'Iekšā kategorijā - '
+	},
+	bid: {
+		current_bid: 'Pašreiz solītā cena:',
+		generatePlaceText: (arg0: string) => `Tavs solījums pašlaik ir ${arg0}. no visiem solījumiem.`,
+		create: 'Pievienot solījumu',
+		edit: 'Mainīt savu solījumu',
+		bid_amount: 'Solītā cena:',
+		update: 'Rediģēt solījumu',
+		delete: 'Dzēst solījumu',
+		bids: 'sola',
+		bid_list: 'Solījumi:'
 	},
 	search: {
 		searchfield: 'Ievadi atslēgvārdu',

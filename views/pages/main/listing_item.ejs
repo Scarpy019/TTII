@@ -42,7 +42,23 @@
                         <% } else { %>
                             <button id="openlisting">Open listing</button>
                         <% } %>
-                    <% } %>
+						<% if (listing.status === 'closed' && listing.is_auction) { %>
+							<p><%- lang.bid.bid_list %></p>
+							<ol>
+								<% bids.forEach(entry => { %>
+									<li><a href='/user/profile/<%= entry.user_name %>'><%= entry.user_name %></a> <%- lang.bid.bids %> <%= entry.bid_amount %></li>
+								<% }) %>
+							</ol>
+						<% } %>
+                    <% } else if (listing.is_auction) { %>
+						<% if (bid.bid_place !== undefined) { %>
+							<p><%- lang.bid.current_bid %> <%- bid.current_bid %></p>
+							<p><%- lang.bid.generatePlaceText(bid.bid_place) %></p>
+							<a href="/bid/edit?id=<%=encodeUUID(listing.id)%>"><%-lang.bid.edit%></a>
+						<% } else { %>
+							<a href="/bid/create?id=<%=encodeUUID(listing.id)%>"><%-lang.bid.create%></a>
+						<% } %>
+					<% } %>
                 <% } %>
 			</div>
             <br>

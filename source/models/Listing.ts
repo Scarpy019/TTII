@@ -9,7 +9,7 @@ import { Media } from './Media.js';
 /**
  * Helper interface for creating new Listings
  */
-interface ListingAttributes {
+export interface ListingAttributes {
 	id: UUID;
 	title: string;
 	body: string;
