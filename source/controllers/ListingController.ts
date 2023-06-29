@@ -83,7 +83,7 @@ function ValidListingUpdateForm (obj: any): obj is ListingUpdateForm {
 		('subcatid' in obj) && typeof obj.subcatid === 'string' && !isNaN(Number(obj.subcatid)) &&
 		('openstatus' in obj) && typeof obj.openstatus === 'string' && ('listingid' in obj) && typeof obj.listingid === 'string' &&
 		(obj.openstatus === 'open' && ('auction_end_date' in obj && typeof obj.auction_end_date === 'string')) &&
-		(obj.openstatus === 'open' && ('auction_end_time' in obj && typeof obj.auction_end_time === 'string'));;
+		(obj.openstatus === 'open' && ('auction_end_time' in obj && typeof obj.auction_end_time === 'string')); ;
 	return valid;
 };
 
@@ -94,7 +94,7 @@ listing.create = [
 				if (await Subsection.findByPk(Number(req.body.subcatid)) !== null) {
 					if (isLoggedOn(res.locals.user)) {
 						// Generate the end date (if it's an auction)
-						let date: Date | undefined = undefined;
+						let date: Date | undefined;
 						if (req.body.openstatus === 'open') {
 							if (isNaN(Date.parse(req.body.auction_end_date))) {
 								res.sendStatus(400);
@@ -110,7 +110,7 @@ listing.create = [
 								res.sendStatus(400);
 								return;
 							}
-							const hours = Number(hoursStr), minutes = Number(minutesStr);
+							const hours = Number(hoursStr); const minutes = Number(minutesStr);
 							date.setHours(hours, minutes);
 						}
 						// generate the new listing
@@ -119,7 +119,7 @@ listing.create = [
 							title: req.body.listing_name,
 							body: req.body.listing_description,
 							status: 'open',
-							is_auction: req.body.openstatus === 'open' ? true : false,
+							is_auction: req.body.openstatus === 'open',
 							auction_end: date,
 							start_price: Number(req.body.startprice),
 							userId: res.locals.user.id,
@@ -178,27 +178,31 @@ listing.interface('/item', async (req, res) => {
 					res.redirect('/section');
 				} else {
 					if ((listing.status === 'open') || (listing.status === 'closed' && isLoggedOn(res.locals.user) && (res.locals.user.id === author.id || res.locals.user.accesslevel.category_admin))) {
-						let bid : Bid | null = null;
+						let bid: Bid | null = null;
 						let bindex;
-						if (res.locals.user) {
+						if (res.locals.user != null) {
 							bid = await Bid.findOne({
 								where: {
 									listingId: listing.id,
-									userId: res.locals.user!.id
+									userId: res.locals.user.id
 								}
 							});
-							if(bid) {
-								const bids = (await Bid.findAll({where: {listingId: listing.id}})).sort((a, b) => a.bid_amount - b.bid_amount).reverse();
+							if (bid != null) {
+								const bids = (await Bid.findAll({ where: { listingId: listing.id } })).sort((a, b) => a.bid_amount - b.bid_amount).reverse();
 								bindex = bids.findIndex(x => x.userId === res.locals.user?.id) + 1;
 							}
 						}
-						let bidEntries : BidEntry[] = [];
-						if (listing.is_auction && listing.status === 'closed') {
-							const bids = (await Bid.findAll({where: {listingId: listing.id}, include: [{ model: User, as: 'user' }]})).sort((a, b) => a.bid_amount - b.bid_amount).reverse();
-							bids.forEach(v => bidEntries.push({
-								user_name: v.user!.username,
-								bid_amount: v.bid_amount
-							}));
+						const bidEntries: BidEntry[] = [];
+						if (listing.is_auction === true && listing.status === 'closed') {
+							const bids = (await Bid.findAll({ where: { listingId: listing.id }, include: [{ model: User, as: 'user' }] })).sort((a, b) => a.bid_amount - b.bid_amount).reverse();
+							bids.forEach(v => {
+								if (v.user !== undefined) {
+									bidEntries.push({
+										user_name: v.user.username,
+										bid_amount: v.bid_amount
+									});
+								}
+							});
 						}
 						res.render('pages/main/listing_item.ejs', {
 							listing,
@@ -282,7 +286,7 @@ listing.update = listing.handler(
 			const listinginstance = await Listing.findByPk(decodeUUID(req.body.listingid));
 			if (isListing(listinginstance)) {
 				// Generate the end date (if it's an auction)
-				let date: Date | undefined = undefined;
+				let date: Date | undefined;
 				if (req.body.openstatus === 'open') {
 					if (isNaN(Date.parse(req.body.auction_end_date))) {
 						res.sendStatus(400);
@@ -298,12 +302,12 @@ listing.update = listing.handler(
 						res.sendStatus(400);
 						return;
 					}
-					const hours = Number(hoursStr), minutes = Number(minutesStr);
+					const hours = Number(hoursStr); const minutes = Number(minutesStr);
 					date.setHours(hours, minutes);
 				}
 				listinginstance.title = req.body.listing_name;
 				listinginstance.body = req.body.listing_description;
-				listinginstance.is_auction = req.body.openstatus === 'open' ? true : false;
+				listinginstance.is_auction = req.body.openstatus === 'open';
 				listinginstance.start_price = Number(req.body.startprice);
 				listinginstance.subsectionId = Number(req.body.subcatid);
 				listinginstance.auction_end = date;

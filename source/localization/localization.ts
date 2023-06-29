@@ -71,5 +71,6 @@ export default interface locale {
 		update: string;
 		delete: string;
 		bids: string;
+		bid_list: string;
 	};
 };

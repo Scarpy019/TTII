@@ -43,6 +43,7 @@
                             <button id="openlisting">Open listing</button>
                         <% } %>
 						<% if (listing.status === 'closed' && listing.is_auction) { %>
+							<p><%- lang.bid.bid_list %></p>
 							<ol>
 								<% bids.forEach(entry => { %>
 									<li><a href='/user/profile/<%= entry.user_name %>'><%= entry.user_name %></a> <%- lang.bid.bids %> <%= entry.bid_amount %></li>

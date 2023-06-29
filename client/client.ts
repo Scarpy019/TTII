@@ -45,7 +45,7 @@ async function editlisting (): Promise<void> {
 	const currentlistingquery = location.search;
 	const currentlisting = currentlistingquery.substring(4); // Currently removes ?id= from location search to leave the listing id
 	if (listdesc !== undefined && startprice !== undefined && openstatus !== undefined && listtitle !== undefined && category !== undefined && subcategory !== undefined && currentlisting !== undefined) {
-		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), auction_end_date: (auctionEndDate ?? "N/A").toString(), auction_end_time: (auctionEndTime ?? "N/A").toString(), subcatid: subcategory.toString() };
+		const formobject = { listingid: currentlisting, listing_name: listtitle.toString(), listing_description: listdesc.toString(), startprice: startprice.toString(), openstatus: openstatus.toString(), auction_end_date: (auctionEndDate ?? 'N/A').toString(), auction_end_time: (auctionEndTime ?? 'N/A').toString(), subcatid: subcategory.toString() };
 		await fetchWithCSRF('/listing/update', {
 			method: 'PUT',
 			body: JSON.stringify(formobject)
@@ -214,7 +214,7 @@ async function editbid (): Promise<void> {
 	const listingid = $('#listing_id').val();
 	if (bidamount !== undefined) {
 		const formobject = { bid_amount: bidamount.toString(), listingid };
-		await fetchWithCSRF(`/bid`, {
+		await fetchWithCSRF('/bid', {
 			method: 'PUT',
 			body: JSON.stringify(formobject)
 		}).then(Response => {
@@ -228,7 +228,7 @@ $('#update_bid').on('click', editbid);
 async function deletebid (): Promise<void> {
 	const listingid = $('#listing_id').val();
 	const formobject = { bid_amount: '1', listingid }; // Truly does not matter what I mark down as bid_amount here
-	await fetchWithCSRF(`/bid`, {
+	await fetchWithCSRF('/bid', {
 		method: 'DELETE',
 		body: JSON.stringify(formobject)
 	}).then(Response => {
@@ -238,8 +238,8 @@ async function deletebid (): Promise<void> {
 
 $('#delete_bid').on('click', deletebid);
 
-function showHideAuctionInfo() {
-	const checkbox = <HTMLInputElement> document.getElementById('open_status');
+function showHideAuctionInfo (): void {
+	const checkbox = document.getElementById('open_status') as HTMLInputElement;
 	const checkboxVal = checkbox.checked;
 	const auctionDataDiv = $('#auction_info').get()[0];
 

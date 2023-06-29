@@ -1,18 +1,18 @@
-import { Listing } from "../models/index.js";
+import { Listing } from '../models/index.js';
 import { auctions as config } from '../config.js';
 
 // A function that will periodically check all Listings to see if they are auctions that need closing (their end time has ellapsed)
-async function checkAllAuctions () {
+async function checkAllAuctions (): Promise<void> {
 	const listings = await Listing.findAll();
 
-	listings.forEach(listing => {
-		if (listing.is_auction && listing.auction_end && listing.auction_end.getTime() >= Date.now()) {
+	listings.forEach(async listing => {
+		if (listing.is_auction !== null && (listing.auction_end != null) && listing.auction_end.getTime() >= Date.now()) {
 			listing.status = 'closed';
-			listing.save();
+			await listing.save();
 		}
 	});
 }
 
-export function startAuctionCheckInterval () {
-	setInterval(checkAllAuctions, config.auctionResolution);	
+export function startAuctionCheckInterval (): void {
+	setInterval(checkAllAuctions, config.auctionResolution);
 }

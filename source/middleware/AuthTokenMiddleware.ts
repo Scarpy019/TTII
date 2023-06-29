@@ -19,7 +19,7 @@ export async function validateAuthToken (req: Request, res: Response, next: Next
 					});
 					res.locals.user = user;
 				}
-			}	
+			}
 		} catch {
 			// Clear the cookie just in case
 			res.clearCookie('AuthToken');
