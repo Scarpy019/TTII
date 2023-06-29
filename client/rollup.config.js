@@ -106,5 +106,13 @@ export default [
 			format: 'es'
 		},
 		plugins: [scss({output:'./static/lapa/userpage.css'})].concat(plugins)
+	},
+	{
+		input: './client/search/entry.ts',
+		output: {
+			file: './static/lapa/search.js',
+			format: 'es'
+		},
+		plugins: [scss({output:'./static/lapa/search.css'})].concat(plugins)
 	}
 ];

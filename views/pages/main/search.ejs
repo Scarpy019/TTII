@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/lapa/search.css">
     <title></title>
 </head>
 <body>
@@ -17,29 +18,29 @@
 			<button id="keyword_button"><%-lang.search.searchbutton%></button>
 		</div>
 		<div class="searchedlistings">
-			<ul>
-				<% listings.forEach(listing => { %>
-					<% if (listing.status === "open") { %>
-						<% if (listing.user != undefined) { %>
-							<% if (!listing.user.banned) { %>
-								<%if (hidenbydefault === 'yes') { %>
-								<% } else { %>
-									<li class="listingitem" id="listing=<%=listing.id%>">
-										<a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><%- listing.title %></a>
-										<div class="listingprice"><%-lang.listing_item.startprice%> - <div class="pricenum"><%-listing.start_price%></div>$</div>
+			<% listings.forEach(listing => { %>
+				<% if (listing.status === "open") { %>
+					<% if (listing.user != undefined) { %>
+						<% if (!listing.user.banned) { %>
+							<%if (hidenbydefault === 'yes') { %>
+							<% } else { %>
+								<div class="listingitem" id="listing=<%=listing.id%>">
+									<a href='/listing/item?id=<%=encodeUUID(listing.id)%>'><button type="button">
+										<div><%- listing.title %></div>
+										<div class="listingprice"><%-lang.listing_item.startprice%> - <span class="pricenum"><%-listing.start_price%></span>$</div>
 										<div class="createdat"><%-lang.listing_item.postdate%> <%=transformDate(listing.createdAt)%></div>
 										<div class="listingimage">
 											<% if(listing.media[0] !== undefined && listing.media[0] !== null) { %>
 												<img src="/files/<%= listing.media[0].uuid + listing.media[0].extension %>" alt="descripting image">
 											<% }%>
 										</div>
-									</li>
-								<% } %>
+									</button></a>
+								</div>
 							<% } %>
 						<% } %>
 					<% } %>
-				<% }) %>
-			</ul>
+				<% } %>
+			<% }) %>
 		</div>
     </div>
 </body>

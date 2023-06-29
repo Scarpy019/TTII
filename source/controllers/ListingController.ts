@@ -26,7 +26,7 @@ listing.read = async (req, res) => {
 		const subsection = await Subsection.findByPk(subsecId);
 		if (isSubcategory(subsection)) {
 			res.render('pages/main/all_listings.ejs', {
-				subsec_name: subsection.name,
+				subsec_name: (req.cookies.lang === 'LV') ? subsection.nameLV : subsection.name,
 				listings,
 				subsecId,
 				constants: headerConstants,
