@@ -10,3 +10,8 @@ static/**
 # HTTPS certs, shouldn't appear on git considering every system should have its own
 **/server.cert
 **/server.key
+
+# Docker Compose secrets, should not appear on git
+db_password.txt
+db_root_password.txt
+admin_password.txt

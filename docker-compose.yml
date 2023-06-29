@@ -1,21 +1,30 @@
 version: '3.8'
 
 services:
-  mysqldb:
-    image: mysql:latest
+  # Instead of MySQL, we will use MariaDB, which is an updated fork of MySQL (and MySQL docker image was behaving weirdly when trying to deploy it)
+  mariadb:
+    image: mariadb:latest
+    command: '--default-authentication-plugin=mysql_native_password'
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=timeklis_2
-      - MYSQL_HOST=mysqldb
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+      - MYSQL_DATABASE=TTII
+      - MYSQL_HOST=mariadb
+      - MYSQL_USER=TTII
+      - MYSQL_PASSWORD_FILE=/run/secrets/db_password
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - db:/usr/dir/app/lib/mysql
+    secrets:
+      - db_root_password
+      - db_password
   app:
     depends_on:
-      - mysqldb
+      - mariadb
     build: ./
+    volumes:
+      - app:/var/www/html
     ports:
       - target: 80
         published: "80"
@@ -27,6 +36,23 @@ services:
         mode: host
     restart: unless-stopped
     environment:
-      - DB_HOST=mysqldb
+      - APP_DB_HOST=mariadb
+      - APP_DB=TTII
+      - APP_DB_USER=TTII
+      - APP_DB_PASSWORD_FILE=/run/secrets/db_password
+      - APP_ADMIN_PASSWORD_FILE=/run/secrets/admin_password
+    secrets:
+      - db_password
+      - admin_password # Used by the seeder
+
+secrets:
+   db_password:
+     file: db_password.txt
+   db_root_password:
+     file: db_root_password.txt
+   admin_password:
+     file: admin_password.txt
+
 volumes: 
   db:
+  app:

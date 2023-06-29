@@ -36,6 +36,10 @@ export const server = {
 	/** HTTPS cert location */
 	certLocation: 'server.cert'
 };
+export const seeder = {
+	/* Admin password for the seeder */
+	adminPass: 'sample_password'
+};
 export const auctions = {
 	/* How often to check whether an auction has ended */
 	auctionResolution: 30_000
