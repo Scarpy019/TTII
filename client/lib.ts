@@ -109,7 +109,7 @@ export function getMessageQueue (): MessageQueue {
 
 // Saves the message queue object in local storage
 function setMessageQueue (queue: MessageQueue): void {
-	localStorage.setItem(getUser() + '-keys', JSON.stringify(queue, replacer));
+	localStorage.setItem(getUser() + '-queue', JSON.stringify(queue, replacer));
 }
 
 // Enqueues a message in the message queue
