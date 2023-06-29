@@ -7,17 +7,22 @@ export async function validateAuthToken (req: Request, res: Response, next: Next
 	res.locals.user = null;
 	if (req.cookies.AuthToken !== undefined) {
 		const token = req.cookies.AuthToken;
-		const decoded = jwt.verify(token, config.secret, { clockTimestamp: Date.now() / 1000 }); // jsonwebtoken automatically verifies the specified time as well
-		if (typeof decoded !== 'string') {
-			if (decoded.sub !== null) {
-				const user = await User.findOne({
-					where: {
-						id: decoded.sub
-					},
-					include: [UserAccess]
-				});
-				res.locals.user = user;
-			}
+		try {
+			const decoded = jwt.verify(token, config.secret, { clockTimestamp: Date.now() / 1000 }); // jsonwebtoken automatically verifies the specified time as well
+			if (typeof decoded !== 'string') {
+				if (decoded.sub !== null) {
+					const user = await User.findOne({
+						where: {
+							id: decoded.sub
+						},
+						include: [UserAccess]
+					});
+					res.locals.user = user;
+				}
+			}	
+		} catch {
+			// Clear the cookie just in case
+			res.clearCookie('AuthToken');
 		}
 	}
 	next();
