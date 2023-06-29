@@ -24,8 +24,10 @@ bid.create = bid.handler(ValidBidCreationForm,
 
 		const listId = req.body.listingid;
 		const listing = await Listing.findByPk(listId);
-		if (listing === null) return res.sendStatus(404);
+		if (listing === null) return res.sendStatus(404); // No such listing, cannot add bid
+		// If the listing is not an auction or has ended, the request is invalid
 		if (listing.is_auction === false || ((listing.auction_end != null) && listing.auction_end.getTime() < Date.now())) return res.sendStatus(400);
+		// Similarly, if the price is bad, then the request is invalid as well
 		if (listing.start_price !== undefined && req.body.bid_amount < listing.start_price) return res.sendStatus(400);
 
 		const bidCheck = await Bid.findOne({
@@ -52,10 +54,11 @@ bid.update = bid.handler(ValidBidCreationForm,
 		if (res.locals.user === null) return res.sendStatus(403); // User is not logged in!
 
 		const listId = req.body.listingid;
-		if (listId === '') return res.sendStatus(404);
 		const listing = await Listing.findByPk(listId);
-		if (listing === null) return res.sendStatus(404);
+		if (listing === null) return res.sendStatus(404); // No such listing, cannot add bid
+		// If the listing is not an auction or has ended, the request is invalid
 		if (listing.is_auction === false || ((listing.auction_end != null) && listing.auction_end.getTime() < Date.now())) return res.sendStatus(400);
+		// Similarly, if the price is bad, then the request is invalid as well
 		if (listing.start_price !== undefined && req.body.bid_amount < listing.start_price) return res.sendStatus(400);
 
 		const bid = await Bid.findOne({
@@ -80,7 +83,7 @@ bid.delete = bid.handler(ValidBidCreationForm,
 
 		const listId = req.body.listingid;
 		const listing = await Listing.findByPk(listId);
-		if (listing === null) return res.sendStatus(404);
+		if (listing === null) return res.sendStatus(404); // Cannot find listing, so 404
 		if (listing.is_auction === false) return res.sendStatus(400); // Should be able to delete it even after it ends
 
 		const bid = await Bid.findOne({
@@ -96,7 +99,7 @@ bid.delete = bid.handler(ValidBidCreationForm,
 		res.redirect('/listing/item?id=' + req.body.listingid);
 	});
 
-// Not sure if necessary
+// Do not need this, bids are visible on item page
 // bid.read = [async (req, res) => {
 // 	if (res.locals.user === undefined) return res.sendStatus(500); // Something happened to Auth middleware
 // 	if (res.locals.user === null) return res.sendStatus(403); // User is not logged in!
@@ -118,9 +121,12 @@ bid.delete = bid.handler(ValidBidCreationForm,
 
 bid.interface('/create', async (req, res) => {
 	if (res.locals.user instanceof User) {
+		if (req.query.id === undefined) return res.sendStatus(404);
+		// Find the listing
 		const listId = req.query.id as string;
 		const listing = await Listing.findByPk(decodeUUID(listId));
 		if (listing === null) return res.sendStatus(404);
+		// If the listing is not an auction, redirect back to the listing page
 		if (listing.is_auction === false || ((listing.auction_end != null) && listing.auction_end.getTime() < Date.now())) {
 			res.redirect(`/listing/item?id=${req.query.id as string}`);
 			return;
@@ -132,24 +138,27 @@ bid.interface('/create', async (req, res) => {
 				userId: res.locals.user.id
 			}
 		});
+		// If there is an existing bid, redirect the user to the edit page
 		if (bidCheck !== null) { res.redirect('/bid/edit?id=' + listId); return; }
 
 		if (isLoggedOn(res.locals.user)) {
-			res.render('pages/bid/create', { // User can access the create listing page from a subcategory page where it autofills the category and subcategory
+			res.render('pages/bid/create', {
 				constants: headerConstants,
 				listingid: decodeUUID(listId)
 			});
 		}
 	} else {
-		res.redirect('/user/login?redirect=' + Buffer.from('_bid_create').toString('ascii'));
+		res.redirect('/user/login?redirect=' + Buffer.from(`_bid_create?id=${req.query.id as string}`).toString('ascii'));
 	}
 });
 
 bid.interface('/edit', async (req, res) => {
 	if (res.locals.user instanceof User) {
+		if (req.query.id === undefined) return res.sendStatus(404);
 		const listId = req.query.id as string;
 		const listing = await Listing.findByPk(decodeUUID(listId));
 		if (listing === null) return res.sendStatus(404);
+		// If the listing is not an auction, redirect back to the listing page
 		if (listing.is_auction === false || ((listing.auction_end != null) && listing.auction_end.getTime() < Date.now())) {
 			res.redirect(`/listing/item?id=${req.query.id as string}`);
 			return;
@@ -161,16 +170,17 @@ bid.interface('/edit', async (req, res) => {
 				userId: res.locals.user.id
 			}
 		});
+		// If there is no existing bid, redirect the user to the create page
 		if (bid === null) { res.redirect('/bid/create?id=' + listId); return; }
 
 		if (isLoggedOn(res.locals.user)) {
-			res.render('pages/bid/edit', { // User can access the create listing page from a subcategory page where it autofills the category and subcategory
+			res.render('pages/bid/edit', {
 				constants: headerConstants,
 				listingid: decodeUUID(listId),
 				current_bid: bid.bid_amount
 			});
 		}
 	} else {
-		res.redirect('/user/login?redirect=' + Buffer.from('_bid_edit').toString('ascii'));
+		res.redirect('/user/login?redirect=' + Buffer.from(`_bid_edit?id=${req.query.id as string}`).toString('ascii'));
 	}
 });
