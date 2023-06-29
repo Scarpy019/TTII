@@ -14,13 +14,15 @@
 	<div class="header">
 		<%- include('../misc/header') %>
 	</div>
-	<form id="createForm" action="/bid" method="post">
-		<label for="bid_amount"><%-lang.bid.bid_amount%></label>
-		<input type="number" id="bid_amount" name="bid_amount" required>
-		<input type="hidden" id="listingid" name="listingid" value="<%=listingid%>" id="listing_id">
-		<input type="submit" value="Submit">
-		<a href="/listing/item?id=<%=encodeUUID(listingid)%>" id="returntolist"><%-lang.listing_form.return%><br><br>
-	</form>
+	<div class="main_container">
+		<form id="createForm" action="/bid" method="post">
+			<label for="bid_amount"><%-lang.bid.bid_amount%></label>
+			<input type="number" id="bid_amount" name="bid_amount" required>
+			<input type="hidden" id="listingid" name="listingid" value="<%=listingid%>" id="listing_id">
+			<input type="submit" value="Submit"><br>
+			<a href="/listing/item?id=<%=encodeUUID(listingid)%>" id="returntolist"><%-lang.listing_form.return%><br><br>
+		</form>
+	</div>
 </body>
 
 </html>
