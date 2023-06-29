@@ -89,7 +89,6 @@ const HTTPport = config.debug ? 3000 : 80;
 server.listen(HTTPport, async function () {
 	await sequelize.sync();
 	logger.info(`App is listening for HTTP on ${HTTPport}`);
-
 	const HTTPSport = config.debug ? 3001 : 443;
 	const HTTPSserver = createServer(options, app);
 	io.listen(HTTPSserver); // Make the Socket.IO server listen to the HTTPS server

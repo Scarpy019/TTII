@@ -42,6 +42,16 @@ export default interface locale {
 	userpage: {
 		welcome: string;
 	};
+	search: {
+		searchfield: string;
+		searchbutton: string;
+	};
+	listingfiltering: {
+		price_asc: string;
+		price_desc: string;
+		oldest: string;
+		newest: string;
+	};
 	chat: {
 		send_message: string;
 		awaiting_decrypt: string;

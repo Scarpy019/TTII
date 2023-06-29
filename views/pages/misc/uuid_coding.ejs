@@ -4,3 +4,18 @@ encodeUUID = function(id) {
 	return base64id;
 }
 %>
+
+<%
+transformDate = function(originalDate) {
+	let newDate = new Date(originalDate)
+	newDate = newDate.toLocaleString('en-GB');
+	return newDate;
+}
+%>
+
+<%
+transformDatewithhours = function(originalDate) {
+	let newDate = new Date(originalDate)
+	return newDate;
+}
+%>
