@@ -133,7 +133,7 @@ bid.interface('/create', async (req, res) => {
 				userId: res.locals.user.id
 			}
 		});
-		if (bidCheck !== null) return res.redirect('/bid/' + req.query.id + '/update');
+		if (bidCheck !== null) return res.redirect('/bid/edit?id=' + listId);
 		
 		if (isLoggedOn(res.locals.user)) {
 			res.render('pages/bid/create', { // User can access the create listing page from a subcategory page where it autofills the category and subcategory
@@ -160,7 +160,7 @@ bid.interface('/edit', async (req, res) => {
 				userId: res.locals.user.id
 			}
 		});
-		if (bid === null) return res.redirect('/bid/' + req.query.id + '/create');
+		if (bid === null) return res.redirect('/bid/create?id=' + listId);
 		
 		if (isLoggedOn(res.locals.user)) {
 			res.render('pages/bid/edit', { // User can access the create listing page from a subcategory page where it autofills the category and subcategory
